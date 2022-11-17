@@ -1,0 +1,63 @@
+{% extends 'auth/base.html' %}
+
+{% block bg%} landing-bg2 {% endblock%}
+
+{% block body_content %}
+<div class="register-section myshadow">
+  <div class="d-flex h-100 justify-content-center">
+      <div class="w-75 mt-5">
+        <div class="d-flex flex-row justify-content-start">
+          <div style="width: 60px" class="align-self-start" >
+            <img src="../../static/img/fp-logo-round-white.png" alt="" style="height: 60px;">
+          </div>
+          <h2 class="fp-blue fw-semibold align-self-end" >Register</h2>
+          <a href="/login" class="btn-link align-self-end mb-2 ms-auto"> already have an account? </a>
+        </div>
+        <form id="register">
+          <div class="pt-4 d-flex flex-column position-relative register-input-div">
+            <h3 class="fp-blue">Account Info</h3>
+            {{ form.email.label(class="mt-3 text-muted") }}
+            {{ form.email(class="register-input", placeholder="Email") }}
+            <i class="bi-envelope"></i>
+            {{ form.tag.label(class="mt-3 text-muted") }}
+            {{ form.tag(class="register-input", placeholder="Tag") }}
+            <i class="bi-at "></i>
+
+            {{ form.account_type.label(class="mt-3 text-muted")}}
+            {{ form.account_type(class="register-input text-indent") }}
+            {{ form.password.label(class="mt-3 text-muted") }}
+            {{ form.password(class="register-input" , placeholder="Password") }}
+            {{ form.password2.label(class="mt-3 text-muted") }}
+            {{ form.password2(class="register-input", placeholder="Confirm Password") }}
+            <br/>
+            <h3 class="fp-blue">Personal Info</h3>
+
+            {{ form.last_name.label(class="mt-3 text-muted", placeholder="Last Name") }}
+            {{ form.last_name(class="register-input") }}
+            {{ form.first_name.label(class="mt-3 text-muted") }}
+            {{ form.first_name(class="register-input", placeholder="First Name") }}
+            <br/>
+            <h3 class="fp-blue">Address</h3>
+            {{ form.city.label(class="mt-3 text-muted") }}
+            {{ form.city(class="register-input", placeholder="City") }}
+            {{ form.state.label(class="mt-3 text-muted") }}
+            {{ form.state(class="register-input", placeholder="State") }}
+            {{ form.zipcode.label(class="mt-3 text-muted") }}
+            {{ form.zipcode(class="register-input", placeholder="Zip Code") }}
+            {{ form.country.label(class="mt-3 text-muted") }}
+            {{ form.country(class="register-input", placeholder="Country") }}
+            <br/>
+            <br/>
+            <div class="d-flex flex-row align-items-center mt-2">
+              <button class="btn btn-fp-blue btn-lg rounded-5 me-2"> Register</button>
+              <a href="/login" class="btn-link ms-auto" style="font-size: 16px;">already have an account?</a>
+            </div>
+            <br/>
+            <br/>
+          </div>
+        </form>
+      </div>
+  </div>
+</div>
+
+{% endblock %}

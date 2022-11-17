@@ -1,0 +1,88 @@
+{% extends 'auth/base.html' %}
+
+{% block bg%} landing-bg2 {% endblock%}
+
+{% block body_content %}
+<div class="register-section myshadow">
+  <div class="d-flex h-100 justify-content-center">
+      <div class="w-75 mt-5">
+        <div class="d-flex flex-row justify-content-start">
+          <div style="width: 60px" class="align-self-start" >
+            <img src="../../static/img/fp-logo-round-white.png" alt="" style="height: 60px;">
+          </div>
+          <h2 class="fp-blue fw-semibold align-self-end" >Register</h2>
+          <a href="/login" class="btn-link align-self-end mb-2 ms-auto"> already have an account? </a>
+        </div>
+        <form id="register">
+          <div class="pt-4 d-flex flex-column position-relative register-input-div">
+
+            <h3 class="fp-blue">Account Info</h3>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="email" class="auth-input m-0 p-2" type="text" placeholder="E-mail">
+              <i class="bi-envelope"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="tag" class="auth-input m-0 p-2" type="text" placeholder="Tag">
+              <i class="bi-at"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <select name="account_type" class="auth-input m-0 p-2" type="text" placeholder="Tag">
+                <option class="text-muted" value="" disabled selected hidden>Select Account Type</option>
+                <option value="pet_owner">Pet Owner</option>
+                <option value="freelancer">Freelancer</option>
+              </select>
+              <i class="bi-person-gear"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch  pb-3">
+              <input name="password" class="auth-input m-0 p-2" type="password" placeholder="Password">
+              <i class="bi-shield-lock"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch  pb-3">
+              <input name="password2" class="auth-input m-0 p-2" type="password" placeholder="Confirm Password">
+              <i class="bi-shield-lock"></i>
+            </div>
+            <br/>
+
+            <h3 class="fp-blue">Personal Info</h3>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="last_name" class="auth-input m-0 p-2" type="text" placeholder="Last Name">
+              <i class="bi-person"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="first_name" class="auth-input m-0 p-2" type="text" placeholder="First Name">
+              <i class="bi-person"></i>
+            </div>
+            <br/>
+
+            <h3 class="fp-blue">Address</h3>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="city" class="auth-input m-0 p-2" type="text" placeholder="City">
+              <i class="bi-geo"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="state" class="auth-input m-0 p-2" type="text" placeholder="State">
+              <i class="bi-pin-map"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="zipcode" class="auth-input m-0 p-2" type="text" placeholder="Zip">
+              <i class="bi-geo-alt"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="country" class="auth-input m-0 p-2" type="text" placeholder="Country">
+              <i class="bi-map"></i>
+            </div>
+            <br/>
+            <br/>
+            <div class="d-flex flex-row align-items-center mt-2">
+              <button class="btn btn-fp-blue btn-lg rounded-5 me-2"> Register</button>
+              <a href="/login" class="btn-link ms-auto" style="font-size: 16px;">already have an account?</a>
+            </div>
+            <br/>
+            <br/>
+          </div>
+        </form>
+      </div>
+  </div>
+</div>
+
+{% endblock %}

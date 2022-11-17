@@ -1,0 +1,265 @@
+html {
+    height: 100%;
+}
+* {
+    font-family: 'Readex Pro', sans-serif;
+}
+
+.landing-bg {
+    background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0), rgba(228, 224, 224, 0.24), rgba(32, 32, 32, 0.479), rgba(0, 0, 0, 0.404), rgba(0,0,0,1)), 
+    url('../img/landing_bg.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.landing-bg2 {
+    background-image: url('../img/landing_bg2.jpg');
+    background-size: cover;
+    background-repeat: repeat-y;
+
+}
+
+@media all and (min-width: 1200px) {
+    .landing-bg {
+        background-position: 50%;
+    }
+}
+@media all and (max-width: 500px) {
+    .landing-bg {
+        background-position: 50%;
+    }
+}
+
+
+.center-row {
+    width: 80%;
+    margin-left: 12.5%;
+    margin-top: 12.5%;
+}
+
+.center-row-login {
+    width: 80%;
+    margin-left: 12.5%;
+    margin-top: 5%;
+}
+
+
+
+.b-overlay {
+    position: relative;
+}
+
+.a-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+}
+
+.small-logo {
+    height: 100px;  
+}
+
+.small-logo-text {
+    height: 50px;
+}
+
+.load-from-right {
+    animation: load-from-right .5s linear;
+}
+
+@keyframes load-from-right {
+    from {
+        transform: translateX(1%);
+        opacity: 0;
+    } to {
+        opacity: 1;
+        transform: translateX(0%);
+
+    }
+}
+
+.myshadow {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+
+
+.auth-input{
+    border: none;
+    outline-color: #1da1f2;
+    outline-style: none;
+    background-color: #ebebeb;
+    height: 40px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: light;
+    transition: .3s;
+}
+
+.register-input {
+    border: none;
+    outline-color: #1da1f2;
+    outline-style: none;
+    border-bottom: solid;
+    border-width: thin;
+    border-color: rgb(151, 148, 148);
+    background-color: none;
+    height: 40px;
+    font-size: 13px;
+    font-weight: light;
+    transition: .3s;
+    text-indent: 5px;
+}
+
+.register-input .register-  select {
+    height: 500px;
+}
+
+
+.mid-section {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding-left: 5vw;
+    padding-right: 5vw;
+}
+
+@media all and (max-width: 900px) {
+    .mid-section {
+        justify-content: center;
+    }
+    
+}
+
+.register-input-icon {
+    position: relative;
+}
+
+.register-input-div input{
+    text-indent: 35px;
+    transition: .3s;
+    color: rgb(43, 42, 42);
+}
+
+.register-input-div i{
+    position: absolute ;
+    font-size: 20px;
+    color:#757575;
+    padding: 87px 10px;
+    transition: .15s linear;
+}
+
+.register-input-icon input:focus {
+    transform: scale(1.05);
+}
+
+.register-input-icon input:not(:placeholder-shown) {
+    border-color: #127bbd;
+}
+
+.input-icon {
+    position: relative;
+}
+
+.text-indent {
+    text-indent: 35px;
+    color:#757575;
+    
+}
+
+.input-icon i {
+    position:absolute;
+    font-size: 20px;
+    color:#757575;
+    padding: 7px 12px;
+    transition: .3s linear, transform .2s;
+}
+
+
+
+.input-icon input[type=text], .input-icon input[type=password], .input-icon select{
+    text-indent: 35px;
+    transition: .3s linear;
+    color: rgb(43, 42, 42);
+}
+
+
+
+.input-icon input[type=text]:focus + i, .input-icon input[type=password]:focus + i, .input-icon select:focus + i{
+    color: #1da1f2;
+    padding: 7px 3px;
+    
+}
+
+.input-icon input[type=text]:focus, .input-icon input[type=password]:focus, .input-icon select:focus {
+    transform: scale(1.05);
+}
+
+.btn-fp-blue {
+    background-color: #1da1f2;
+    color: white;
+    transition: .5s;
+}
+
+.btn-fp-blue:hover {
+    color: white;
+    background-color: #1da1f2;
+    transform: scale(1.1);
+}
+
+.btn.btn-fp-blue:active {
+    background-color: #1da1f2;
+    transform: scale(1);
+}
+ 
+.btn-link {
+    color: #1da1f2;
+    text-decoration: none;
+    font-size: 13px;
+    transition: .3s;
+}
+
+.btn-link:visited {
+    color: #1da1f2;
+}
+
+.btn-link:hover {
+    color: #127bbd;
+}
+
+.register-section {
+    height: 100vh;
+    width: 50vw;
+    background-color: white;
+    margin-left: 5vw;
+    overflow-y: scroll;
+}
+
+@media all and  (max-width: 1000px ){
+    .register-section{
+        width: 60vw;
+    }
+    
+}
+
+@media all and  (max-width: 760px ){
+    .register-section{
+        width: 80vw;
+    }
+    
+}
+
+@media all and  (max-width: 600px ){
+    .register-section{
+        width: 100vw;
+    }
+    
+}
+
+.fp-blue {
+    color:#1da1f2;
+}

@@ -176,22 +176,26 @@ html {
     font-size: 20px;
     color:#757575;
     padding: 7px 12px;
-    transition: .15s linear;
+    transition: .3s linear, transform .2s;
 }
 
-.input-icon input[type=text], .input-icon input[type=password]{
+
+
+.input-icon input[type=text], .input-icon input[type=password], .input-icon select{
     text-indent: 35px;
-    transition: .3s;
+    transition: .3s linear;
     color: rgb(43, 42, 42);
 }
 
-.input-icon input[type=text]:focus + i, .input-icon input[type=password]:focus + i {
+
+
+.input-icon input[type=text]:focus + i, .input-icon input[type=password]:focus + i, .input-icon select:focus + i{
     color: #1da1f2;
-    transform: scale(1.2);
-    padding: 7px 8px;
+    padding: 7px 3px;
+    
 }
 
-.input-icon input[type=text]:focus, .input-icon input[type=password]:focus {
+.input-icon input[type=text]:focus, .input-icon input[type=password]:focus, .input-icon select:focus {
     transform: scale(1.05);
 }
 

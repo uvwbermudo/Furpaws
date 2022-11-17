@@ -15,37 +15,62 @@
         </div>
         <form id="register">
           <div class="pt-4 d-flex flex-column position-relative register-input-div">
+
             <h3 class="fp-blue">Account Info</h3>
-            {{ form.email.label(class="mt-3 text-muted") }}
-            {{ form.email(class="register-input", placeholder="Email") }}
-            <i class="bi-envelope"></i>
-            {{ form.tag.label(class="mt-3 text-muted") }}
-            {{ form.tag(class="register-input", placeholder="Tag") }}
-            <i class="bi-at "></i>
-
-            {{ form.account_type.label(class="mt-3 text-muted")}}
-            {{ form.account_type(class="register-input text-indent") }}
-            {{ form.password.label(class="mt-3 text-muted") }}
-            {{ form.password(class="register-input" , placeholder="Password") }}
-            {{ form.password2.label(class="mt-3 text-muted") }}
-            {{ form.password2(class="register-input", placeholder="Confirm Password") }}
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="email" class="auth-input m-0 p-2" type="text" placeholder="E-mail">
+              <i class="bi-envelope"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="tag" class="auth-input m-0 p-2" type="text" placeholder="Tag">
+              <i class="bi-at"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <select name="account_type" class="auth-input m-0 p-2" type="text" placeholder="Tag">
+                <option class="text-muted" value="" disabled selected hidden>Select Account Type</option>
+                <option value="pet_owner">Pet Owner</option>
+                <option value="freelancer">Freelancer</option>
+              </select>
+              <i class="bi-person-gear"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch  pb-3">
+              <input name="password" class="auth-input m-0 p-2" type="password" placeholder="Password">
+              <i class="bi-shield-lock"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch  pb-3">
+              <input name="password2" class="auth-input m-0 p-2" type="password" placeholder="Confirm Password">
+              <i class="bi-shield-lock"></i>
+            </div>
             <br/>
+
             <h3 class="fp-blue">Personal Info</h3>
-
-            {{ form.last_name.label(class="mt-3 text-muted", placeholder="Last Name") }}
-            {{ form.last_name(class="register-input") }}
-            {{ form.first_name.label(class="mt-3 text-muted") }}
-            {{ form.first_name(class="register-input", placeholder="First Name") }}
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="last_name" class="auth-input m-0 p-2" type="text" placeholder="Last Name">
+              <i class="bi-person"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="first_name" class="auth-input m-0 p-2" type="text" placeholder="First Name">
+              <i class="bi-person"></i>
+            </div>
             <br/>
+
             <h3 class="fp-blue">Address</h3>
-            {{ form.city.label(class="mt-3 text-muted") }}
-            {{ form.city(class="register-input", placeholder="City") }}
-            {{ form.state.label(class="mt-3 text-muted") }}
-            {{ form.state(class="register-input", placeholder="State") }}
-            {{ form.zipcode.label(class="mt-3 text-muted") }}
-            {{ form.zipcode(class="register-input", placeholder="Zip Code") }}
-            {{ form.country.label(class="mt-3 text-muted") }}
-            {{ form.country(class="register-input", placeholder="Country") }}
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="city" class="auth-input m-0 p-2" type="text" placeholder="City">
+              <i class="bi-geo"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="state" class="auth-input m-0 p-2" type="text" placeholder="State">
+              <i class="bi-pin-map"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="zipcode" class="auth-input m-0 p-2" type="text" placeholder="Zip">
+              <i class="bi-geo-alt"></i>
+            </div>
+            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
+              <input name="country" class="auth-input m-0 p-2" type="text" placeholder="Country">
+              <i class="bi-map"></i>
+            </div>
             <br/>
             <br/>
             <div class="d-flex flex-row align-items-center mt-2">

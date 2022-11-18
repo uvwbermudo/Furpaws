@@ -9,6 +9,7 @@ from flaskr.models import Users
 from flaskr import db
 from flaskr import get_error_items, get_form_fields
 from sqlalchemy import exc
+from werkzeug.security import generate_password_hash, check_password_hash
 
 @auth.route('/')
 def index():
@@ -60,7 +61,7 @@ def verify_register():
             new_user = Users(
                 email = email,
                 tag = tag,
-                password = password,
+                password = generate_password_hash(password, method='sha256'),
                 account_type = account_type,
                 last_name = last_name,
                 first_name = first_name,

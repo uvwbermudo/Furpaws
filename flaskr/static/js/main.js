@@ -47,12 +47,20 @@ function register_user(){
                 return response.json()  
             }
         }).then(function(response){
+            var scrolled = false;
             response[1].forEach(function(field){
                 form_field = $('#'+field);
                 form_icon = form_field.next()
                 form_span = form_field.next().next();
                 form_span.html('');
                 if (field in response[0]){
+                    if (!scrolled){
+                        $('.register-section').animate({
+                            scrollTop: $("#"+field).offset().top
+                        }); 
+                        scrolled = true;
+                    }
+                    
                     form_span.html(`<span class="ms-auto float-end text-danger fade-in bounce"  style="font-size: 14px;">${response[0][field][0]} <i class="bi-exclamation-circle-fill"></i> </span>
                     `);
                     form_icon.css({

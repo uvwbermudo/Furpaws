@@ -17,65 +17,76 @@
           <div class="pt-4 d-flex flex-column position-relative register-input-div">
 
             <h3 class="fp-blue">Account Info</h3>
-            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
-              <input name="email" class="auth-input m-0 p-2" type="text" placeholder="E-mail">
+            <div class="input-icon d-flex flex-column form-group pb-1">
+              <input id="email" name="email" class="auth-input m-0 p-2 form-control" type="text" placeholder="E-mail">
               <i class="bi-envelope"></i>
+              <span style="height: 16px;"></span>
             </div>
-            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
-              <input name="tag" class="auth-input m-0 p-2" type="text" placeholder="Tag">
+            <div class="input-icon d-flex flex-column pb-1">
+              <input name="tag"  id="tag" class="auth-input m-0 p-2 form-control form-contro" type="text" placeholder="Tag">
               <i class="bi-at"></i>
+              <span style="height: 16px;"></span>
             </div>
-            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
-              <select name="account_type" class="auth-input m-0 p-2" type="text" placeholder="Tag">
+            <div class="input-icon d-flex flex-column pb-1">
+              <select name="account_type" id="account_type" class="auth-input m-0 p-2 form-control" type="text" placeholder="Tag">
                 <option class="text-muted" value="" disabled selected hidden>Select Account Type</option>
                 <option value="pet_owner">Pet Owner</option>
                 <option value="freelancer">Freelancer</option>
               </select>
               <i class="bi-person-gear"></i>
+              <span style="height: 16px;"></span>
             </div>
-            <div class="input-icon d-flex flex-column align-items-stretch  pb-3">
-              <input name="password" class="auth-input m-0 p-2" type="password" placeholder="Password">
+            <div class="input-icon d-flex flex-column  pb-1">
+              <input name="password" id="password" class="auth-input m-0 p-2 form-control" type="password" placeholder="Password">
               <i class="bi-shield-lock"></i>
+              <span style="height: 16px;"></span>
             </div>
-            <div class="input-icon d-flex flex-column align-items-stretch  pb-3">
-              <input name="password2" class="auth-input m-0 p-2" type="password" placeholder="Confirm Password">
+            <div class="input-icon d-flex flex-column  pb-1">
+              <input name="password2" id="password2" class="auth-input m-0 p-2 form-control" type="password" placeholder="Confirm Password">
               <i class="bi-shield-lock"></i>
+              <span style="height: 16px;"></span>
             </div>
             <br/>
 
             <h3 class="fp-blue">Personal Info</h3>
-            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
-              <input name="last_name" class="auth-input m-0 p-2" type="text" placeholder="Last Name">
+            <div class="input-icon d-flex flex-column pb-1">
+              <input name="last_name" id="last_name" class="auth-input m-0 p-2 form-control" type="text" placeholder="Last Name">
               <i class="bi-person"></i>
+              <span style="height: 16px;"></span>
             </div>
-            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
-              <input name="first_name" class="auth-input m-0 p-2" type="text" placeholder="First Name">
+            <div class="input-icon d-flex flex-column pb-1">
+              <input name="first_name" id="first_name" class="auth-input m-0 p-2 form-control" type="text" placeholder="First Name">
               <i class="bi-person"></i>
+              <span style="height: 16px;"></span>
             </div>
             <br/>
 
             <h3 class="fp-blue">Address</h3>
-            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
-              <input name="city" class="auth-input m-0 p-2" type="text" placeholder="City">
+            <div class="input-icon d-flex flex-column pb-1">
+              <input name="city" id="city" class="auth-input m-0 p-2 form-control" type="text" placeholder="City">
               <i class="bi-geo"></i>
+              <span style="height: 16px;"></span>
             </div>
-            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
-              <input name="state" class="auth-input m-0 p-2" type="text" placeholder="State">
+            <div class="input-icon d-flex flex-column pb-1">
+              <input name="state" id="state" class="auth-input m-0 p-2 form-control" type="text" placeholder="State">
               <i class="bi-pin-map"></i>
+              <span style="height: 16px;"></span>
             </div>
-            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
-              <input name="zipcode" class="auth-input m-0 p-2" type="text" placeholder="Zip">
+            <div class="input-icon d-flex flex-column pb-1">
+              <input name="zipcode" id="zipcode" class="auth-input m-0 p-2 form-control" type="text" placeholder="Zip">
               <i class="bi-geo-alt"></i>
+              <span style="height: 16px;"></span>
             </div>
-            <div class="input-icon d-flex flex-column align-items-stretch pb-3">
-              <input name="country" class="auth-input m-0 p-2" type="text" placeholder="Country">
+            <div class="input-icon d-flex flex-column pb-1">
+              <input name="country" id="country" class="auth-input m-0 p-2 form-control" type="text" placeholder="Country">
               <i class="bi-map"></i>
+              <span style="height: 16px;"></span>
             </div>
             <br/>
             <br/>
             <div class="d-flex flex-row align-items-center mt-2">
-              <button class="btn btn-fp-blue btn-lg rounded-5 me-2"> Register</button>
-              <a href="/login" class="btn-link ms-auto" style="font-size: 16px;">already have an account?</a>
+              <button type="button" class="btn btn-fp-blue btn-lg rounded-5 me-2" onclick="register_user()"> Register</button>
+              <a href="/login" class="btn-link ms-auto" style="font-size: 16px;" >already have an account?</a>
             </div>
             <br/>
             <br/>

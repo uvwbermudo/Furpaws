@@ -81,6 +81,29 @@ html {
     }
 }
 
+.fade-in{
+    animation: fade-in .4s linear;
+}
+
+@keyframes fade-in {
+    from{
+        opacity: 0;
+    } to {
+        opacity: 1;
+    }
+    
+}
+
+.bounce {
+    animation: bounce .8s linear;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 
+   40% {transform: translateY(-8px);} 
+   60% {transform: translateY(-4px);} 
+}
+
 .myshadow {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -135,6 +158,13 @@ html {
     
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+}
+input[data-autocompleted] {
+    background-color: transparent !important;
+}
 .register-input-icon {
     position: relative;
 }
@@ -145,7 +175,7 @@ html {
     color: rgb(43, 42, 42);
 }
 
-.register-input-div i{
+.register-input-div input + i, .register-input-div select + i{
     position: absolute ;
     font-size: 20px;
     color:#757575;
@@ -161,6 +191,7 @@ html {
     border-color: #127bbd;
 }
 
+
 .input-icon {
     position: relative;
 }
@@ -171,7 +202,7 @@ html {
     
 }
 
-.input-icon i {
+.input-icon input + i, .input-icon select + i  {
     position:absolute;
     font-size: 20px;
     color:#757575;
@@ -187,6 +218,14 @@ html {
     color: rgb(43, 42, 42);
 }
 
+.is-valid:focus{
+    outline-color: none;
+    box-shadow: none;
+    text-shadow: none;
+    outline-offset: 0;
+    outline-style: none;
+}
+
 
 
 .input-icon input[type=text]:focus + i, .input-icon input[type=password]:focus + i, .input-icon select:focus + i{
@@ -194,6 +233,7 @@ html {
     padding: 7px 3px;
     
 }
+
 
 .input-icon input[type=text]:focus, .input-icon input[type=password]:focus, .input-icon select:focus {
     transform: scale(1.05);
@@ -263,3 +303,4 @@ html {
 .fp-blue {
     color:#1da1f2;
 }
+

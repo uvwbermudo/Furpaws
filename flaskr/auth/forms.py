@@ -30,7 +30,7 @@ class RegisterForm(FlaskForm):
     tag = StringField(
         'User Tag',
         validators=[
-            Length(min=10, max=50),
+            Length(min=5, max=50),
             DataRequired()
         ]
 
@@ -39,17 +39,17 @@ class RegisterForm(FlaskForm):
         'Password', 
         validators=[
             DataRequired(), 
-            EqualTo('password2', message='Passwords must match')
+            EqualTo('password2', message='Passwords must match.')
             ]
         )
     password2 = PasswordField(
         'Confirm Password', 
         validators=[
             DataRequired(),
-            EqualTo('password', message='Passwords must match')
+            EqualTo('password', message='Passwords must match.')
             ]
         )
-    account_type = SelectField('Account Type', choices = ['Pet Owner','Freelancer'])
+    account_type = SelectField('Account Type', choices = ['pet_owner','freelancer'])
 
     first_name = StringField(
         'First Name',

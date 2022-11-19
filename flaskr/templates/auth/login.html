@@ -4,8 +4,7 @@ FurPaws - Login
 {% endblock %}
 
 {% block body_content %}
-
-<div class="mid-section text-white d-flex flex-row load-from-right">
+<div class="mid-section text-white d-flex flex-row load-from-right position-relative">
   <div class="d-flex flex-column bg-white px-5 pb-5 myshadow rounded-1">
     <form action="" id="login">
       <div class="d-flex flex-column">
@@ -17,21 +16,29 @@ FurPaws - Login
         </div>
       </div>
       <div class="d-flex flex-column justify-content-center pt-5">
-        <div class="input-icon d-flex flex-column align-items-stretch pb-3">
-          <input name="username" class="auth-input m-0 p-2" type="text" placeholder="E-mail/Tag">
+        <div class="input-icon d-flex flex-column align-items-stretch pb-1">
+          <input name="username" id="username" class="form-control auth-input m-0 p-2" type="text" placeholder="E-mail/Tag">
           <i class="bi-person"></i>
+          <span style="height: 16px;"></span>
         </div>
-        <div class="input-icon d-flex flex-column align-items-stretch pt-3 pb-3">
-          <input name="user_password" class="auth-input m-0 p-2" type="password" placeholder="Password">
+        <div class="input-icon d-flex flex-column align-items-stretch pt-3 pb-1">
+          <input name="user_password" id="user_password"class="form-control auth-input m-0 p-2" type="password" placeholder="Password">
           <i class="bi-shield-lock"></i>
+          <span style="height: 16px;"></span>
         </div>
       </div>
       <div class="d-flex flex-row align-items-center mt-2">
-        <button class="btn btn-fp-blue btn-small rounded-5 me-2"> Log in </button>
+        <button type="button" onclick="login_user()"class="btn btn-fp-blue btn-small rounded-5 me-2"> Log in </button>
         <a href="/register" class="btn-link">Don't have an account?</a>
       </div>
     </form>
   </div>
 </div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
 
 {% endblock %}

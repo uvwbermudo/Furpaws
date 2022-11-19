@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import create_database, database_exists
 import pymysql
 from flask_wtf.csrf import CSRFProtect
+from flask_login import LoginManager
 
 
 db_url = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}" 
@@ -30,6 +31,14 @@ def create_app():
         db.create_all()
 
 
+    login_manager=LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
+    login_manager.login_message = None
+
+    @login_manager.user_loader
+    def load_user(id):
+        return Users.query.get(id)
 
     return app
 

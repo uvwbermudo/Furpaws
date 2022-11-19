@@ -3,20 +3,40 @@ from wtforms import StringField, PasswordField, validators, SubmitField, SelectF
 from wtforms.validators import Length, DataRequired, Email, EqualTo, Regexp
 
 
-class LoginForm(FlaskForm):
-    username = StringField(
-        'User Name', 
+class EmailLogin(FlaskForm):
+    email = StringField(
+        'Email Address', 
         validators=[
-            Length(min=10, max=50),
+            Length(min=10, max=50), 
+            Email(message='Invalid Email'),
             DataRequired()
             ],
         )
-    user_password = PasswordField(
+    password = PasswordField(
         'Password', 
         validators=[
             DataRequired(message='Please enter a password')
             ],
         )
+
+class TagLogin(FlaskForm):
+    tag = StringField(
+        'User Tag',
+        validators=[
+            Length(min=5, max=50),
+            DataRequired(),
+            Regexp(
+                '\A[a-zA-Z0-9_-]+\Z', message="Only '-' and '_' symbols are allowed."
+            )
+        ]
+        )
+    password = PasswordField(
+        'Password', 
+        validators=[
+            DataRequired(message='Please enter a password')
+            ],
+        )
+
 
 class RegisterForm(FlaskForm):
     email = StringField(
@@ -31,7 +51,10 @@ class RegisterForm(FlaskForm):
         'User Tag',
         validators=[
             Length(min=5, max=50),
-            DataRequired()
+            DataRequired(),
+            Regexp(
+                '\A[a-zA-Z0-9._-]+\Z', message="Only '-', '.', and '-' symbols are allowed."
+            )
         ]
 
         )

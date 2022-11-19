@@ -48,7 +48,7 @@ class RegisterForm(FlaskForm):
     tag = StringField(
         'User Tag',
         validators=[
-            Length(min=5, max=50),
+            Length(min=5, max=30),
             DataRequired(),
             Regexp(
                 '\A[a-zA-Z0-9._-]+\Z', message="Only symbols: ' - _  . ' are allowed."
@@ -130,7 +130,6 @@ class RegisterForm(FlaskForm):
     country = StringField(
         'Country', 
         validators=[
-            Length(min=1, max=12),
             DataRequired(message='This field is required'), 
             Regexp(
                 '\A\w+( \w+)*\Z', 

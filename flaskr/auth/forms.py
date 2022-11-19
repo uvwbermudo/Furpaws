@@ -7,7 +7,6 @@ class EmailLogin(FlaskForm):
     email = StringField(
         'Email Address', 
         validators=[
-            Length(min=10, max=50), 
             Email(message='Invalid Email'),
             DataRequired()
             ],
@@ -23,10 +22,9 @@ class TagLogin(FlaskForm):
     tag = StringField(
         'User Tag',
         validators=[
-            Length(min=5, max=50),
             DataRequired(),
             Regexp(
-                '\A[a-zA-Z0-9_-]+\Z', message="Only '-' and '_' symbols are allowed."
+                '\A[a-zA-Z0-9_-]+\Z', message="Invalid Tag."
             )
         ]
         )
@@ -53,7 +51,7 @@ class RegisterForm(FlaskForm):
             Length(min=5, max=50),
             DataRequired(),
             Regexp(
-                '\A[a-zA-Z0-9._-]+\Z', message="Only '-', '.', and '-' symbols are allowed."
+                '\A[a-zA-Z0-9._-]+\Z', message="Only symbols: ' - _  . ' are allowed."
             )
         ]
 

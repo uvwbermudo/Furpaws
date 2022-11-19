@@ -3,20 +3,38 @@ from wtforms import StringField, PasswordField, validators, SubmitField, SelectF
 from wtforms.validators import Length, DataRequired, Email, EqualTo, Regexp
 
 
-class LoginForm(FlaskForm):
-    username = StringField(
-        'User Name', 
+class EmailLogin(FlaskForm):
+    email = StringField(
+        'Email Address', 
         validators=[
-            Length(min=10, max=50),
+            Email(message='Invalid Email'),
             DataRequired()
             ],
         )
-    user_password = PasswordField(
+    password = PasswordField(
         'Password', 
         validators=[
             DataRequired(message='Please enter a password')
             ],
         )
+
+class TagLogin(FlaskForm):
+    tag = StringField(
+        'User Tag',
+        validators=[
+            DataRequired(),
+            Regexp(
+                '\A[a-zA-Z0-9_-]+\Z', message="Invalid Tag."
+            )
+        ]
+        )
+    password = PasswordField(
+        'Password', 
+        validators=[
+            DataRequired(message='Please enter a password')
+            ],
+        )
+
 
 class RegisterForm(FlaskForm):
     email = StringField(
@@ -30,8 +48,11 @@ class RegisterForm(FlaskForm):
     tag = StringField(
         'User Tag',
         validators=[
-            Length(min=5, max=50),
-            DataRequired()
+            Length(min=5, max=30),
+            DataRequired(),
+            Regexp(
+                '\A[a-zA-Z0-9._-]+\Z', message="Only symbols: ' - _  . ' are allowed."
+            )
         ]
 
         )
@@ -109,7 +130,6 @@ class RegisterForm(FlaskForm):
     country = StringField(
         'Country', 
         validators=[
-            Length(min=1, max=12),
             DataRequired(message='This field is required'), 
             Regexp(
                 '\A\w+( \w+)*\Z', 

@@ -1,12 +1,31 @@
 {% extends 'auth/base.html' %} 
-
+{%block bg%}
+{%endblock%}
 {% block title %}
 FurPaws - Index
 {% endblock %}
 
 {% block body_content %}
-<div class="mid-section text-white d-flex flex-row load-from-right">
-  <div class="text-light d-flex flex-column " style="max-width: 600px">
+<nav class="navbar navbar-expand-lg  fixed-top pe-5 navbar-dark bg-fp-blue">
+        <a href="#" style="text-decoration: none;">
+          <img src="../../static/img/fp_logo_trans.png" loading="lazy" class="ps-5 m-0" alt="furpaws_logo" srcset="" style="height: 60px;">
+          <img src="../../static/img/furpaws_trans.png" loading="lazy" class="m-0" alt="furpaws_logo" srcset="" style="height: 30px;">
+        </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end bg-fp-blue m-0 " id="navmenu">
+          <div class="navbar-nav ms-auto ">
+              <a href="#login/signup" class="nav-item nav-link text-light fw-medium" >Login/Sign-Up</a>
+              <a href="#about" class="nav-item nav-link text-light fw-medium">About</a>
+              <a href="#freelancers" class="nav-item nav-link text-light fw-medium">Freelancers</a>
+              <a href="" class="nav-item nav-link"></a>
+          </div>
+      </div>
+</nav>
+
+<div class="landing-mid-section text-white d-flex flex-row" id="login/signup">
+  <div class="text-light d-flex flex-column load-from-right " style="max-width: 600px">
     <div class="d-flex align-items-center align-self-end mb-3" style="height: 50px;">
         <img src="../../static/img/fp_logo_trans.png" loading="lazy" class="small-logo m-0" alt="furpaws_logo" srcset="">
         <img src="../../static/img/furpaws_trans.png" loading="lazy" class="small-logo-text m-0" alt="furpaws_logo" srcset="">
@@ -17,7 +36,54 @@ FurPaws - Index
       <a href="/login" class="text-wrap btn btn-outline-light btn-lg rounded-5 ms-2" style="width: 150px;"> Log in </a>
       <a href="/register" class="text-wrap btn btn-outline-light btn-lg rounded-5 ms-2" style="width: 150px;"> Sign Up </a>
     </div>
-    
   </div>
 </div>
+
+<section id="about" class="py-3" >
+  <div class="container py-5">
+    <div class="row align-items-center justify-content-between py-5">
+        <div class="col-md h-100 p-0 w-100">
+            <img src="../../static/img/landingimg2.png" class="m-0 w-100" alt="">
+        </div>
+        <div class="col-md">
+            <h2>Connect with pet lovers.</h2>
+            <p class="lead">Share your precious moments with your companion, interact with other pet lovers.</p>
+            <p>FurPaws is a safe environment for pet lovers. It is a platform focused on getting pet lovers together, with the goal of creating a community of pet lovers where you can get help, share experiences and make new friends, creating a better world for animals.</p>
+            <br/>
+            <p>Join our community today! <a href="/register" class="btn-link lead">Click here.</a></p>
+        </div>
+    </div>
+</div>
+</section>
+
+<section id="freelancers" class=" bg-fp-blue text-light text-sm-start" >
+  <div class="container pt-5">
+    <div class="row align-items-center justify-content-between pt-2">
+      <div class="col-md">
+        <h2>Hire pet care Freelancers.</h2>
+        <p class="lead">To help you care for your pets. Providing services such walking your pet, pet sitting and more!</p>
+        <p>FurPaws allows you to hire freelancers to help you with your pet's needs through job postings, or you can become a pet care freelancer yourself! Sign up as a freelancer and start earning!</p>
+        <p>Join our community today! <a href="/register" class="btn-link text-light lead">Click here.</a></p>
+      </div>
+      <div class="col-md h-100 p-0 w-100">
+          <img src="../../static/img/landingimg.png" class="m-0 w-100" alt="">
+      </div>
+    </div>
+</div>
+</section>
+
+<footer class="p-2 bg-white fp-text-blue text-center position-relative">
+  <a href="#" class="text-decoration-none fp-text-blue  ">
+  <div class="container d-flex flex-row align-items-center justify-content-center">
+      <p class="lead pt-3 " style="font-size: 30px;">&copy;</p>
+      <img src="../../static/img/fp-logo-round-white.png" loading="lazy" class="m-0" alt="furpaws_logo" srcset="" style="height: 60px;">
+      <img src="../../static/img/fp-logo-text-white.png" loading="lazy" class="m-0" 
+      alt="furpaws_logo" srcset="" style="height: 30px;">
+    </div>
+  </a>
+</footer>
+
+
+
+
 {% endblock %}

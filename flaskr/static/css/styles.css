@@ -1,5 +1,6 @@
-html {
+html, body {
     height: 100%;
+    width: 100%;
 }
 * {
     font-family: 'Readex Pro', sans-serif;
@@ -81,6 +82,18 @@ html {
     }
 }
 
+.load-from-bottom {
+    animation: load-from-bottom .5s linear;
+}
+@keyframes load-from-bottom {
+    from {
+        transform: translateY(15%);
+    } to {
+        transform: translateY(0%);
+
+    }
+}
+
 .fade-in{
     animation: fade-in .4s linear;
 }
@@ -150,6 +163,21 @@ html {
     padding-left: 5vw;
     padding-right: 5vw;
 }
+
+.landing-mid-section {
+    background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0), rgba(228, 224, 224, 0.24), rgba(32, 32, 32, 0.479), rgba(0, 0, 0, 0.404), rgba(0,0,0,1)), 
+    url('../img/landing_bg.jpg');
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding-left: 5vw;
+    padding-right: 5vw;
+}
+
 
 @media all and (max-width: 900px) {
     .mid-section {
@@ -239,6 +267,10 @@ input[data-autocompleted] {
     transform: scale(1.05);
 }
 
+.fp-text-blue {
+    color: #1da1f2;
+}
+
 .btn-fp-blue {
     background-color: #1da1f2;
     color: white;
@@ -254,6 +286,9 @@ input[data-autocompleted] {
 .btn.btn-fp-blue:active {
     background-color: #1da1f2;
     transform: scale(1);
+}
+.bg-fp-blue {
+    background-color: #1da1f2;
 }
  
 .btn-link {
@@ -303,4 +338,22 @@ input[data-autocompleted] {
 .fp-blue {
     color:#1da1f2;
 }
+
+.bottom-left-toast {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.toast-logo {
+    height: 40px;
+    padding: 0;
+    margin: 0;
+}
+.toast-text-logo {
+    height: 20px;
+    padding: 0;
+    margin: 0;
+}
+
 

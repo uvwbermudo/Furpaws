@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from flask_login import current_user, login_user, login_required, logout_user
 from . import auth
 import wtforms_json
-from .forms import LoginForm, RegisterForm
+from .forms import RegisterForm, EmailLogin, TagLogin
 import json
 wtforms_json.init()
 from flaskr.models import Users
@@ -18,8 +18,10 @@ def index():
 
 @auth.route('/login')
 def login():
-    form = LoginForm()
-    return render_template('auth/login.html', form=form)
+    if current_user.is_authenticated:
+        flash('Please log in.', category='warning')
+        return redirect('/home')
+    return render_template('auth/login.html')
 
 @auth.route('/register')
 def register():
@@ -34,7 +36,6 @@ def verify_register():
     email = request.json['email']
     tag = request.json['tag']
     password = request.json['password']
-    password2 = request.json['password2']
     account_type = request.json['account_type']
     last_name = request.json['last_name']
     first_name = request.json['first_name']
@@ -72,7 +73,7 @@ def verify_register():
                 )
             db.session.add(new_user)
             db.session.commit()
-
+            flash(f'Successfully registered! you may log in.', category='success')
             return Response(json.dumps(['SUCCESS']), status=200)
         else:
             errors = get_error_items(form)
@@ -82,6 +83,55 @@ def verify_register():
                 if check_email:
                     errors['email'] = ['Email is already being used.']
         return Response(json.dumps([errors, form_fields]), status=422)
+
+
+@auth.route('/verify-login', methods=['POST'])
+def verify_login():
+    temp = request.get_json()
+    print(temp)
+    if 'email' in temp.keys():
+        username = request.json['email']
+        form = EmailLogin.from_json(temp)
+    else:
+        username = request.json['tag']
+        form = TagLogin.from_json(temp)
+    password = request.json['password']
+    form_fields = get_form_fields(form)
+    if '@' in username:
+        check = Users.query.filter(Users.email == username).first()
+    else:
+        check = Users.query.get(username)
+    if request.method == 'POST':
+        if form.validate():
+            if check:
+                if check_password_hash(check.password, password):
+                    login_user(check)
+                    flash(f'Logged in. Hello, {check.first_name}!', category='success')
+                    return Response(json.dumps(['SUCCESS']), status=200)
+                else:
+                    errors = get_error_items(form)
+                    errors['password'] = ['Incorrect password.']
+                    return Response(json.dumps([errors, form_fields]), status=404, mimetype='application/json')
+            else:
+                errors = get_error_items(form)
+                if '@' in username:
+                    errors['email'] = ['Email does not exist.']
+                else:
+                    errors['tag'] = ['Tag does not exist.']
+
+                return Response(json.dumps([errors, form_fields]), status=404, mimetype='application/json')
+
+        else:
+            errors = get_error_items(form)
+            return Response(json.dumps([errors, form_fields]), status=404)
         
-        
-        
+@auth.route('/home')
+@login_required
+def home_page():
+    return render_template('home/home.html')
+
+@auth.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')

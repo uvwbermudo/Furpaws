@@ -42,7 +42,8 @@ function register_user(){
         .then(response => {
             if (response.status == 200) {
                 console.log('Success')
-                window.location.replace('/login')
+                window.location.href='/login'
+                console.log(success_register)
             } else {
                 return response.json()  
             }
@@ -84,3 +85,78 @@ function register_user(){
             })
         })
 }
+
+
+
+function login_user(){
+    username = $('#login #username').val();
+    password = $('#login #user_password').val();
+    var formdata = new FormData()
+    formdata.append('password', password);
+    if (username.includes('@')){
+        formdata.append('email', username);
+    } else {
+        formdata.append('tag', username);
+    }
+
+    var form_data = {};
+    formdata.forEach((value, key) => form_data[key] = value);
+    fetch('/verify-login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf,
+            },
+        body: JSON.stringify(form_data),
+        })
+        .then(response => {
+            if (response.status == 200) {
+                console.log('Success')
+                window.location.href='/home'
+            } else {
+                return response.json()  
+            }
+        }).then(function(response){
+            console.log(response)   
+            response[1].forEach(function(field){
+                if ((field == 'tag') || (field == 'email')){
+                    form_field = $('#username');
+                    username_error = true;
+                }else if (field == 'csrf_token'){
+                    return
+                } else {
+                    form_field = $('#user_password')
+                }
+                form_icon = form_field.next()
+                form_span = form_field.next().next();
+                form_span.html('');
+                if (field in response[0]){
+                    console.log(response[0])
+                    console.log(field in response[0])
+                    form_span.html(`<span class="ms-auto float-end text-danger fade-in bounce"  style="font-size: 14px;">${response[0][field][0]} <i class="bi-exclamation-circle-fill"></i> </span>
+                    `);
+                    form_icon.css({
+                        "color": "red",
+                    })
+                    form_field.css ({
+                        
+                        'background-color': 'rgba(218, 49, 49, 0.13)',
+                    })
+                } else {
+                    if ((field =='password') && username_error){
+                        return
+                    }
+                    form_span.html(`<span class="ms-auto float-end text-success fade-in"  style="font-size: 14px;">Looks good! <i class="bi-check-circle-fill"></i> </span>
+                    `);
+                    form_icon.css({
+                        "color":"green"
+                    })
+                    form_field.css ({
+                        'background-color': 'rgba(6, 196, 69, 0.13)',
+                    })
+                }
+
+            })
+        })
+}
+

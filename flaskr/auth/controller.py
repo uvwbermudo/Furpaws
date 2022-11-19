@@ -123,6 +123,11 @@ def verify_login():
 
         else:
             errors = get_error_items(form)
+            print(errors.keys())
+            if (not check and 'tag' not in errors.keys()):
+                errors['tag'] = ['Tag does not exist.']
+            if (not check and '@' in username) and 'email' not in errors.keys():
+                errors['email'] = ['Email does not exist.']
             return Response(json.dumps([errors, form_fields]), status=404)
         
 @auth.route('/home')

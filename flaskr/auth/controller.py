@@ -74,8 +74,6 @@ def verify_register():
             db.session.add(new_user)
             db.session.commit()
             flash(f'Successfully registered! you may log in.', category='success')
-            flash(f'Successfully registered2! you may log in.', category='success')
-            flash(f'Successfully registered3! you may log in.', category='success')
             return Response(json.dumps(['SUCCESS']), status=200)
         else:
             errors = get_error_items(form)

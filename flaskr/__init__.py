@@ -22,9 +22,13 @@ def create_app():
     CSRFProtect(app)
 
     from .auth import auth
+    from .home import home
+    from .profile import profile
 
-    from .models import Users
     app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(home, url_prefix='/')
+    app.register_blueprint(profile, url_prefix='/')
+    from .models import Users
 
 
     with app.app_context():

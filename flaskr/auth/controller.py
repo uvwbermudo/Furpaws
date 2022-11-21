@@ -19,7 +19,6 @@ def index():
 @auth.route('/login')
 def login():
     if current_user.is_authenticated:
-        flash('Please log in.', category='warning')
         return redirect('/home')
     return render_template('auth/login.html')
 
@@ -130,10 +129,7 @@ def verify_login():
                 errors['email'] = ['Email does not exist.']
             return Response(json.dumps([errors, form_fields]), status=404)
         
-@auth.route('/home')
-@login_required
-def home_page():
-    return render_template('home/home.html')
+
 
 @auth.route('/logout')
 @login_required

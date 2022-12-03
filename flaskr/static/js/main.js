@@ -1,13 +1,13 @@
 const csrf = $('#csrf_token').val();
 
 
-$('document').ready(function() {
+$('document').ready(function () {
     console.log('Ready')
 })
 
 
 
-function register_user(){
+function register_user() {
     email = $('#register #email').val();
     tag = $('#register #tag').val();
     account_type = $('#register #account_type').children("option:selected").val();
@@ -24,7 +24,7 @@ function register_user(){
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': csrf,
-            },
+        },
         body: JSON.stringify({
             email: email,
             tag: tag,
@@ -37,47 +37,47 @@ function register_user(){
             state: state,
             zipcode: zipcode,
             country: country,
-            }),
-        })
+        }),
+    })
         .then(response => {
             if (response.status == 200) {
                 console.log('Success')
-                window.location.href='/login'
+                window.location.href = '/login'
                 console.log(success_register)
             } else {
-                return response.json()  
+                return response.json()
             }
-        }).then(function(response){
+        }).then(function (response) {
             var scrolled = false;
-            response[1].forEach(function(field){
-                form_field = $('#'+field);
+            response[1].forEach(function (field) {
+                form_field = $('#' + field);
                 form_icon = form_field.next()
                 form_span = form_field.next().next();
                 form_span.html('');
-                if (field in response[0]){
-                    if (!scrolled){
+                if (field in response[0]) {
+                    if (!scrolled) {
                         $('.register-section').animate({
-                            scrollTop: $("#"+field).offset().top
-                        }); 
+                            scrollTop: $("#" + field).offset().top
+                        });
                         scrolled = true;
                     }
-                    
+
                     form_span.html(`<span class="ms-auto float-end text-danger fade-in bounce"  style="font-size: 14px;">${response[0][field][0]} <i class="bi-exclamation-circle-fill"></i> </span>
                     `);
                     form_icon.css({
                         "color": "red",
                     })
-                    form_field.css ({
-                        
+                    form_field.css({
+
                         'background-color': 'rgba(218, 49, 49, 0.13)',
                     })
                 } else {
                     form_span.html(`<span class="ms-auto float-end text-success fade-in"  style="font-size: 14px;">Looks good! <i class="bi-check-circle-fill"></i> </span>
                     `);
                     form_icon.css({
-                        "color":"green"
+                        "color": "green"
                     })
-                    form_field.css ({
+                    form_field.css({
                         'background-color': 'rgba(6, 196, 69, 0.13)',
                     })
                 }
@@ -88,12 +88,12 @@ function register_user(){
 
 
 
-function login_user(){
+function login_user() {
     username = $('#login #username').val();
     password = $('#login #user_password').val();
     var formdata = new FormData()
     formdata.append('password', password);
-    if (username.includes('@')){
+    if (username.includes('@')) {
         formdata.append('email', username);
     } else {
         formdata.append('tag', username);
@@ -106,23 +106,23 @@ function login_user(){
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': csrf,
-            },
+        },
         body: JSON.stringify(form_data),
-        })
+    })
         .then(response => {
             if (response.status == 200) {
                 console.log('Success')
-                window.location.href='/home'
+                window.location.href = '/home'
             } else {
-                return response.json()  
+                return response.json()
             }
-        }).then(function(response){
-            console.log(response)   
-            response[1].forEach(function(field){
-                if ((field == 'tag') || (field == 'email')){
+        }).then(function (response) {
+            console.log(response)
+            response[1].forEach(function (field) {
+                if ((field == 'tag') || (field == 'email')) {
                     form_field = $('#username');
                     username_error = true;
-                }else if (field == 'csrf_token'){
+                } else if (field == 'csrf_token') {
                     return
                 } else {
                     form_field = $('#user_password')
@@ -130,7 +130,7 @@ function login_user(){
                 form_icon = form_field.next()
                 form_span = form_field.next().next();
                 form_span.html('');
-                if (field in response[0]){
+                if (field in response[0]) {
                     console.log(response[0])
                     console.log(field in response[0])
                     form_span.html(`<span class="ms-auto float-end text-danger fade-in bounce"  style="font-size: 14px;">${response[0][field][0]} <i class="bi-exclamation-circle-fill"></i> </span>
@@ -138,20 +138,20 @@ function login_user(){
                     form_icon.css({
                         "color": "red",
                     })
-                    form_field.css ({
-                        
+                    form_field.css({
+
                         'background-color': 'rgba(218, 49, 49, 0.13)',
                     })
                 } else {
-                    if ((field =='password') && username_error){
+                    if ((field == 'password') && username_error) {
                         return
                     }
                     form_span.html(`<span class="ms-auto float-end text-success fade-in"  style="font-size: 14px;">Looks good! <i class="bi-check-circle-fill"></i> </span>
                     `);
                     form_icon.css({
-                        "color":"green"
+                        "color": "green"
                     })
-                    form_field.css ({
+                    form_field.css({
                         'background-color': 'rgba(6, 196, 69, 0.13)',
                     })
                 }
@@ -160,3 +160,48 @@ function login_user(){
         })
 }
 
+
+// Add Post Modal
+$('#addPostModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget)
+    var recipient = button.data('whatever')
+
+    var modal = $(this)
+    modal.find('.modal-title').text('Create post')
+    modal.find('.modal-body input').val(recipient)
+})
+
+
+// Edit Post Modal
+// $('#editPostModal').on('show.bs.modal', function (event) {
+//     var button = $(event.relatedTarget)
+//     var recipient = button.data('whatever')
+
+//     var modal = $(this)
+//     modal.find('.modal-title').text('Edit post')
+//     modal.find('.modal-body input').val(recipient)
+// })
+
+// var uploadField = document.getElementById("add_videos");
+
+// uploadField.onchange = function () {
+//     if (this.files[0].size > 10097152) {
+//         alert("File is too large! \n File must not be greater than 10MB");
+//         this.value = "";
+//     };
+// };
+
+// var uploadField = document.getElementById("add_photos");
+
+// uploadField.onchange = function () {
+//     if (this.files[0].size > 2097152) {
+//         alert("File is too large! \n File must not be greater than 2MB");
+//         this.value = "";
+//     };
+// };
+
+
+// Test -- Aaron
+function openPage(pageUrl) {
+    window.open(pageUrl);
+}

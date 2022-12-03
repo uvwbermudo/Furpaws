@@ -486,6 +486,7 @@ div.content::-webkit-scrollbar {
 .main-feed {
     position: absolute;
     left: 33px;
+    width: 100%;
 
 
 }
@@ -658,7 +659,6 @@ div.content::-webkit-scrollbar {
 }
 
 .post-description{
-    top: 200px;
     font-weight: lighter;
     font-family: Arial, Helvetica, sans-serif;
     font-size: larger;
@@ -683,9 +683,6 @@ div.content::-webkit-scrollbar {
   
 }
 
-
-
-
 .post-hearts:hover{
     color: red;
 }
@@ -698,8 +695,20 @@ div.content::-webkit-scrollbar {
     color:  #1DA1F2;
 }
 
-.post-container2{
-    background-color: #FFFFFF;
-    border-color: #1DA1F2;
+.rectangle-5{
+    position: absolute;
+    width: 1200px;
+    height: 350px;
+    top: 65px;
+    background: #1DA1F2;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
 }
 
+.rectangle-6{
+    position: absolute;
+    width: 1200px;
+    height: 410px;
+    top: 75px;
+    background: #FFFFFF;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}

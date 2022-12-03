@@ -32,10 +32,11 @@ class Posts(db.Model):
     date_posted = db.Column(db.DateTime(), nullable=False,
                             default=datetime.datetime.utcnow)
 
-    photos = db.relationship('Photos', back_populates='post')
     create_post_assoc = db.relationship('CreatePost', back_populates='post')
-
     author = association_proxy('create_post_assoc', 'author')
+
+    photos = db.relationship('Photos', back_populates='post')
+    videos = db.relationship('Videos', back_populates='post')
 
 
 class CreatePost(db.Model):
@@ -58,3 +59,14 @@ class Photos(db.Model):
     photo_url = db.Column(db.String(150), nullable=True)
 
     post = db.relationship('Posts', back_populates='photos')
+
+
+class Videos(db.Model):
+    __tablename__ = 'videos'
+    video_id = db.Column(db.Integer(), primary_key=True,
+                         nullable=False, autoincrement=True)
+    parent_post = db.Column(db.Integer(), db.ForeignKey(
+        'posts.post_id', ondelete='cascade'))
+    video_url = db.Column(db.String(150), nullable=True)
+
+    post = db.relationship('Posts', back_populates='videos')

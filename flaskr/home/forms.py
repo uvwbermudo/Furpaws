@@ -10,4 +10,11 @@ class AddPostForm(FlaskForm):
     add_photos = FileField("Add Photos")
     add_videos = FileField("Add Videos")
     add_post_button = SubmitField("Add Post")
+
+
+class EditPostForm(FlaskForm):
+    post_description = TextAreaField(validators=[
+        Length(max=150), DataRequired()])
+    add_photos = FileField("Add Photos")
+    add_videos = FileField("Add Videos")
     edit_post_button = SubmitField("Save changes")

@@ -63,7 +63,7 @@
       <h2>{{ post.date_posted.strftime("%d,%b %Y").lower()}}</h2>
       <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">Delete</button>
       <button class="btn btn-primary"data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}" data-bs-whatever="@getbootstrap" type="button">Edit</button>
-      <button>Will be reviced to dropdown</button>
+      <button>Will be revised to dropdown</button>
 
 
       <!-- Delete Post Modal -->
@@ -97,12 +97,11 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form action="{{url_for('home.edit_post', post_id=post.post_id)}}" method="POST">
-              {{form.post_description(class="form-control")}}
+              <form action="/home/update/{{post.post_id}}" method="POST">
+              <textarea class="form-control" name="post_description" id="post_description" placeholder="post.post_content">{{post.post_content}}</textarea>
             </div>
             <div class="modal-footer">
-              <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-                {{form.csrf_token}}   {{form.edit_post_button(class="submit-post")}}
+                {{edit_form.csrf_token}}   {{edit_form.edit_post_button(class="submit-post")}}
             </form>
             </div>
           </div>
@@ -111,36 +110,6 @@
 
 
 
-      <!-- <div class="modal fade" id="editPostModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
-                Edit Post
-              </h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true"></span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form method='POST' action="{{url_for('home.edit_post', post_id=post.post_id)}}"
-               enctype="multipart/form-data">
-                <div class="form-group">
-                  <label for="message-text" class="col-form-label float-start">
-                    picture, {{current_user.first_name}} <br/> {{current_user.tag}}
-                  </label>
-                  {{form.post_description(class="form-control", placeholder=post.post_content)}}
-                  <textarea class="form-control" id="message-text" placeholder="How are you feeling today profilename?"></textarea> -->
-                <!-- </div>
-              </div>
-            <div class="modal-footer"> 
-              {{form.csrf_token}}{{form.edit_post_button(class="submit-post")}}
-  
-              </form>
-            </div>
-          </div>
-        </div>
-      </div> -->
 
 
       <button>Comment</button>

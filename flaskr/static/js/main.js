@@ -182,6 +182,23 @@ $('#addPostModal').on('show.bs.modal', function (event) {
 //     modal.find('.modal-body input').val(recipient)
 // })
 
+// var uploadField = document.getElementById("add_videos");
+
+// uploadField.onchange = function () {
+//     if (this.files[0].size > 10097152) {
+//         alert("File is too large! \n File must not be greater than 10MB");
+//         this.value = "";
+//     };
+// };
+
+// var uploadField = document.getElementById("add_photos");
+
+// uploadField.onchange = function () {
+//     if (this.files[0].size > 2097152) {
+//         alert("File is too large! \n File must not be greater than 2MB");
+//         this.value = "";
+//     };
+// };
 
 
 // Test -- Aaron

@@ -7,17 +7,18 @@ from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
 
 
-db_url = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}" 
+db_url = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 db = SQLAlchemy()
 
 if not database_exists(db_url):
     print('DB CREATED')
     create_database(db_url)
 
+
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY']=SECRET_KEY
-    app.config['SQLALCHEMY_DATABASE_URI']= db_url
+    app.config['SECRET_KEY'] = SECRET_KEY
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     db.init_app(app)
     CSRFProtect(app)
 
@@ -30,12 +31,10 @@ def create_app():
     app.register_blueprint(profile, url_prefix='/')
     from .models import Users
 
-
     with app.app_context():
         db.create_all()
 
-
-    login_manager=LoginManager()
+    login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
     login_manager.login_message = None
@@ -52,6 +51,7 @@ def get_error_items(form):
     for fieldName, errorMessages in form.errors.items():
         errors[fieldName] = errorMessages
     return errors
+
 
 def get_form_fields(form):
     fields = []

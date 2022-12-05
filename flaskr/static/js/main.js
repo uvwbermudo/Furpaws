@@ -182,23 +182,44 @@ $('#addPostModal').on('show.bs.modal', function (event) {
 //     modal.find('.modal-body input').val(recipient)
 // })
 
-// var uploadField = document.getElementById("add_videos");
+function videoTooLargeAlert(videoDialogTextContent, videoDialogOkButton) {
+    var videoUploadField = document.getElementById("add_videos");
+    var videoDialogBox = $("#videoAlertBox");
 
-// uploadField.onchange = function () {
-//     if (this.files[0].size > 10097152) {
-//         alert("File is too large! \n File must not be greater than 10MB");
-//         this.value = "";
-//     };
-// };
 
-// var uploadField = document.getElementById("add_photos");
+    videoUploadField.onchange = function () {
+        if (this.files[0].size > 100097152) {
+            // alert("File is too large! \n File must not be greater than 100MB");
+            videoDialogBox.find(".videoAlertMessage").text(videoDialogTextContent);
+            videoDialogBox.find(".videoAlertButton").unbind().click(function () {
+                videoDialogBox.hide();
+            });
+            videoDialogBox.find(".videoAlertButton").click(videoDialogOkButton);
+            videoDialogBox.show();
+            this.value = "";
+        };
+    };
 
-// uploadField.onchange = function () {
-//     if (this.files[0].size > 2097152) {
-//         alert("File is too large! \n File must not be greater than 2MB");
-//         this.value = "";
-//     };
-// };
+}
+
+function imageTooLargeAlert(imageDialogTextContent, imageDialogOkButton) {
+    var imageUploadField = document.getElementById("add_photos");
+    var imageDialogBox = $("#imageAlertBox");
+
+    imageUploadField.onchange = function () {
+        if (this.files[0].size > 10097152) {
+            // alert("File is too large! \n File must not be greater than 10MB");
+            imageDialogBox.find(".imageAlertMessage").text(imageDialogTextContent);
+            imageDialogBox.find(".imageAlertButton").unbind().click(function () {
+                imageDialogBox.hide();
+            });
+            imageDialogBox.find(".imageAlertButton").click(imageDialogOkButton);
+            imageDialogBox.show();
+            this.value = "";
+        };
+    };
+
+}
 
 
 // Test -- Aaron

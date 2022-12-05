@@ -66,23 +66,23 @@ def home_page():
             # Adding data to Videos table
             # upload_result = None
             if videos and videos.filename.split(".")[-1].lower() in VIDEO_EXTENSIONS:
-                try:
-                    upload_result = cloudinary.uploader.upload(
-                        videos, folder=CLOUDINARY_API_CLOUD_FOLDER, resource_type="video")
-                    add_video_data = Videos(
-                        video_url=upload_result["secure_url"], parent_post=last_post.post_id)
-                    db.session.add(add_video_data)
-                    print(upload_result)
-                except Exception as e:
-                    upload_failed = True
-                    e = str(e)
-                    if '(413)' in e:
-                        upload_failed_message = "Upload Failed!\nVideo files must not exceed 100 MB"
-                    db.session.rollback()
-            if upload_failed:
-                print(upload_failed_message)
-                flash(upload_failed_message, category='error')
-                return redirect(url_for('home.home_page'))
+                # try:
+                upload_result = cloudinary.uploader.upload(
+                    videos, folder=CLOUDINARY_API_CLOUD_FOLDER, resource_type="video")
+                add_video_data = Videos(
+                    video_url=upload_result["secure_url"], parent_post=last_post.post_id)
+                db.session.add(add_video_data)
+                print(upload_result)
+                # except Exception as e:
+                #     upload_failed = True
+                #     e = str(e)
+                #     if '(413)' in e:
+                #         upload_failed_message = "Upload Failed!\nVideo files must not exceed 100 MB"
+                #     db.session.rollback()
+            # if upload_failed:
+            #     print(upload_failed_message)
+            #     flash(upload_failed_message, category='error')
+            #     return redirect(url_for('home.home_page'))
             db.session.commit()
             form.post_description.data = ''
             flash(f'Post added successfully!!', category='success')
@@ -115,6 +115,14 @@ def delete_post(post_id):
     return redirect(url_for('home.home_page'))
 
     # return render_template('home/home.html', posts=posts, form=form)
+
+
+@home.errorhandler(413)
+def page_not_found(e):
+    # print(e)
+    # print(dir(e))
+    # return render_template(...)
+    return 'File to big: ' + str(e)
 
 
 @home.route('/home/update/<post_id>', methods=['POST'])

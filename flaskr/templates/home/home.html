@@ -43,12 +43,20 @@
             <img src="../../static/img/movie-line.png">
                 Add Videos
             </label>
-            <input type="file" name="add_photos" id="add_photos" hidden>
-            <input type="file" name="add_videos" id="add_videos" hidden>
+            <input type="file" name="add_photos" id="add_photos" accept="image/png, image/jpg, image/jpeg" onclick="imageTooLargeAlert();" hidden>
+            <input type="file" name="add_videos" id="add_videos" accept="video/mp4" onclick="videoTooLargeAlert();"hidden>
 
             {{form.csrf_token}}{{form.add_post_button(class="submit-post")}}
 
             </form>
+            <div id="videoAlertBox">
+              <div class="videoAlertMessage"><br>File is too large!<br>Video files cannot exceed 100 MB!</div><br>
+              <button class="videoAlertButton">OK</button>
+           </div>
+            <div id="imageAlertBox">
+              <div class="imageAlertMessage"><br>File is too large!<br>Image files cannot exceed 10 MB!</div><br>
+              <button class="imageAlertButton">OK</button>
+            </div>
           </div>
         </div>
       </div>
@@ -61,9 +69,10 @@
       @{{ post.author_tag }}
       {{ post.post_content}}
       <h2>{{ post.date_posted.strftime("%d,%b %Y").lower()}}</h2>
+      {% if post.author_tag == current_user.tag %}
       <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">Delete</button>
       <button class="btn btn-primary"data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}" data-bs-whatever="@getbootstrap" type="button">Edit</button>
-      <button>Will be revised to dropdown</button>
+      {% endif %}
 
 
       <!-- Delete Post Modal -->

@@ -107,7 +107,7 @@
             </div>
             <div class="modal-body">
               <form action="/home/update/{{post.post_id}}" method="POST">
-              <textarea class="form-control" name="post_description" id="post_description" placeholder="post.post_content">{{post.post_content}}</textarea>
+              <textarea class="form-control" name="post_description" id="post_description" placeholder="{{post.post_content}}" required>{{post.post_content}}</textarea>
             </div>
             <div class="modal-footer">
                 {{edit_form.csrf_token}}   {{edit_form.edit_post_button(class="submit-post")}}

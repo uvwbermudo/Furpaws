@@ -38,8 +38,9 @@ def home_page():
     # Querying main feed posts
     main_feed = Posts.query.order_by(Posts.date_posted.desc())
     if request.method == 'POST':
-        photos = request.files['add_photos']
-        videos = request.files['add_videos']
+        photos = request.files.getlist('files[]')
+        videos = request.files.getlist('add_videos')
+        print(photos)
         if form.validate_on_submit():
             # Adding data to Posts table
             print('VALID')
@@ -54,25 +55,25 @@ def home_page():
             # Adding data to Photos table
             last_post = Posts.query.filter_by(author_tag=current_user.tag).order_by(
                 Posts.date_posted.desc()).first()
-            print(photos.filename.split(".")[-1].lower())
-            upload_failed = False
-            upload_failed_message = None
-            if photos and photos.filename.split(".")[-1].lower() in PHOTO_EXTENSIONS:
-                upload_result = cloudinary.uploader.upload(
-                    photos, folder=CLOUDINARY_API_CLOUD_FOLDER)
-                add_photo_data = Photos(
-                    photo_url=upload_result["secure_url"], parent_post=last_post.post_id)
-                db.session.add(add_photo_data)
+            for every_upload in photos:
+                print(every_upload.filename.split(".")[-1].lower())
+                if every_upload and every_upload.filename.split(".")[-1].lower() in PHOTO_EXTENSIONS:
+                    upload_result = cloudinary.uploader.upload(
+                        every_upload, folder=CLOUDINARY_API_CLOUD_FOLDER)
+                    add_photo_data = Photos(
+                        photo_url=upload_result["secure_url"], parent_post=last_post.post_id)
+                    db.session.add(add_photo_data)
             # Adding data to Videos table
             # upload_result = None
-            if videos and videos.filename.split(".")[-1].lower() in VIDEO_EXTENSIONS:
-                # try:
-                upload_result = cloudinary.uploader.upload(
-                    videos, folder=CLOUDINARY_API_CLOUD_FOLDER, resource_type="video")
-                add_video_data = Videos(
-                    video_url=upload_result["secure_url"], parent_post=last_post.post_id)
-                db.session.add(add_video_data)
-                print(upload_result)
+            for every_upload in videos:
+                print(every_upload.filename.split(".")[-1].lower())
+                if every_upload and every_upload.filename.split(".")[-1].lower() in VIDEO_EXTENSIONS:
+                    # try:
+                    upload_result = cloudinary.uploader.upload(
+                        every_upload, folder=CLOUDINARY_API_CLOUD_FOLDER, resource_type="video")
+                    add_video_data = Videos(
+                        video_url=upload_result["secure_url"], parent_post=last_post.post_id)
+                    db.session.add(add_video_data)
                 # except Exception as e:
                 #     upload_failed = True
                 #     e = str(e)

@@ -43,15 +43,15 @@
             <img src="../../static/img/movie-line.png">
                 Add Videos
             </label>
-            <input type="file" name="add_photos" id="add_photos" accept="image/png, image/jpg, image/jpeg" onclick="imageTooLargeAlert();" hidden>
-            <input type="file" name="add_videos" id="add_videos" accept="video/mp4" onclick="videoTooLargeAlert();"hidden>
+            <input type="file" name="files[]" multiple="true" id="add_photos" accept="image/png, image/jpg, image/jpeg" onclick="imageTooLargeAlert();" hidden>
+            <input type="file" name="add_videos" multiple="true" id="add_videos" accept="video/mp4" onclick="videoTooLargeAlert();"hidden>
 
             {{form.csrf_token}}{{form.add_post_button(class="submit-post")}}
 
             </form>
             <div id="videoAlertBox">
               <div class="videoAlertMessage"><br>File is too large!<br>Video files cannot exceed 100 MB!</div><br>
-              <button class="videoAlertButton">OK</button>
+              <button class="videoAlertButton" onclick="hide">OK</button>
            </div>
             <div id="imageAlertBox">
               <div class="imageAlertMessage"><br>File is too large!<br>Image files cannot exceed 10 MB!</div><br>

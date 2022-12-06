@@ -138,3 +138,22 @@ def edit_post(post_id):
             flash('Post Edited Successfully!', category='success')
             return redirect(url_for('home.home_page'))
     return render_template('home/home.html', form=form)
+
+
+# @home.route('/home/delete/photo/<int:photo_id>', methods=['POST'])
+# @login_required
+# def remove_photo(photo_id):
+#     pictures = Photos.query.get_or_404(photo_id)
+#     db.session.delete(pictures)
+#     db.session.commit()
+#     return redirect(url_for('home.home_page'))
+
+
+# @home.route('/home/update/photo/<int:photo_id>', methods=['POST'])
+# @login_required
+# def replace_photo(photo_id):
+#     pictures = Photos.query.get_or_404(photo_id)
+#     if request.method == 'POST':
+#         pictures.photo_id = request.form['']
+#         db.session.commit()
+#         return redirect(url_for('home.home_page'))

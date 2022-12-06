@@ -27,8 +27,7 @@
                 <label for="message-text" class="col-form-label float-start">
                   picture, {{current_user.first_name}} <br/> {{current_user.tag}}
                 </label>
-                {{form.post_description(class="form-control")}}
-                <!-- <textarea class="form-control" id="message-text" placeholder="How are you feeling today profilename?"></textarea> -->
+                {{form.post_description(class="form-control", placeholder="How are you feeling today, "+ current_user.tag + "?")}}
               </div>
             </div>
           <div class="image-preview">
@@ -63,7 +62,6 @@
     </div>
     <div class="main-feed-posts">
     {% for post in main_feed %}
-    <!-- <div class="shadow p-3 mb-5 bg-body rounded" onclick="openPage('/logout')" style="cursor:pointer;"> -->
       <div class="shadow p-3 mb-5 bg-body rounded">
         {{post.post_id}}
       @{{ post.author_tag }}
@@ -114,14 +112,10 @@
             <div>
               <img src="{{photo.photo_url}}" height="200px" width="150px"/> {{photo.photo_id}}
               <div>
-                <!-- <form action="/home/update/photo/{{photo.photo_id}}"> -->
                 <button class="btn btn-success" style="width: 150px;">
                   Replace
                 </button>
-              <!-- </form> -->
-                <!-- <form action="/home/delete/photo/{{photo.photo_id}}" method="POST"> -->
-                  {{form.csrf_token}} <input type="submit" class="btn btn-danger" style="width: 150px;" value="Remove">
-              <!-- </form> -->
+                   <input type="submit" class="btn btn-danger" style="width: 150px;" value="Remove">
               </div>
             </div>
             {% endfor %}

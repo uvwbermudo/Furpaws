@@ -171,37 +171,6 @@ $('#addPostModal').on('show.bs.modal', function (event) {
     modal.find('.modal-body input').val(recipient)
 })
 
-
-// Edit Post Modal
-// $('#editPostModal').on('show.bs.modal', function (event) {
-//     var button = $(event.relatedTarget)
-//     var recipient = button.data('whatever')
-
-//     var modal = $(this)
-//     modal.find('.modal-title').text('Edit post')
-//     modal.find('.modal-body input').val(recipient)
-// })
-
-// function videoTooLargeAlert(videoDialogTextContent, videoDialogOkButton) {
-//     var videoUploadField = document.getElementById("add_videos");
-//     var videoDialogBox = $("#videoAlertBox");
-
-
-//     videoUploadField.onchange = function () {
-//         if (this.files[0].size > 100097152) {
-//             // alert("File is too large! \n File must not be greater than 100MB");
-//             videoDialogBox.find(".videoAlertMessage").text(videoDialogTextContent);
-//             videoDialogBox.find(".videoAlertButton").unbind().click(function () {
-//                 videoDialogBox.hide();
-//             });
-//             videoDialogBox.find(".videoAlertButton").click(videoDialogOkButton);
-//             videoDialogBox.show();
-//             this.value = "";
-//         };
-//     };
-
-// }
-
 function videoTooLargeAlert(videoDialogTextContent, videoDialogOkButton) {
     var videoUploadField = document.getElementById("add_videos");
     var videoDialogBox = $("#videoAlertBox");
@@ -252,19 +221,6 @@ function imageTooLargeAlert(imageDialogTextContent, imageDialogOkButton) {
             }
         }
     }
-
-    // imageUploadField.onchange = function () {
-    //     if (this.files[0].size > 10097152) {
-    //         // alert("File is too large! \n File must not be greater than 10MB");
-    //         imageDialogBox.find(".imageAlertMessage").text(imageDialogTextContent);
-    //         imageDialogBox.find(".imageAlertButton").unbind().click(function () {
-    //             imageDialogBox.hide();
-    //         });
-    //         imageDialogBox.find(".imageAlertButton").click(imageDialogOkButton);
-    //         imageDialogBox.show();
-    //         this.value = "";
-    //     };
-    // };
 
 }
 

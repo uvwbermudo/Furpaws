@@ -2,8 +2,8 @@ from config import CLOUDINARY_API_CLOUD, CLOUDINARY_API_CLOUD_FOLDER, CLOUDINARY
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-from flaskr.models import Posts, Users, CreatePost, Photos, Videos
-from flaskr import db
+from flaskr.models import Users, Posts, CreatePost, Photos, Videos
+from flaskr import mysql
 from .forms import AddPostForm, EditPostForm
 from flask import Blueprint, render_template, request, flash, redirect, url_for, Response, request
 from flask_login import current_user, login_user, login_required, logout_user
@@ -33,11 +33,12 @@ def home_page():
     form = AddPostForm()
     edit_form = EditPostForm()
     # Getting user info
-    get_user_info = Users.query.filter_by(
-        tag=current_user.tag).first()
+    get_user_info = Users.query_get(current_user.tag)
     # Querying main feed posts
-    main_feed = Posts.query.order_by(Posts.date_posted.desc())
-    if request.method == 'POST':
+    main_feed = Posts.query_filter(all=True,order_by='date_posted', order='DESC')
+    for post in main_feed:
+        print(post.photos)
+    if request.method == 'POST': 
         photos = request.files.getlist('files[]')
         videos = request.files.getlist('add_videos')
         print(photos)
@@ -46,15 +47,15 @@ def home_page():
             print('VALID')
             storing_variable = Posts(
                 post_content=form.post_description.data, author_tag=get_user_info.tag)
-            db.session.add(storing_variable)
-            db.session.commit()
+            storing_variable.add()
+            mysql.connection.commit()
+            last_inserted_post = Posts.last_inserted()
             # Adding data to CreatePost table
-            create_post_collection = CreatePost(post_id=storing_variable.post_id,
-                                                author_tag=storing_variable.author_tag)
-            db.session.add(create_post_collection)
+            create_post = CreatePost(post_id=last_inserted_post.post_id,
+                                    author_tag=storing_variable.author_tag)
+            create_post.add()
             # Adding data to Photos table
-            last_post = Posts.query.filter_by(author_tag=current_user.tag).order_by(
-                Posts.date_posted.desc()).first()
+            last_post = Posts.query_filter(author_tag=current_user.tag, order_by='date_posted', order='DESC')[0]
             for every_upload in photos:
                 print(every_upload.filename.split(".")[-1].lower())
                 if every_upload and every_upload.filename.split(".")[-1].lower() in PHOTO_EXTENSIONS:
@@ -62,7 +63,7 @@ def home_page():
                         every_upload, folder=CLOUDINARY_API_CLOUD_FOLDER)
                     add_photo_data = Photos(
                         photo_url=upload_result["secure_url"], parent_post=last_post.post_id)
-                    db.session.add(add_photo_data)
+                    add_photo_data.add()
             # Adding data to Videos table
             for every_upload in videos:
                 print(every_upload.filename.split(".")[-1].lower())
@@ -71,8 +72,8 @@ def home_page():
                         every_upload, folder=CLOUDINARY_API_CLOUD_FOLDER, resource_type="video")
                     add_video_data = Videos(
                         video_url=upload_result["secure_url"], parent_post=last_post.post_id)
-                    db.session.add(add_video_data)
-            db.session.commit()
+                    add_video_data.add()
+            mysql.connection.commit()
             form.post_description.data = ''
             flash(f'Post added successfully!!', category='success')
             return redirect(url_for('home.home_page'))
@@ -84,22 +85,8 @@ def home_page():
 @home.route('/home/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def delete_post(post_id):
-    posts = Posts.query.get_or_404(post_id)
-    # Related cells and rows to delete
-    # CreatePost Table
-    post_to_delete = CreatePost.query.filter(
-        CreatePost.post_id == post_id).first()
-    # Photos Table
-    related_photo = Photos.query.filter(Photos.parent_post == post_id).all()
-    for photo in related_photo:
-        db.session.delete(photo)
-    # Videos Table
-    related_video = Videos.query.filter(Videos.parent_post == post_id).all()
-    for video in related_video:
-        db.session.delete(video)
-    db.session.delete(posts)
-    db.session.delete(post_to_delete)
-    db.session.commit()
+    Posts.delete(post_id)
+    mysql.connection.commit()
     flash(f'Post deleted successfully', category='success')
     return redirect(url_for('home.home_page'))
 
@@ -108,11 +95,11 @@ def delete_post(post_id):
 @login_required
 def edit_post(post_id):
     form = EditPostForm(request.form)
-    user_post = Posts.query.get_or_404(post_id)
     if request.method == 'POST':
         if form.validate_on_submit():
-            user_post.post_content = request.form['post_description']
-            db.session.commit()
+            new_content = request.form['post_description']
+            Posts.update_post(post_id,new_content)
+            mysql.connection.commit()
             flash('Post Edited Successfully!', category='success')
             return redirect(url_for('home.home_page'))
     return render_template('home/home.html', form=form)

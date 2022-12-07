@@ -5,21 +5,22 @@ from sqlalchemy_utils import create_database, database_exists
 import pymysql
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
+from flask_mysql_connector import MySQL
+
 
 
 db_url = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
-db = SQLAlchemy()
-
-if not database_exists(db_url):
-    print('DB CREATED')
-    create_database(db_url)
-
+mysql = MySQL()
 
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = SECRET_KEY
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
-    db.init_app(app)
+    app.config['SECRET_KEY']=SECRET_KEY
+    app.config['MYSQL_HOST'] = DB_HOST
+    app.config['MYSQL_USER'] = DB_USERNAME
+    app.config['MYSQL_PASSWORD'] = DB_PASSWORD
+    app.config['MYSQL_DATABASE'] = DB_NAME
+    mysql.init_app(app)
     CSRFProtect(app)
 
     from .auth import auth
@@ -29,10 +30,9 @@ def create_app():
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(home, url_prefix='/')
     app.register_blueprint(profile, url_prefix='/')
+
     from .models import Users
 
-    with app.app_context():
-        db.create_all()
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
@@ -40,8 +40,8 @@ def create_app():
     login_manager.login_message = None
 
     @login_manager.user_loader
-    def load_user(id):
-        return Users.query.get(id)
+    def load_user(tag):
+        return Users.query_get(tag)
 
     return app
 

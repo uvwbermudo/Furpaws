@@ -1,7 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import exc
-from flaskr import get_error_items, get_form_fields
-from flaskr import db
+from flaskr import get_error_items, get_form_fields, mysql
 from flaskr.models import Users
 from flask import Blueprint, render_template, request, flash, redirect, url_for, Response
 from flask_login import current_user, login_user, login_required, logout_user
@@ -46,8 +45,8 @@ def verify_register():
     country = request.json['country']
     form_fields = get_form_fields(form)
 
-    check = Users.query.get(tag)
-    check_email = Users.query.filter(Users.email == email).first()
+    check = Users.query_get(tag)
+    check_email = Users.query_filter(email=email, exact_match=True)
 
     if request.method == 'POST':
 
@@ -72,8 +71,8 @@ def verify_register():
                 country=country,
                 state=state
             )
-            db.session.add(new_user)
-            db.session.commit()
+            new_user.add()
+            mysql.connection.commit()
             flash(f'Successfully registered! you may log in.', category='success')
             return Response(json.dumps(['SUCCESS']), status=200)
         else:
@@ -99,9 +98,9 @@ def verify_login():
     password = request.json['password']
     form_fields = get_form_fields(form)
     if '@' in username:
-        check = Users.query.filter(Users.email == username).first()
+        check = Users.query_filter(email=username)
     else:
-        check = Users.query.get(username)
+        check = Users.query_get(username)
     if request.method == 'POST':
         if form.validate():
             if check:

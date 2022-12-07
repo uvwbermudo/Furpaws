@@ -19,6 +19,7 @@ wtforms-json = "*"
 cloudinary = "*"
 flask-uploads = "*"
 sqlalchemy = "*"
+flask-mysql-connector = "*"
 
 [dev-packages]
 

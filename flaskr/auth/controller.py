@@ -46,6 +46,7 @@ def verify_register():
     form_fields = get_form_fields(form)
 
     check = Users.query_get(tag)
+    print
     check_email = Users.query_filter(email=email, exact_match=True)
 
     if request.method == 'POST':
@@ -98,7 +99,7 @@ def verify_login():
     password = request.json['password']
     form_fields = get_form_fields(form)
     if '@' in username:
-        check = Users.query_filter(email=username)
+        check = Users.query_filter(username=username)
     else:
         check = Users.query_get(username)
     if request.method == 'POST':

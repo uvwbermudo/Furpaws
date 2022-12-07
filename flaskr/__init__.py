@@ -2,7 +2,7 @@ from flask import Flask
 from config import DB_USERNAME, DB_PASSWORD, DB_NAME, DB_HOST, SECRET_KEY
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import create_database, database_exists
-import pymysql
+from flaskr.sql_init import create_db
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
 from flask_mysql_connector import MySQL
@@ -20,6 +20,7 @@ def create_app():
     app.config['MYSQL_USER'] = DB_USERNAME
     app.config['MYSQL_PASSWORD'] = DB_PASSWORD
     app.config['MYSQL_DATABASE'] = DB_NAME
+    create_db()
     mysql.init_app(app)
     CSRFProtect(app)
 

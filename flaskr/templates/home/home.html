@@ -49,28 +49,54 @@
 
             </form>
             <div id="videoAlertBox">
-              <div class="videoAlertMessage"><br>File is too large!<br>Video files cannot exceed 100 MB!</div><br>
-              <button class="videoAlertButton" onclick="hide">OK</button>
+              <div class="videoAlertMessage">
+                <br>
+                File is too large!
+                <br>
+                Video files cannot exceed 100 MB!
+              </div>
+              <br>
+              
+              <button class="videoAlertButton" onclick="hide">
+                OK
+              </button>
            </div>
             <div id="imageAlertBox">
-              <div class="imageAlertMessage"><br>File is too large!<br>Image files cannot exceed 10 MB!</div><br>
-              <button class="imageAlertButton">OK</button>
+              <div class="imageAlertMessage">
+                <br>
+                File is too large!
+                <br>
+                Image files cannot exceed 10 MB!
+              </div>
+              <br>
+
+              <button class="imageAlertButton">
+                OK
+              </button>
             </div>
+
           </div>
         </div>
       </div>
     </div>
     <div class="main-feed-posts">
-    {% for post in main_feed %}
-      <div class="shadow p-3 mb-5 bg-body rounded">
+      {% for post in main_feed %}
+        <div class="shadow p-3 mb-5 bg-body rounded">
         {{post.post_id}}
-      @{{ post.author_tag }}
-      {{ post.post_content}}
-      <h2>{{ post.date_posted.strftime("%d,%b %Y").lower()}}</h2>
-      {% if post.author_tag == current_user.tag %}
-      <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">Delete</button>
-      <button class="btn btn-primary"data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}" data-bs-whatever="@getbootstrap" type="button">Edit</button>
-      {% endif %}
+        @{{ post.author_tag }}
+        {{ post.post_content}}
+        <h2>
+          {{ post.date_posted.strftime("%d,%b %Y").lower()}}
+        </h2>
+
+        {% if post.author_tag == current_user.tag %}
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">
+            Delete
+          </button>
+          <button class="btn btn-primary"data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}" data-bs-whatever="@getbootstrap" type="button">
+            Edit
+          </button>
+        {% endif %}
 
 
       <!-- Delete Post Modal -->
@@ -78,17 +104,22 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="deleteModalLabel">Delete Post</h1>
+              <h1 class="modal-title fs-5" id="deleteModalLabel">
+                Delete Post
+              </h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               Are you sure you want to delete this post?
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Close
+              </button>
               <form action="{{url_for('home.delete_post', post_id=post.post_id)}}" method="POST">
-                {{form.csrf_token}}   <input type="submit" class="btn btn-danger" value="Delete">
-            </form>
+                {{form.csrf_token}}
+                <input type="submit" class="btn btn-danger" value="Delete">
+              </form>
             </div>
           </div>
         </div>
@@ -100,28 +131,36 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="editPostModalLabel">Edit Post</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h1 class="modal-title fs-5" id="editPostModalLabel">
+                Edit Post
+              </h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+              </button>
             </div>
             <div class="modal-body">
               <form action="/home/update/{{post.post_id}}" method="POST">
-              <textarea class="form-control" name="post_description" id="post_description" placeholder="{{post.post_content}}" required>{{post.post_content}}</textarea>
+                <textarea class="form-control" name="post_description" id="post_description" placeholder="{{post.post_content}}" required>
+                  {{post.post_content}}
+                </textarea>
             </div>
-            <h5 align="left">Image Preview:</h5>
+            <h5 align="left">
+              Image Preview:
+            </h5>
             {% for photo in post.photos %}
-            <div>
-              <img src="{{photo.photo_url}}" height="200px" width="150px"/> {{photo.photo_id}}
+              <div>
+                <img src="{{photo.photo_url}}" height="200px" width="150px"/> {{photo.photo_id}}
               <div>
                 <button class="btn btn-success" style="width: 150px;">
                   Replace
                 </button>
-                   <input type="submit" class="btn btn-danger" style="width: 150px;" value="Remove">
+                <input type="submit" class="btn btn-danger" style="width: 150px;" value="Remove">
               </div>
             </div>
             {% endfor %}
             <div class="modal-footer">    
-                {{edit_form.csrf_token}}   {{edit_form.edit_post_button(class="submit-post")}}
-            </form>
+              {{edit_form.csrf_token}}
+              {{edit_form.edit_post_button(class="submit-post")}}
+              </form>
             </div>
           </div>
         </div>
@@ -131,7 +170,9 @@
 
 
 
-      <button>Comment</button>
+      <button>
+        Comment
+      </button>
     </div>
     {% endfor %}
 

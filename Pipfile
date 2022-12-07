@@ -18,6 +18,7 @@ wtforms = {extras = ["email"], version = "*"}
 wtforms-json = "*"
 cloudinary = "*"
 flask-uploads = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 

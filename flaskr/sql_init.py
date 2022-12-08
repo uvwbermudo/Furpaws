@@ -70,6 +70,7 @@ def create_db():
         comment_id INT NOT NULL AUTO_INCREMENT,
         author_tag VARCHAR(25) NOT NULL,
         post_commented INT NOT NULL,
+        comment_content TEXT,
         date_created DATETIME NOT NULL,
         PRIMARY KEY (comment_id) ,
         CONSTRAINT `comments_ibfk_1` FOREIGN KEY(author_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,

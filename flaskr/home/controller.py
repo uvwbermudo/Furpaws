@@ -2,7 +2,7 @@ from config import CLOUDINARY_API_CLOUD, CLOUDINARY_API_CLOUD_FOLDER, CLOUDINARY
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-from flaskr.models import Users, Posts, CreatePost, Photos, Videos
+from flaskr.models import Users, Posts, CreatePost, Photos, Videos, Comments
 from flaskr import mysql
 from .forms import AddPostForm, EditPostForm
 from flask import Blueprint, render_template, request, flash, redirect, url_for, Response, request
@@ -35,10 +35,11 @@ def home_page():
     # Getting user info
     get_user_info = Users.query_get(current_user.tag)
     # Querying main feed posts
-    main_feed = Posts.query_filter(all=True,order_by='date_posted', order='DESC')
+    main_feed = Posts.query_filter(
+        all=True, order_by='date_posted', order='DESC')
     for post in main_feed:
         print(post.photos)
-    if request.method == 'POST': 
+    if request.method == 'POST':
         photos = request.files.getlist('files[]')
         videos = request.files.getlist('add_videos')
         print(photos)
@@ -52,10 +53,11 @@ def home_page():
             last_inserted_post = Posts.last_inserted()
             # Adding data to CreatePost table
             create_post = CreatePost(post_id=last_inserted_post.post_id,
-                                    author_tag=storing_variable.author_tag)
+                                     author_tag=storing_variable.author_tag)
             create_post.add()
             # Adding data to Photos table
-            last_post = Posts.query_filter(author_tag=current_user.tag, order_by='date_posted', order='DESC')[0]
+            last_post = Posts.query_filter(
+                author_tag=current_user.tag, order_by='date_posted', order='DESC')[0]
             for every_upload in photos:
                 print(every_upload.filename.split(".")[-1].lower())
                 if every_upload and every_upload.filename.split(".")[-1].lower() in PHOTO_EXTENSIONS:
@@ -98,8 +100,30 @@ def edit_post(post_id):
     if request.method == 'POST':
         if form.validate_on_submit():
             new_content = request.form['post_description']
-            Posts.update_post(post_id,new_content)
+            Posts.update_post(post_id, new_content)
             mysql.connection.commit()
             flash('Post Edited Successfully!', category='success')
             return redirect(url_for('home.home_page'))
     return render_template('home/home.html', form=form)
+
+
+@home.route('/home/create-comment/<post_id>', methods=['POST'])
+@login_required
+def add_comment(post_id):
+    comment_text = request.form.get('comment_textbox')
+
+    if not comment_text:
+        flash(f'Comment cannot be empty!', category='error')
+    else:
+        related_post = Posts.query_filter(
+            post_id == post_id)[0]
+        if related_post:
+            storing_variable = Comments(
+                post_commented=related_post.post_id, author_tag=current_user.tag, comment_content=comment_text)
+            print(storing_variable.post_commented)
+            storing_variable.add()
+            mysql.connection.commit()
+        else:
+            flash(f'Post does not exist!', category='error')
+
+    return redirect(url_for('home.home_page'))

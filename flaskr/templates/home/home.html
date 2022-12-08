@@ -81,7 +81,7 @@
     </div>
     <div class="main-feed-posts">
       {% for post in main_feed %}
-        <div class="shadow p-3 mb-5 bg-body rounded">
+        <div class="shadow p-3 mb-5 bg-body rounded" style="width: 1200px;">
         {{post.post_id}}
         @{{ post.author_tag }}
         {{ post.post_content}}
@@ -90,10 +90,10 @@
         </h2>
 
         {% if post.author_tag == current_user.tag %}
-          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">
+          <button type="button" class="btn btn-danger mb-3" data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">
             Delete
           </button>
-          <button class="btn btn-primary"data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}" data-bs-whatever="@getbootstrap" type="button">
+          <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}" data-bs-whatever="@getbootstrap" type="button">
             Edit
           </button>
         {% endif %}
@@ -169,10 +169,13 @@
 
 
 
-
-      <button>
-        Comment
-      </button>
+      <form class="input-groub mb-3" method="POST" action="/home/create-comment/{{post.post_id}}">
+        <textarea class="form-control" style="width: 1000px;" id="comment_textbox" name="comment_textbox" placeholder="Say something about this post..."></textarea>
+        {{form.csrf_token}}
+        <button type="submit "class="btn btn-primary mt-3">
+          Comment
+        </button>
+      </form>
     </div>
     {% endfor %}
 

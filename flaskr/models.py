@@ -423,9 +423,10 @@ class Videos:
 
 class Comments:
 
-    def __init__(self, comment_id=None, post_commented=None, author_tag=None, date_commented=None):
+    def __init__(self, comment_id=None, comment_content=None, post_commented=None, author_tag=None, date_commented=None):
         self.comment_id = comment_id
         self.post_commented = post_commented
+        self.comment_content = comment_content
         self.author_tag = author_tag
         if date_commented is None:
             self.date_commented = datetime.datetime.now()
@@ -434,8 +435,8 @@ class Comments:
 
     def add(self):
         cursor = mysql.connection.cursor()
-        sql = f"INSERT INTO photos(post_commented, author_tag, date_commented)\
-                VALUES('{self.post_commented}','{self.author_tag}', '{self.date_commented}')"
+        sql = f"INSERT INTO photos(post_commented, author_tag, date_commented, comment_content)\
+                VALUES('{self.post_commented}','{self.author_tag}', '{self.date_commented}', '{self.comment_content}')"
         cursor.execute(sql)
 
     @classmethod
@@ -445,6 +446,7 @@ class Comments:
             new_obj = Comments(
                 comment_id=row['comment_id'],
                 post_commented=row['post_commented'],
+                comment_content=row['comment_content'],
                 author_tag=row['author_tag'],
                 date_commented=row['date_commented']
             )
@@ -463,7 +465,7 @@ class Comments:
         return result
 
     @classmethod
-    def query_filter(cls, comment_id=None, post_commented=None, author_tag=None):
+    def query_filter(cls, comment_id=None, post_commented=None, author_tag=None, comment_content=None):
         cursor = mysql.connection.cursor()
         sql = ''
         if comment_id:
@@ -471,7 +473,9 @@ class Comments:
         if post_commented:
             sql = f"SELECT * FROM comments WHERE post_commented='{post_commented}'"
         if author_tag:
-            sql = f"SELECT * FROM COMMENTS WHERE author_tag='{author_tag}'"
+            sql = f"SELECT * FROM comments WHERE author_tag='{author_tag}'"
+        if comment_content:
+            sql = f"SELECT * FROM comments WHERE comment_content='{comment_content}'"
         cursor.execute(sql)
         result = result_zip(cursor)
         result = Comments.convert_to_object(result)

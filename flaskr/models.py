@@ -153,6 +153,11 @@ class Users(UserMixin):
         posts = Posts.query_filter(author_tag=self.tag)
         return posts
 
+    @property
+    def comments(self):
+        comments = Comments.query_filter(author_tag=self.tag)
+        return comments
+
 
 class Posts:
 
@@ -168,13 +173,13 @@ class Posts:
     @classmethod
     def update_post(cls, target_post, post_content):
         cursor = mysql.connection.cursor()
-        sql = f"UPDATE posts SET post_content ='{post_content}' WHERE post_id='{target_post}'"
+        sql = f'UPDATE posts SET post_content ="{post_content}" WHERE post_id="{target_post}"'
         cursor.execute(sql)
 
     def add(self):
         cursor = mysql.connection.cursor()
-        sql = f"INSERT INTO posts(author_tag, post_content, date_posted)\
-                VALUES('{self.author_tag}', '{self.post_content}','{self.date_posted}')"
+        sql = f'INSERT INTO posts(author_tag, post_content, date_posted)\
+                VALUES("{self.author_tag}", "{self.post_content}","{self.date_posted}")'
         cursor.execute(sql)
 
     @classmethod
@@ -252,6 +257,11 @@ class Posts:
     def videos(self):
         videos = Videos.query_filter(parent_post=self.post_id)
         return videos
+
+    @property
+    def comments(self):
+        comments = Comments.query_filter(post_commented=self.post_id)
+        return comments
 
 
 class CreatePost:
@@ -435,8 +445,8 @@ class Comments:
 
     def add(self):
         cursor = mysql.connection.cursor()
-        sql = f"INSERT INTO photos(post_commented, author_tag, date_commented, comment_content)\
-                VALUES('{self.post_commented}','{self.author_tag}', '{self.date_commented}', '{self.comment_content}')"
+        sql = f'INSERT INTO comments(post_commented, author_tag, date_commented, comment_content)\
+                VALUES("{self.post_commented}","{self.author_tag}", "{self.date_commented}", "{self.comment_content}")'
         cursor.execute(sql)
 
     @classmethod

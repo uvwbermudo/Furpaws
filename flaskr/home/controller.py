@@ -115,8 +115,8 @@ def add_comment(post_id):
     if not comment_text:
         flash(f'Comment cannot be empty!', category='error')
     else:
-        related_post = Posts.query_filter(
-            post_id == post_id)[0]
+        related_post = Posts.query_get(
+            post_id=post_id)
         if related_post:
             storing_variable = Comments(
                 post_commented=related_post.post_id, author_tag=current_user.tag, comment_content=comment_text)

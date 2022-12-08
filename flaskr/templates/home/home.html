@@ -168,7 +168,10 @@
 
 
 
-
+      <br/>
+      {% for comment in post.comments %}
+      {{comment.comment_content}}<br/>
+      {% endfor %}
       <form class="input-groub mb-3" method="POST" action="/home/create-comment/{{post.post_id}}">
         <textarea class="form-control" style="width: 1000px;" id="comment_textbox" name="comment_textbox" placeholder="Say something about this post..."></textarea>
         {{form.csrf_token}}

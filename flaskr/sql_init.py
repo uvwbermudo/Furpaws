@@ -71,7 +71,7 @@ def create_db():
         author_tag VARCHAR(25) NOT NULL,
         post_commented INT NOT NULL,
         comment_content TEXT,
-        date_created DATETIME NOT NULL,
+        date_commented DATETIME NOT NULL,
         PRIMARY KEY (comment_id) ,
         CONSTRAINT `comments_ibfk_1` FOREIGN KEY(author_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
         CONSTRAINT `comments_ibfk_2` FOREIGN KEY(post_commented) REFERENCES posts(post_id) ON UPDATE CASCADE ON DELETE CASCADE

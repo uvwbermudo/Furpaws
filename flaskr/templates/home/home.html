@@ -168,22 +168,48 @@
 
 
 
+
+      
+
+
       <br/>
+      {% if post.author_tag == current_user.tag %}
       {% for comment in post.comments %}
-      {{comment.comment_content}}<br/>
+      {% if comment.author_tag == current_user.tag %}
+        <a href="#">{{comment.author_tag}}</a> {{comment.comment_content}}<button class="btn btn-success btn-sm">Edit</button><button class="btn btn-danger btn-sm">Delete</button><br/>
+      {% else %}
+      <a href="#">{{comment.author_tag}}</a> {{comment.comment_content}}<button class="btn btn-danger btn-sm">Delete</button><br/>
+      {% endif %}
       {% endfor %}
+      {% else %}
+      {% for comment in post.comments %}
+      {% if comment.author_tag == current_user.tag %}
+        <a href="#">{{comment.author_tag}}</a> {{comment.comment_content}}<button class="btn btn-success btn-sm">Edit</button><button class="btn btn-danger btn-sm">Delete</button><br/>
+      {% else %}
+      <a href="#">{{comment.author_tag}}</a> {{comment.comment_content}}<br/> 
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+
+
       <form class="input-groub mb-3" method="POST" action="/home/create-comment/{{post.post_id}}">
         <textarea class="form-control" style="width: 1000px;" id="comment_textbox" name="comment_textbox" placeholder="Say something about this post..."></textarea>
-        {{form.csrf_token}}
-        <button type="submit "class="btn btn-primary mt-3">
-          Comment
-        </button>
+        {{form.csrf_token}}<br/>
+        <button type="submit" 
+        style=
+        "border-radius: 10px;
+        width:85%;
+        padding: 10px;
+        border:none;
+        outline:none;
+        background-color: rgb(109, 216, 235);
+        color: white">Another Comment</button>
       </form>
     </div>
+
     {% endfor %}
 
     </div>
   </div>
 </div>
-
 {% endblock %}

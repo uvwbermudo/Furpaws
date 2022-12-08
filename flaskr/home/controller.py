@@ -47,7 +47,7 @@ def home_page():
             # Adding data to Posts table
             print('VALID')
             storing_variable = Posts(
-                post_content=form.post_description.data, author_tag=get_user_info.tag)
+                post_content=form.post_description.data.replace('"', "''"), author_tag=get_user_info.tag)
             storing_variable.add()
             mysql.connection.commit()
             last_inserted_post = Posts.last_inserted()
@@ -99,7 +99,7 @@ def edit_post(post_id):
     form = EditPostForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
-            new_content = request.form['post_description']
+            new_content = request.form['post_description'].replace('"', "''")
             Posts.update_post(post_id, new_content)
             mysql.connection.commit()
             flash('Post Edited Successfully!', category='success')
@@ -118,10 +118,9 @@ def add_comment(post_id):
         related_post = Posts.query_get(
             post_id=post_id)
         if related_post:
-            storing_variable = Comments(
-                post_commented=related_post.post_id, author_tag=current_user.tag, comment_content=comment_text)
-            print(storing_variable.post_commented)
-            storing_variable.add()
+            new_comment = Comments(
+                post_commented=related_post.post_id, author_tag=current_user.tag, comment_content=comment_text.replace('"', "''"))
+            new_comment.add()
             mysql.connection.commit()
         else:
             flash(f'Post does not exist!', category='error')

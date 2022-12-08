@@ -126,3 +126,11 @@ def add_comment(post_id):
             flash(f'Post does not exist!', category='error')
 
     return redirect(url_for('home.home_page'))
+
+
+@home.route('/home/delete-comment/<int:comment_id>', methods=['GET', 'POST'])
+@login_required
+def delete_comment(comment_id):
+    Comments.delete(comment_id)
+    mysql.connection.commit()
+    return redirect(url_for('home.home_page'))

@@ -475,6 +475,12 @@ class Comments:
         return result
 
     @classmethod
+    def delete(cls, comment_id):
+        cursor = mysql.connection.cursor()
+        sql = f"DELETE FROM comments WHERE comment_id='{comment_id}';"
+        cursor.execute(sql)
+
+    @classmethod
     def query_filter(cls, comment_id=None, post_commented=None, author_tag=None, comment_content=None):
         cursor = mysql.connection.cursor()
         sql = ''

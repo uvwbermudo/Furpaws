@@ -167,7 +167,20 @@
       </div>
 
 <!-- COMMENTS -->
+
+      
+
+
       <br/>
+      {% if post.author_tag == current_user.tag %}
+      {% for comment in post.comments %}
+      {% if comment.author_tag == current_user.tag %}
+        <a href="#">{{comment.author_tag}}</a> {{comment.comment_content}}<button class="btn btn-success btn-sm">Edit</button><button class="btn btn-danger btn-sm">Delete</button><br/>
+      {% else %}
+      <a href="#">{{comment.author_tag}}</a> {{comment.comment_content}}<button class="btn btn-danger btn-sm">Delete</button><br/>
+      {% endif %}
+      {% endfor %}
+      {% else %}
       {% if post.author_tag == current_user.tag %}
         {% for comment in post.comments %}
           {% if comment.author_tag == current_user.tag %}
@@ -219,7 +232,10 @@
         {% endfor %}
       {% else %}
         {% for comment in post.comments %}
-          {% if comment.author_tag == current_user.tag %}
+      {% if comment.author_tag == current_user.tag %}
+        <a href="#">{{comment.author_tag}}</a> {{comment.comment_content}}<button class="btn btn-success btn-sm">Edit</button><button class="btn btn-danger btn-sm">Delete</button><br/>
+          {% else %}
+      <a href="#">{{comment.author_tag}}</a> {% if comment.author_tag == current_user.tag %}
             <a href="#">
               {{comment.author_tag}}
             </a>
@@ -261,8 +277,12 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> 
+      {% endif %}
         {% endfor %}
+      {% endif %}
+
+
       {% endif %}
 
 
@@ -277,10 +297,9 @@
         border:none;
         outline:none;
         background-color: rgb(109, 216, 235);
-        color: white">Comment</button>
+        color: white">Another Comment</button>
       </form>
     </div>
-
     {% endfor %}
 
     </div>

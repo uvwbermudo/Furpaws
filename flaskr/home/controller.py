@@ -4,7 +4,7 @@ import cloudinary.uploader
 import cloudinary.api
 from flaskr.models import Users, Posts, CreatePost, Photos, Videos, Comments
 from flaskr import mysql
-from .forms import AddPostForm, EditPostForm
+from .forms import AddPostForm, EditPostForm, EditCommentForm
 from flask import Blueprint, render_template, request, flash, redirect, url_for, Response, request
 from flask_login import current_user, login_user, login_required, logout_user
 from . import home
@@ -32,6 +32,7 @@ VIDEO_EXTENSIONS = ['mp4']
 def home_page():
     form = AddPostForm()
     edit_form = EditPostForm()
+    edit_comment_form = EditCommentForm()
     # Getting user info
     get_user_info = Users.query_get(current_user.tag)
     # Querying main feed posts
@@ -81,7 +82,7 @@ def home_page():
             return redirect(url_for('home.home_page'))
         errors = get_error_items(form)
         print(errors)
-    return render_template('home/home.html', edit_form=edit_form, form=form, main_feed=main_feed)
+    return render_template('home/home.html', edit_comment_form=edit_comment_form, edit_form=edit_form, form=form, main_feed=main_feed)
 
 
 @home.route('/home/<int:post_id>', methods=['GET', 'POST'])
@@ -134,3 +135,18 @@ def delete_comment(comment_id):
     Comments.delete(comment_id)
     mysql.connection.commit()
     return redirect(url_for('home.home_page'))
+
+
+@home.route('/home/update-comment/<comment_id>', methods=['POST'])
+@login_required
+def edit_comment(comment_id):
+    form = EditCommentForm(request.form)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            new_comment_content = request.form['edit_comment_textbox'].replace(
+                '"', "''")
+            Comments.update_comment(comment_id, new_comment_content)
+            mysql.connection.commit()
+            flash('Comment Edited Successfully!', category='success')
+            return redirect(url_for('home.home_page'))
+    return render_template('home/home.html', form=form)

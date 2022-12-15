@@ -464,6 +464,12 @@ class Comments:
         return object_results
 
     @classmethod
+    def update_comment(cls, target_comment, comment_content):
+        cursor = mysql.connection.cursor()
+        sql = f'UPDATE comments SET comment_content ="{comment_content}" WHERE comment_id="{target_comment}"'
+        cursor.execute(sql)
+
+    @classmethod
     def query_get(cls, comment_id):
         cursor = mysql.connection.cursor()
         sql = f"SELECT * FROM comments WHERE comment_id = '{comment_id}'"

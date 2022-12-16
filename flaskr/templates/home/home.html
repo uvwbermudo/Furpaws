@@ -332,18 +332,18 @@
             </div>
           </div>
         </div>
-      <p class="card-text">
-        {% if post.comments|length > 0 %}
-          <a data data-bs-toggle="collapse" href="#comments-{{post.post_id}}" role="button">
-            <small>
-              View {{post.comments|length}} Comments
-            </small>
-          </a>
-        {% else %}
-          <small class="text-muted">No comments!</small>
-        {% endif %}
-      </p>
-	    <form class="input-groub mb-3" method="POST" action="/home/create-comment/{{post.post_id}}">
+        <p class="card-text">
+          {% if post.comments|length > 0 %}
+            <a data data-bs-toggle="collapse" href="#comments-{{post.post_id}}" role="button">
+              <small>
+                View {{post.comments|length}} Comments
+              </small>
+            </a>
+          {% else %}
+            <small class="text-muted">No comments!</small>
+          {% endif %}
+        </p>
+	      <form class="input-groub mb-3" method="POST" action="/home/create-comment/{{post.post_id}}">
 		    <textarea class="form-control" style="width: 1000px;" id="comment_textbox" name="comment_textbox" placeholder="Say something about this post..."></textarea>
 		    {{form.csrf_token}}<br/>
         <button type="submit" 
@@ -357,11 +357,24 @@
         color: white">
           Comment
         </button>
-	    </form>
-    </div>
-    <br/>
+	      </form>
+        <div class="card-footer" style="background-color:white; position:flex;">
+          {% if current_user.tag in post.likes|map(attribute="author_tag")|list %}
+              {% for like in post.likes %}
+                {% if current_user.tag == like.author_tag %}
+                <a href="home/unlike-post/{{like.id}}"><img src="../../static/img/like_filled.png" width="35px" height="33px"></a>
+                {% endif %}
+              {% endfor %}
+          {% else %}
+            <a href="home/like-post/{{post.post_id}}"><img src="../../static/img/like_unfilled.png" width="35px" height="33px"></a>
+          {% endif %}
+          {{ post.likes|length }}
+          <!-- <img src="../../static/img/like_filled.png" width="35px" height="33px"> -->
+        </div>
+      </div>
+      <br/>
 
-  {% endfor %}
+    {% endfor %}
 
 	</div>
 </div>

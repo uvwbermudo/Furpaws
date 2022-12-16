@@ -2,7 +2,7 @@ from config import CLOUDINARY_API_CLOUD, CLOUDINARY_API_CLOUD_FOLDER, CLOUDINARY
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-from flaskr.models import Users, Posts, CreatePost, Photos, Videos, Comments
+from flaskr.models import Users, Posts, CreatePost, Photos, Videos, Comments, Likes
 from flaskr import mysql
 from .forms import AddPostForm, EditPostForm, EditCommentForm
 from flask import Blueprint, render_template, request, flash, redirect, url_for, Response, request
@@ -150,3 +150,34 @@ def edit_comment(comment_id):
             flash('Comment Edited Successfully!', category='success')
             return redirect(url_for('home.home_page'))
     return render_template('home/home.html', form=form)
+
+
+@home.route('/home/like-post/<post_id>', methods=['GET'])
+@login_required
+def like(post_id):
+    post = Posts.query_get(
+        post_id=post_id)
+    like = Likes.query_filter(
+        author_tag=current_user.tag, post_liked=post_id, order_by='date_liked')
+    if not post:
+        flash(f'Post does not exist.', category='error')
+    else:
+        like = Likes(author_tag=current_user.tag, post_liked=post_id)
+        like.add()
+        mysql.connection.commit()
+
+    return redirect(url_for('home.home_page'))
+
+
+@home.route('/home/unlike-post/<int:id>', methods=['GET'])
+@login_required
+def unlike(id):
+    like = Likes.query_get(
+        id=id)
+    if not like:
+        flash(f'Error.', category='error')
+    else:
+        Likes.delete(id)
+        mysql.connection.commit()
+
+    return redirect(url_for('home.home_page'))

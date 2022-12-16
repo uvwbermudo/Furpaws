@@ -75,4 +75,13 @@ def create_db():
         PRIMARY KEY (comment_id) ,
         CONSTRAINT `comments_ibfk_1` FOREIGN KEY(author_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
         CONSTRAINT `comments_ibfk_2` FOREIGN KEY(post_commented) REFERENCES posts(post_id) ON UPDATE CASCADE ON DELETE CASCADE
+    );
+        CREATE TABLE IF NOT EXISTS likes (
+        id INT NOT NULL AUTO_INCREMENT,
+        author_tag VARCHAR(25) NOT NULL,
+        post_liked INT NOT NULL,
+        date_liked DATETIME NOT NULL,
+        PRIMARY KEY (id) ,
+        CONSTRAINT `likes_ibfk_1` FOREIGN KEY(author_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
+        CONSTRAINT `likes_ibfk_2` FOREIGN KEY(post_liked) REFERENCES posts(post_id) ON UPDATE CASCADE ON DELETE CASCADE
     );""")

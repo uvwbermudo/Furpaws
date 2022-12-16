@@ -158,6 +158,11 @@ class Users(UserMixin):
         comments = Comments.query_filter(author_tag=self.tag)
         return comments
 
+    @property
+    def likes(self):
+        likes = Likes.query_filter(author_tag=self.tag)
+        return likes
+
 
 class Posts:
 
@@ -262,6 +267,11 @@ class Posts:
     def comments(self):
         comments = Comments.query_filter(post_commented=self.post_id)
         return comments
+
+    @property
+    def likes(self):
+        likes = Likes.query_filter(post_liked=self.post_id)
+        return likes
 
 
 class CreatePost:
@@ -506,4 +516,73 @@ class Comments:
     @property
     def post(self):
         post = Posts.query_get(self.post_commented)
+        return post
+
+
+class Likes:
+    def __init__(self, id=None, post_liked=None, author_tag=None, date_liked=None):
+        self.id = id
+        self.post_liked = post_liked
+        self.author_tag = author_tag
+        if date_liked is None:
+            self.date_liked = datetime.datetime.now()
+        else:
+            self.date_liked = date_liked
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f'INSERT INTO likes(post_liked, author_tag, date_liked)\
+                VALUES("{self.post_liked}","{self.author_tag}", "{self.date_liked}")'
+        cursor.execute(sql)
+
+    @classmethod
+    def convert_to_object(cls, rows):
+        object_results = []
+        for row in rows:
+            new_obj = Likes(
+                id=row['id'],
+                post_liked=row['post_liked'],
+                author_tag=row['author_tag'],
+                date_liked=row['date_liked']
+            )
+            object_results.append(new_obj)
+        return object_results
+
+    @classmethod
+    def query_get(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"SELECT * FROM likes WHERE id = '{id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Likes.convert_to_object(result)
+        if result:
+            return result[0]
+        return result
+
+    @classmethod
+    def delete(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"DELETE FROM likes WHERE id ='{id}';"
+        cursor.execute(sql)
+
+    @classmethod
+    def query_filter(cls, all=False, post_liked=None, author_tag=None, order_by='date_liked', order='DESC'):
+        cursor = mysql.connection.cursor()
+        sql = ''
+        if post_liked:
+            sql = f"SELECT * FROM likes where post_liked LIKE '%{post_liked}%'"
+        if author_tag:
+            sql = f"SELECT * FROM likes where author_tag LIKE '%{author_tag}%'"
+        order = f" ORDER BY {order_by} {order};"
+        if all:
+            sql = f"SELECT * FROM likes"
+        sql = sql+order
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Likes.convert_to_object(result)
+        return result
+
+    @property
+    def post(self):
+        post = Likes.query_get(self.post_liked)
         return post

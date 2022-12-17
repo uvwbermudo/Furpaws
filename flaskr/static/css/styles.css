@@ -338,6 +338,7 @@ input[data-autocompleted] {
 
 .btn-link:hover {
     color: #127bbd;
+    cursor: pointer;
 }
 
 .register-section {
@@ -447,9 +448,9 @@ input[data-autocompleted] {
 }
 
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
-div.content {
+div.content {   
     position: relative;
-    width: 1260px;
+    width: calc(100% - 276px);
     height: 645px;
     left: 276px;
     overflow-y: scroll;

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}FurPaws - Home{% endblock %}
+<a href="/logout">PRESS TO LOGOUT</a>
+
+
+{% block body_content %}
+
+<div class="flex flex-row">
+    <a class="btn-link" hx-trigger="load, click" hx-target="#search-results" hx-get="/search/all">All</a>
+    <a class="btn-link" hx-target="#search-results" hx-get="/search/posts">Posts</a>
+    <a class="btn-link" hx-target="#search-results" hx-get="/search/pet_owners">Pet Owners</a>
+    <a class="btn-link" hx-target="#search-results" hx-get="/search/freelancers">Freelancers</a>
+</div>
+
+<div id="search-results" class="bg-dark text-light">
+</div>
+
+{% endblock %}

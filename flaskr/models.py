@@ -8,6 +8,7 @@ import datetime
 def result_zip(cursor):
     columns = [desc[0] for desc in cursor.description]
     rows = cursor.fetchall()
+    print(rows)
     result = []
     for row in rows:
         row = dict(zip(columns,row))
@@ -74,7 +75,8 @@ class Users(UserMixin):
 
     # query with filter, use True exact match for exact match duh 
     # RETURNS A LIST OF ROWS SO IT NEEDS TO BE INDEXED
-    def query_filter(email=None, name=None, exact_match=False, username=None, tag=None): 
+    @classmethod
+    def query_filter(cls, email=None, name=None, exact_match=False, username=None, tag=None, account_type=None): 
         cursor = mysql.connection.cursor()
         sql = ''
         if exact_match:
@@ -91,11 +93,24 @@ class Users(UserMixin):
             sql = f"SELECT * FROM USERS WHERE MATCH(first_name,last_name,tag,email) AGAINST('{name}')"
         if username:
             sql = f"SELECT * FROM USERS WHERE email='{username}' or tag='{username}'"
+        if account_type:
+            sql = sql + f" AND account_type = '{account_type}'"
         cursor.execute(sql)
         result = result_zip(cursor)
         result = Users.convert_to_object(result)
         if username:
             return result[0]
+        return result
+    
+    @classmethod
+    def query_all(cls, account_type=None):
+        cursor = mysql.connection.cursor()
+        sql = "SELECT * FROM users"
+        if account_type:
+            sql = sql + f" WHERE account_type = '{account_type}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Users.convert_to_object(result)
         return result
 
     #to update user, just call Users.update_user(<params here>)

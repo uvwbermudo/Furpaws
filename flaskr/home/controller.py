@@ -3,14 +3,13 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 from flaskr.models import Users, Posts, CreatePost, Photos, Videos
-from flaskr import mysql
+from flaskr import mysql, get_error_items
 from .forms import AddPostForm, EditPostForm
-from flask import Blueprint, render_template, request, flash, redirect, url_for, Response, request
+from flask import Blueprint, render_template, request, flash, redirect, url_for, Response, request, session
 from flask_login import current_user, login_user, login_required, logout_user
 from . import home
 from config import CLOUDINARY_API_CLOUD_FOLDER
 from sqlalchemy import desc
-from flaskr import get_error_items
 import wtforms_json
 import json
 from sqlalchemy.exc import IntegrityError
@@ -103,3 +102,37 @@ def edit_post(post_id):
             flash('Post Edited Successfully!', category='success')
             return redirect(url_for('home.home_page'))
     return render_template('home/home.html', form=form)
+
+
+@home.route('/home/search', methods=['GET'])
+@login_required
+def search_layout():
+    session['search_query'] = request.args['searchbar']
+    return render_template('home/search.html', search_result=session['search_query'])
+
+
+@home.route('/search/<filter>', methods=['GET'])
+@login_required
+def search(filter):
+    query = session['search_query']
+    if filter == 'pet_owners':
+        if query:
+            search_query = Users.query_filter(account_type='pet_owner', name=query)
+        else:
+            search_query = Users.query_all(account_type='pet_owner')
+    if filter == 'freelancers':
+        if query:
+            search_query = Users.query_filter(account_type='freelancer', name=query)
+        else:
+            search_query = Users.query_all(account_type='freelancer')
+    if filter == 'all':
+        if query:
+            search_query = Users.query_filter(name=query)
+        else:
+            search_query = Users.query_all()
+    
+
+
+    return render_template('home/search_results.html', query=search_query)
+
+

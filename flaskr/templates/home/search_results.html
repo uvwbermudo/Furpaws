@@ -1,5 +1,8 @@
 {% for result in query %}
-<h1>{{result.email}}</h1>
-
+{% if result.__class__.__name__ == 'Users' %}
+<h1>{{result.email}} User</h1>
+{% elif result.__class__.__name__ == 'Posts' %}
+<h1>{{result.post_content}} Posts</h1>
+{% endif %}
 {% endfor %}
 

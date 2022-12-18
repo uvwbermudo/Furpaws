@@ -8,7 +8,6 @@ import datetime
 def result_zip(cursor):
     columns = [desc[0] for desc in cursor.description]
     rows = cursor.fetchall()
-    print(rows)
     result = []
     for row in rows:
         row = dict(zip(columns,row))
@@ -33,6 +32,9 @@ class Users(UserMixin):
         self.zipcode = zipcode
         self.country = country
     
+    def __repr__(self):
+        return f'User {self.tag}, {self.email}'
+
     @classmethod 
     def convert_to_object(cls,rows):
         if not rows:
@@ -178,6 +180,8 @@ class Posts:
         else:
             self.date_posted = date_posted
     
+    def __repr__(self):
+        return f'Post {self.post_id}, {self.author_tag}'
     @classmethod
     def update_post(cls, target_post, post_content):
         cursor = mysql.connection.cursor()
@@ -229,7 +233,7 @@ class Posts:
         cursor = mysql.connection.cursor()
         sql=''
         if post_content:
-            sql = f"SELECT * FROM posts where post_content LIKE '%{post_content}%'"
+            sql = f"SELECT * FROM posts WHERE MATCH(post_content) AGAINST ('{post_content}')"
         if author_tag:
             sql = f"SELECT * FROM posts where author_tag LIKE '%{author_tag}%'"
         order = f" ORDER BY {order_by} {order};"

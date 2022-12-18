@@ -116,22 +116,16 @@ def search_layout():
 def search(filter):
     query = session['search_query']
     if filter == 'pet_owners':
-        if query:
-            search_query = Users.query_filter(account_type='pet_owner', name=query)
-        else:
-            search_query = Users.query_all(account_type='pet_owner')
+        search_query = Users.query_filter(account_type='pet_owner', name=query)
     if filter == 'freelancers':
-        if query:
-            search_query = Users.query_filter(account_type='freelancer', name=query)
-        else:
-            search_query = Users.query_all(account_type='freelancer')
+        search_query = Users.query_filter(account_type='freelancer', name=query)
     if filter == 'all':
-        if query:
-            search_query = Users.query_filter(name=query)
-        else:
-            search_query = Users.query_all()
-    
-
+        search_query = Users.query_filter(name=query)
+        search_query.extend(Posts.query_filter(post_content=query))
+        search_query.extend(Posts.query_filter(author_tag=query))
+    if filter == 'posts':
+        search_query = Posts.query_filter(post_content=query)
+        search_query.extend(Posts.query_filter(author_tag=query))
 
     return render_template('home/search_results.html', query=search_query)
 

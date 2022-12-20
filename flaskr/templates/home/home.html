@@ -28,9 +28,7 @@
 						{{form.post_description(class="form-control", placeholder="How are you feeling today, "+ current_user.tag + "?")}}
 				  </div>
 				</div>
-				<div class="image-preview">
-					Image preview here: 
-				</div>
+        Image preview here: 
 				<div class="modal-footer"> 
 					<label for="add_photos" class="add-post-btns" name="add_photos"><img src="../../static/img/image-line.png"/>
 						Add Photos
@@ -141,18 +139,27 @@
 				      <h5 align="left">
 				        Image Preview:
 				      </h5>
-				      {% for photo in post.photos %}
-					    <div>
-						    <img src="{{photo.photo_url}}" height="200px" width="150px"/> {{photo.photo_id}}
-							  <div>
-								  <button class="btn btn-success" style="width: 150px;">
-									  Replace
-								  </button>
-								  <input type="submit" class="btn btn-danger" style="width: 150px;" value="Remove">
-							  </div>
-					    </div>
-				      {% endfor %}
-			        <div class="modal-footer">  
+              <div class="card">
+                <div class="card-body d-flex flex-wrap justify-content-start">
+                  {% for photo in post.photos %}
+                      <div class="image-preview d-flex justify-content-center position-relative">
+                        <img src="{{photo.photo_url}}" alt="Image">
+                        <span class="position-absolute">&times;</span>
+                      </div>
+                  {% endfor %}
+                </div>
+              </div>
+			        <div class="modal-footer">
+                <label for="add_photos" class="add-post-btns" name="add_photos"><img src="../../static/img/image-line.png"/>
+                  Add Photos
+                </label>
+      
+                <label for="add_videos" name="add_videos" class="add-post-btns">
+                  <img src="../../static/img/movie-line.png">
+                  Add Videos
+                </label>
+                <input type="file" name="files[]" multiple="true" id="add_photos" accept="image/png, image/jpg, image/jpeg" onclick="imageTooLargeAlert();" hidden>
+            <input type="file" name="add_videos" multiple="true" id="add_videos" accept="video/mp4" onclick="videoTooLargeAlert();"hidden>  
 				        {{edit_form.csrf_token}}
 				        {{edit_form.edit_post_button(class="submit-post")}}</form>
 					    </div>

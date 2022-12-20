@@ -200,13 +200,12 @@ function videoTooLargeAlert(videoDialogTextContent, videoDialogOkButton) {
 function imageTooLargeAlert(imageDialogTextContent, imageDialogOkButton) {
     var imageUploadField = document.getElementById("add_photos");
     var imageDialogBox = $("#imageAlertBox");
-    var fi = document.getElementById('add_photos');
     imageUploadField.onchange = function () {
         // Check if any file is selected.
-        if (fi.files.length > 0) {
-            for (var i = 0; i <= fi.files.length - 1; i++) {
+        if (image.length > 0) {
+            for (var i = 0; i <= image.length - 1; i++) {
 
-                var fsize = fi.files.item(i).size;
+                var fsize = image.item(i).size;
                 var file = Math.round((fsize));
                 // The size of the file.
                 if (file > 10097152) {
@@ -216,7 +215,7 @@ function imageTooLargeAlert(imageDialogTextContent, imageDialogOkButton) {
                     });
                     imageDialogBox.find(".imageAlertButton").click(imageDialogOkButton);
                     imageDialogBox.show();
-                    fi.value = null;
+                    image.value = null;
                 }
             }
         }

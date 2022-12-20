@@ -169,7 +169,7 @@ def like(post_id):
     return redirect(url_for('home.home_page'))
 
 
-@home.route('/home/unlike-post/<int:id>', methods=['GET'])
+@home.route('/home/unlike-post/<id>', methods=['GET'])
 @login_required
 def unlike(id):
     like = Likes.query_get(

@@ -117,15 +117,36 @@ def search(filter):
     query = session['search_query']
     if filter == 'pet_owners':
         search_query = Users.query_filter(account_type='pet_owner', name=query)
+        search_query.extend(Users.query_filter(account_type='pet_owner', tag=query))
+        search_query.extend(Users.query_filter(account_type='pet_owner', email=query))
+
     if filter == 'freelancers':
         search_query = Users.query_filter(account_type='freelancer', name=query)
+        search_query.extend(Users.query_filter(account_type='freelancer', tag=query))
+        search_query.extend(Users.query_filter(account_type='freelancer', email=query))
+
     if filter == 'all':
         search_query = Users.query_filter(name=query)
+        search_query.extend(Users.query_filter(email=query))
+        search_query.extend(Users.query_filter(tag=query))
         search_query.extend(Posts.query_filter(post_content=query))
         search_query.extend(Posts.query_filter(author_tag=query))
+        by_name = []
+        by_name.extend(Users.query_filter(name=query))
+        by_name.extend(Users.query_filter(email=query))
+        for user in by_name:
+            search_query.extend(user.posts)
+
     if filter == 'posts':
         search_query = Posts.query_filter(post_content=query)
         search_query.extend(Posts.query_filter(author_tag=query))
+        by_name = []
+        by_name.extend(Users.query_filter(name=query))
+        by_name.extend(Users.query_filter(email=query))
+        for user in by_name:
+            search_query.extend(user.posts)
+
+    search_query = list(set(search_query))
 
     return render_template('home/search_results.html', query=search_query)
 

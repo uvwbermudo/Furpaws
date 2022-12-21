@@ -1,8 +1,50 @@
+{% if query|length < 1 %}
+<h3 class="text-muted">No results for this search</h3>
+{% endif %}
+
 {% for result in query %}
 {% if result.__class__.__name__ == 'Users' %}
-<h1>{{result.email}} User</h1>
-{% elif result.__class__.__name__ == 'Posts' %}
-<h1>{{result.post_content}} Posts</h1>
+<div class="container mb-4">
+    <div class="container-decorator"></div>
+    <div class="search-result-container " id="">
+        <a href="/profiles/{{result.tag}}"> <img src="../../static/img/test_profilepicwdiffsize.png" alt=""></a>
+        <div class="result-profile-info">
+            <a href="/profiles/{{result.tag}}" class="fs-4 text-dark">{{result.first_name}} {{result.last_name}}</a>
+            <p class="text-muted">@{{result.tag}}</p>
+            <p class="text-muted">
+                {% if result.account_type == 'pet_owner' %}
+                Pet Owner
+                {% else %}
+                Freelancer
+                {% endif %}
+            </p>
+            <p>Lives in {{result.city}}</p>
+            <p>69 friends</p>
+        </div>
+        <a type="button" class="btn btn-fp-blue btn-small rounded-5 me-2 text-decoration-none ms-auto" href="/profiles/{{result.tag}}" style="min-width: 100px;">Visit Profile</a>
+    </div>
+</div>
 {% endif %}
 {% endfor %}
 
+{% for result in query %}
+{% if result.__class__.__name__ == 'Posts' %}
+
+<div class="container mb-4">
+    <div class="container-decorator" style="width: 60%; margin-right:0px"></div>
+    <div class="search-result-post">
+        <div class="search-result-post-upper">
+            <a href="/profiles/{{result.author_tag}}"> <img src="../../static/img/test_profilepicwdiffsize.png" alt=""></a>
+            <a href="/profiles/{{result.author_tag}}" class="post-upper text-dark pb-1 fs-5 fw-bold">{{result.author.first_name}}</a>
+            <h4 class="text-muted" style="font-weight: lighter; margin-left:5px;">|</h4>
+            <a href="/profiles/{{result.author_tag}}" class="post-upper post-tag text-dark text-muted pb-1">@{{result.author_tag}}</a>
+            <a type="button" class="btn btn-fp-blue btn-small rounded-5 me-2 text-decoration-none ms-auto" href="/posts/{{result.post_id}}" style="min-width: 100px;">View Full Post</a>
+        </div>
+        <div class="container post-content">
+            {{result.post_content}}
+        </div>
+    </div>
+
+</div>
+{% endif %}
+{% endfor %}

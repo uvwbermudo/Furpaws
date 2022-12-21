@@ -5,14 +5,15 @@
 
 {% block body_content %}
 
-<div class="flex flex-row">
-    <a class="btn-link" hx-trigger="load, click" hx-target="#search-results" hx-get="/search/all">All</a>
-    <a class="btn-link" hx-target="#search-results" hx-get="/search/posts">Posts</a>
-    <a class="btn-link" hx-target="#search-results" hx-get="/search/pet_owners">Pet Owners</a>
-    <a class="btn-link" hx-target="#search-results" hx-get="/search/freelancers">Freelancers</a>
+<div class="container flex flex-row pt-3">
+    <button type="button" class="btn btn-fp-blue btn-small rounded-5 me-2" hx-trigger="load, click" hx-target="#search-results" hx-get="/search/all" style="min-width: 100px;">All</button>
+    <button type="button" class="btn btn-fp-blue btn-small rounded-5 me-2" hx-trigger="click" hx-target="#search-results" hx-get="/search/posts" style="min-width: 100px;">Posts</button>
+    <button type="button" class="btn btn-fp-blue btn-small rounded-5 me-2" hx-trigger="click" hx-target="#search-results" hx-get="/search/pet_owners" style="min-width: 100px;">Pet Owners</button>
+    <button type="button" class="btn btn-fp-blue btn-small rounded-5 me-2" hx-trigger="click" hx-target="#search-results" hx-get="/search/freelancers" style="min-width: 100px;">Freelancers</button>
+
 </div>
 
-<div id="search-results" class="bg-dark text-light">
+<div id="search-results" class="main-feed w-100 justify-content-center pt-3">
 </div>
 
 {% endblock %}

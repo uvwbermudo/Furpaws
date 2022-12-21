@@ -33,7 +33,15 @@ class Users(UserMixin):
         self.country = country
     
     def __repr__(self):
-        return f'User {self.tag}, {self.email}'
+        return f'User: {self.tag}, {self.email}'
+
+    def __hash__(self):
+        return hash(self.tag)
+
+    def __eq__(self,other):
+        if isinstance(other, Users):
+            return self.tag == other.tag
+        return False
 
     @classmethod 
     def convert_to_object(cls,rows):
@@ -182,6 +190,16 @@ class Posts:
     
     def __repr__(self):
         return f'Post {self.post_id}, {self.author_tag}'
+
+    def __hash__(self):
+        return int(self.post_id)
+
+    def __eq__(self,other):
+        if isinstance(other, Posts):
+            return self.post_id == other.post_id
+        else:
+            return False
+
     @classmethod
     def update_post(cls, target_post, post_content):
         cursor = mysql.connection.cursor()
@@ -191,6 +209,8 @@ class Posts:
 
     def add(self):
         cursor = mysql.connection.cursor()
+        if not self.post_content:
+            self.post_content = ''
         sql = f"INSERT INTO posts(author_tag, post_content, date_posted)\
                 VALUES('{self.author_tag}', '{self.post_content}','{self.date_posted}')" 
         cursor.execute(sql)

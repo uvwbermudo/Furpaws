@@ -1,7 +1,19 @@
 {% extends 'base.html' %}
+{% block title %} FurPaws - Profile {% endblock %}
 
 
 {% block body_content %}
-<h1>HELLO WORLD</h1>
+<div class="profile-info-container">
+    <div class="rectangle-profile" ></div>
+    <img class="profile-info-pic" img src="../../static/img/postprofile.jpg"/> </img>
+    <div class="profile-right-side">
+        <h1 class="profile-username" align="left"> User Name </h1>
+        <button class="edit-profile">Edit Profile </button>
+        <h6 class="no-of-posts">10 posts </h6>
+        <h6 class="no-of-furiends">103 furiends</h6>
+        <h4 class="profile-name">Name</h4>
+        <h6 class="profile-bio">Bio</h6>
+    </div>
+</div>
 
 {% endblock %}

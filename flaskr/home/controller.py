@@ -37,9 +37,13 @@ def home_page():
         tag=current_user.tag).first()
     # Querying main feed posts
     main_feed = Posts.query.order_by(Posts.date_posted.desc())
+    for post in main_feed:
+        print(post)
+        print(post.photos)
     if request.method == 'POST':
         photos = request.files['add_photos']
         videos = request.files['add_videos']
+
         if form.validate_on_submit():
             # Adding data to Posts table
             print('VALID')
@@ -87,6 +91,7 @@ def home_page():
             form.post_description.data = ''
             flash(f'Post added successfully!!', category='success')
             return redirect(url_for('home.home_page'))
+
         errors = get_error_items(form)
         print(errors)
     return render_template('home/home.html', edit_form=edit_form, form=form, main_feed=main_feed)

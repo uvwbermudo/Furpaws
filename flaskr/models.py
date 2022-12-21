@@ -28,7 +28,7 @@ class Posts(db.Model):
     __tablename__ = 'posts'
     author_tag = db.Column(db.String(25), db.ForeignKey('users.tag'))
     post_id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
-    post_content = db.Column(db.Text(), nullable=False)
+    post_content = db.Column(db.Text(), nullable=True)
     date_posted = db.Column(db.DateTime(), nullable=False,
                             default=datetime.datetime.utcnow)
 
@@ -37,6 +37,7 @@ class Posts(db.Model):
 
     photos = db.relationship('Photos', back_populates='post')
     videos = db.relationship('Videos', back_populates='post')
+
 
 
 class CreatePost(db.Model):
@@ -70,3 +71,7 @@ class Videos(db.Model):
     video_url = db.Column(db.String(150), nullable=True)
 
     post = db.relationship('Posts', back_populates='videos')
+
+
+
+

@@ -6,7 +6,7 @@ from wtforms.fields import FileField
 
 class AddPostForm(FlaskForm):
     post_description = TextAreaField('Enter description: ', validators=[
-                                     Length(max=150), DataRequired()])
+                                     Length(max=150)])
     add_photos = FileField("Add Photos")
     add_videos = FileField("Add Videos")
     add_post_button = SubmitField("Add Post")

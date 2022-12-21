@@ -4,6 +4,10 @@ body {
     width: 100%;
 }
 
+html {
+    zoom: 90%;
+}
+
 * {
     font-family: 'Readex Pro', sans-serif;
 }
@@ -191,9 +195,10 @@ body {
     background-image:
         linear-gradient(to right, rgba(255, 255, 255, 0), rgba(228, 224, 224, 0.24), rgba(32, 32, 32, 0.479), rgba(0, 0, 0, 0.404), rgba(0, 0, 0, 1)),
         url('../img/landing_bg.jpg');
+    background-size: cover;
     overflow-x: hidden;
     overflow-y: hidden;
-    height: 100vh;
+    height: 650px;
     display: flex;
     align-items: center;
     justify-content: end;
@@ -318,6 +323,8 @@ input[data-autocompleted] {
 
 .btn.btn-fp-blue:active {
     background-color: #1da1f2;
+    border-color: white;
+    color: white;
     transform: scale(1);
 }
 
@@ -338,6 +345,7 @@ input[data-autocompleted] {
 
 .btn-link:hover {
     color: #127bbd;
+    cursor: pointer;
 }
 
 .register-section {
@@ -391,7 +399,6 @@ input[data-autocompleted] {
     margin: 0;
 }
 
-@import url("https://fonts.googleapis.com/css?family=Readex+Pro:500|Raleway:200");
 
 .search-container {
     position: absolute;
@@ -399,8 +406,7 @@ input[data-autocompleted] {
     height: 45px;
     left: 491px;
     top: 27px;
-    font-family: "Raleway";
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 200;
     letter-spacing: 0;
     line-height: 18px;
@@ -447,9 +453,9 @@ input[data-autocompleted] {
 }
 
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
-div.content {
+div.content {   
     position: relative;
-    width: 1260px;
+    width: calc(100% - 276px);
     height: 645px;
     left: 276px;
     overflow-y: scroll;
@@ -719,4 +725,104 @@ div.content::-webkit-scrollbar {
     100% {
         transform: translateY(0);
     }
+}
+
+.search-result-post .post-content {
+    width: 80%;
+    padding-top: 20px;
+    text-align: start;
+    border-top: solid;
+    border-width: 1px;
+    border-color: #757575ad;
+    margin-left: 90px;
+    padding-bottom: 20px;
+}
+
+
+
+.search-result-post {
+    width: 60%;
+    background-color: white;
+    margin: 0px;
+    padding-top: 20px;
+    
+}
+
+.post-tag {
+    margin-left: -5px;
+}
+
+
+.search-result-post-upper {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.search-result-post-upper .post-upper{
+    text-decoration: none;
+    padding-left: 10px;
+
+}
+
+.search-result-post-upper .post-upper:hover{
+    text-decoration: underline;
+    
+}
+
+.search-result-post-upper img{
+    height: 60px;
+
+}
+
+.search-result-container {
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    padding-left: 20px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+    width: 80%;
+    align-items: center;
+    
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.result-profile-info {
+    padding-left: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+}
+
+.container-decorator {
+    background-color: #1DA1F2;
+    height: 10px;
+    margin-right: 10px;
+    width: 80%;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.search-result-container a {
+    text-decoration: none;
+}
+
+.result-profile-info p {
+   margin: 0px;
+}
+
+.search-result-container a:hover {
+    text-decoration: underline;
+}
+
+.search-result-container img {
+    height: 80px;
+    border-radius: 50%;
 }

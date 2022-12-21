@@ -229,3 +229,12 @@ function imageTooLargeAlert(imageDialogTextContent, imageDialogOkButton) {
 function openPage(pageUrl) {
     window.open(pageUrl);
 }
+
+function validate_search() {
+    var query = $('#searchbar').val();
+
+    if (query == ""){
+        return false;
+    }
+    return true;
+}

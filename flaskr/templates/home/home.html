@@ -168,177 +168,10 @@
 		    </div>
 
         <!-- COMMENTS -->
-	      <br/>
+	      <!-- <br/>
         <div class="collapse" id="comments-{{post.post_id}}">
-          <div class="card">
-            <div class="card-body">
-              {% if post.author_tag == current_user.tag %}
-                {% for comment in post.comments %}
-                  {% if comment.author_tag == current_user.tag %}
-                  <div class="card">
-                    <div class="card-body">
-                      <a href="#">
-                        {{comment.author_tag}}
-                      </a>
-                      {{comment.comment_content}} {{comment.date_commented.strftime("%d,%b %Y").lower()}}
-                      <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#updateCommentModal{{comment.comment_id}}">
-                        Edit
-                      </button>
-                      <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comment.comment_id}}">
-                        Delete
-                      </button>
-                      <br/>
-                    </div>
-                  </div>
-                  {% else %}
-                    <div class="card">
-                      <div class="card-body">
-                        <a href="#">
-                          {{comment.author_tag}}
-                        </a>
-                        {{comment.comment_content}} {{comment.date_commented.strftime("%d,%b %Y").lower()}}
-                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comment.comment_id}}">
-                          Delete
-                        </button>
-                        <br/>
-                      </div>
-                    </div>
-                  {% endif %}
-
-                  <div class="modal fade" id="deleteCommentModal{{comment.comment_id}}" tabindex="-1" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h1 class="modal-title fs-5" id="deleteCommentModalLabel">
-                            Delete Comment
-                          </h1>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          Are you sure you want to delete this comment?
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Close
-                          </button>
-                          <form action="{{url_for('home.delete_comment', comment_id=comment.comment_id)}}" method="POST">
-                            {{form.csrf_token}}
-                            <input type="submit" class="btn btn-danger" value="Delete">
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-
-
-                  <div class="modal fade" id="updateCommentModal{{comment.comment_id}}" tabindex="-1" aria-labelledby="updateCommentModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h1 class="modal-title fs-5" id="updateCommentModalLabel">
-                            Edit Comment
-                          </h1>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                          </button>
-                        </div>
-                        <div class="modal-body">
-                          <form action="/home/update-comment/{{comment.comment_id}}" method="POST">
-                            <textarea class="form-control" name="edit_comment_textbox" id="edit_comment_textbox" placeholder="{{comment.comment_content}}" required>{{comment.comment_content}}</textarea>
-                        </div>
-                        <div class="modal-footer">  
-                          {{edit_comment_form.csrf_token}}
-                          {{edit_comment_form.edit_comment_button(class="submit-post")}}</form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                {% endfor %}
-              {% else %}
-                {% for comment in post.comments %}
-                  {% if comment.author_tag == current_user.tag %}
-                    <div class="card">
-                      <div class="card-body">
-                        <a href="#">
-                          {{comment.author_tag}}
-                        </a>
-                        {{comment.comment_content}} {{comment.date_commented.strftime("%d,%b %Y").lower()}}
-                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#updateCommentModal{{comment.comment_id}}">
-                          Edit
-                        </button>
-                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comment.comment_id}}">
-                          Delete
-                        </button>
-                        <br/>
-                      </div>
-                    </div>
-
-                  {% else %}
-                    <div class="card">
-                      <div class="card-body">
-                        <a href="#">
-                          {{comment.author_tag}}
-                        </a>
-                          {{comment.comment_content}} {{comment.date_commented.strftime("%d,%b %Y").lower()}}
-                        <br/> 
-                      </div>
-                    </div>
-
-                  {% endif %}
-
-                  <div class="modal fade" id="deleteCommentModal{{comment.comment_id}}" tabindex="-1" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h1 class="modal-title fs-5" id="deleteCommentModalLabel">
-                            Delete Comment
-                          </h1>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          Are you sure you want to delete this comment?
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Close
-                          </button>
-                          <form action="{{url_for('home.delete_comment', comment_id=comment.comment_id)}}" method="POST">
-                            {{form.csrf_token}}
-                            <input type="submit" class="btn btn-danger" value="Delete">
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="modal fade" id="updateCommentModal{{comment.comment_id}}" tabindex="-1" aria-labelledby="updateCommentModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h1 class="modal-title fs-5" id="updateCommentModalLabel">
-                            Edit Comment
-                          </h1>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                          </button>
-                        </div>
-                        <div class="modal-body">
-                          <form action="/home/update-comment/{{comment.comment_id}}" method="POST">
-                            <textarea class="form-control" name="edit_comment_textbox" id="edit_comment_textbox" placeholder="{{comment.comment_content}}" required>{{comment.comment_content}}</textarea>
-                        </div>
-                        <div class="modal-footer">  
-                          {{edit_comment_form.csrf_token}}
-                          {{edit_comment_form.edit_comment_button(class="submit-post")}}</form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                {% endfor %}
-              {% endif %}
-            </div>
-          </div>
-        </div>
+          
+                    
         <p class="card-text">
           {% if post.comments|length > 0 %}
             <a data data-bs-toggle="collapse" href="#comments-{{post.post_id}}" role="button">
@@ -349,22 +182,175 @@
           {% else %}
             <small class="text-muted">No comments!</small>
           {% endif %}
-        </p>
-	      <form class="input-groub mb-3" method="POST" action="/home/create-comment/{{post.post_id}}">
-		    <textarea class="form-control" style="width: 1000px;" id="comment_textbox" name="comment_textbox" placeholder="Say something about this post..."></textarea>
-		    {{form.csrf_token}}<br/>
-        <button type="submit" 
-        style=
-        "border-radius: 10px;
-        width:85%;
-        padding: 10px;
-        border:none;
-        outline:none;
-        background-color: rgb(109, 216, 235);
-        color: white">
-          Comment
+        </p> -->
+
+        <button data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}">
+          something
         </button>
-	      </form>
+
+        <div class="modal fade" id="viewCommentsModal{{post.post_id}}" tabindex="-1" role="dialog" aria-labelledby="viewCommentsModalLabel{{post.post_id}}" aria-hidden="true">
+          <div class="modal-dialog modal-fullscreen" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <p class="modal-title fs-5" id="viewCommentsModalLabel{{post.post_id}}">
+                  @{{post.author_tag}}'s post
+                </p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+              </div>
+              <div class="card mt-3 mb-3 p-3">
+                "{{post.post_content}}"
+              </div>
+              <div class="modal-body" style="background-color:#6fc8ff">
+                <div class="collapse" id="comments-{{post.post_id}}">
+                  <div class="card">
+                    <div class="card-body">
+                      {% if post.author_tag == current_user.tag %}
+                        {% for comments in post.comments %}
+                          {% if comments.author_tag == current_user.tag %}
+                            <div class="card">
+                              <div class="card-body">
+                                <a href="#">{{comments.author_tag}}</a>
+                                {{comments.comment_content}}
+                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editCommentModal{{comments.comment_id}}">
+                                  Edit
+                                </button>
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comments.comment_id}}">
+                                  Delete  
+                                </button>
+                              </div>
+                            </div>
+                            <br>
+                          {% else %}
+                            <div class="card">
+                              <div class="card-body">
+                                <a href="#">{{comments.author_tag}}</a>
+                                {{comments.comment_content}}
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comments.comment_id}}">
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                            <br>
+                          {% endif %}
+                        {% endfor %}
+                      {% else %}
+                        {% for comments in post.comments %}
+                            {% if comments.author_tag == current_user.tag %}
+                              <div class="card">
+                                <div class="card-body">
+                                  <a href="#">{{comments.author_tag}}</a>
+                                  {{comments.comment_content}}
+                                  <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editCommentModal{{comments.comment_id}}">
+                                    Edit
+                                  </button>
+                                  <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comments.comment_id}}">
+                                    Delete  
+                                  </button>
+                                </div>
+                              </div>
+                              <br>
+                            {% else %}
+                              <div class="card">
+                                <div class="card-body">
+                                  <a href="#">{{comments.author_tag}}</a>
+                                  {{comments.comment_content}}
+                                </div>
+                              </div>
+                              <br>
+                            {% endif%}
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                <p class="card-text">
+                  {% if post.comments|length > 0 %}
+                    <a data data-bs-toggle="collapse" href="#comments-{{post.post_id}}" role="button">
+                      <small>
+                        View {{post.comments|length}} Comments
+                      </small>
+                    </a>
+                  {% else %}
+                    <small class="text-muted">No comments!</small>
+                  {% endif %}
+                </p>
+              </div>
+              <div class="modal-footer">
+                <form class="input-group mb-3" method="POST" action="/home/create-comment/{{post.post_id}}">
+                <textarea class="form-control" style="width: 115px;" id="comment_textbox" name="comment_textbox" placeholder="Say something about this post..."></textarea>
+                {{form.csrf_token}}
+                <br><pre> </pre>
+                <button type="submit" 
+                style=
+                "border-radius: 10px;
+                width:15%;
+                padding: 10px;
+                border:none;
+                outline:none;
+                background-color: rgb(109, 216, 235);
+                color: white;
+                margin-top: 15px;">
+                  Comment
+                </button>
+                </form>
+              </div>
+              <br>
+
+            </div>
+          </div>
+        </div>
+        {% for comments in post.comments %}
+        <div class="modal fade" id="editCommentModal{{comments.comment_id}}" tabindex="-1" role="dialog" aria-labelledby="editCommentModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editCommentModalLabel">
+                  Edit Comment
+                </h1>
+                <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}"></button>
+              </div>
+              <div class="modal-body">
+                <form action="/home/update-comment/{{comments.comment_id}}" method="POST">
+                  <textarea class="form-control" name="edit_comment_textbox" id="edit_comment_textbox" placeholder="{{comments.comment_content}}" required>{{comments.comment_content}}</textarea>
+              </div>
+              <div class="modal-footer">
+                {{edit_comment_form.csrf_token}}
+                {{edit_comment_form.edit_comment_button(class="submit-post")}}</form>
+                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" style="width:100%">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="deleteCommentModal{{comments.comment_id}}" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteCommentModalLabel">
+                  Delete Comment
+                </h1>
+                <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}"></button>
+              </div>
+              <div class="modal-body">
+                Are you sure you want to delete this comment?
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}">
+                  Cancel
+                </button>
+                <form action="{{url_for('home.delete_comment', comment_id=comments.comment_id)}}" method="POST">
+                  {{form.csrf_token}}
+                  <input type="submit" class="btn btn-danger" value="Delete">
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        <!-- LIKES  -->
         <div class="card-footer" style="background-color:white; position:flex;">
           {% if current_user.tag in post.likes|map(attribute="author_tag")|list %}
               {% for like in post.likes %}
@@ -376,7 +362,6 @@
             <a href="home/like-post/{{post.post_id}}"><img src="../../static/img/like_unfilled.png" width="35px" height="33px"></a>
           {% endif %}
           {{ post.likes|length }}
-          <!-- <img src="../../static/img/like_filled.png" width="35px" height="33px"> -->
         </div>
       </div>
       <br/>

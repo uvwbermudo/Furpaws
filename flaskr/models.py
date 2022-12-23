@@ -184,7 +184,7 @@ class Posts:
     def add(self):
         cursor = mysql.connection.cursor()
         sql = f'INSERT INTO posts(author_tag, post_content, date_posted)\
-                VALUES("{self.author_tag}", "{self.post_content}","{self.date_posted}")'
+                VALUES("{self.author_tag}", "{self.post_content}", "{self.date_posted}")'
         cursor.execute(sql)
 
     @classmethod
@@ -273,6 +273,11 @@ class Posts:
         likes = Likes.query_filter(post_liked=self.post_id)
         return likes
 
+    @property
+    def sharedposts(self):
+        sharedposts = SharePost.query_filter(shared_post_id=self.post_id)
+        return sharedposts
+
 
 class CreatePost:
 
@@ -328,6 +333,63 @@ class CreatePost:
     @property
     def post(self):
         post = Posts.query_get(self.post_id)
+        return post
+
+
+class SharePost:
+
+    def __init__(self, id=None, sharer_tag=None, shared_post_id=None, date_created=None):
+        self.id = id
+        self.sharer_tag = sharer_tag
+        self.shared_post_id = shared_post_id
+        if date_created is None:
+            self.date_created = datetime.datetime.now()
+        else:
+            self.date_created = date_created
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f"INSERT INTO share_post(sharer_tag, shared_post_id, date_created)\
+                VALUES('{self.sharer_tag}', '{self.shared_post_id}','{self.date_created}')"
+        cursor.execute(sql)
+
+    # ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
+    @classmethod
+    def query_filter(cls, sharer_tag=None, shared_post_id=None, order_by='date_created', order='DESC'):
+        cursor = mysql.connection.cursor()
+        sql = ''
+        if sharer_tag:
+            sql = f"SELECT * FROM share_post where sharer_tag='{sharer_tag}'"
+        if shared_post_id:
+            sql = f"SELECT * FROM share_post where shared_post_id='{shared_post_id}'"
+        order = f" ORDER BY {order_by} {order};"
+        sql = sql+order
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = SharePost.convert_to_object(result)
+        return result
+
+    @classmethod
+    def convert_to_object(cls, rows):
+        object_results = []
+        for row in rows:
+            new_obj = SharePost(
+                id=row['id'],
+                shared_post_id=row['shared_post_id'],
+                sharer_tag=row['sharer_tag'],
+                date_created=row['date_created']
+            )
+            object_results.append(new_obj)
+        return object_results
+
+    @property
+    def sharer(self):
+        author = Users.query_get(self.sharer_tag)
+        return author
+
+    @property
+    def post(self):
+        post = Posts.query_get(self.shared_post_id)
         return post
 
 

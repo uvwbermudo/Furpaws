@@ -2,7 +2,7 @@ from config import CLOUDINARY_API_CLOUD, CLOUDINARY_API_CLOUD_FOLDER, CLOUDINARY
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-from flaskr.models import Users, Posts, CreatePost, Photos, Videos, Comments, Likes
+from flaskr.models import Users, Posts, CreatePost, Photos, Videos, Comments, Likes, SharePost
 from flaskr import mysql
 from .forms import AddPostForm, EditPostForm, EditCommentForm
 from flask import Blueprint, render_template, request, flash, redirect, url_for, Response, request
@@ -89,6 +89,17 @@ def home_page():
 @login_required
 def delete_post(post_id):
     Posts.delete(post_id)
+    mysql.connection.commit()
+    flash(f'Post deleted successfully', category='success')
+    return redirect(url_for('home.home_page'))
+
+
+@home.route('/home/share-post/<int:post_id>', methods=['GET', 'POST'])
+@login_required
+def share_post(post_id):
+    storing_variable = SharePost(
+        sharer_tag=current_user.tag, shared_post_id=post_id)
+    storing_variable.add()
     mysql.connection.commit()
     flash(f'Post deleted successfully', category='success')
     return redirect(url_for('home.home_page'))

@@ -51,13 +51,14 @@ def create_db():
     );
 
     CREATE TABLE IF NOT EXISTS share_post (
-        id INT NOT NULL AUTO_INCREMENT,
+        reference_id INT,
         sharer_tag VARCHAR(25) NOT NULL,
         shared_post_id INT NOT NULL,
         date_created DATETIME NOT NULL,
         PRIMARY KEY (id) ,
         CONSTRAINT `share_post_ibfk_1` FOREIGN KEY(sharer_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
-        CONSTRAINT `share_post_ibfk_2` FOREIGN KEY(shared_post_id) REFERENCES posts(post_id) ON UPDATE CASCADE ON DELETE CASCADE
+        CONSTRAINT `share_post_ibfk_2` FOREIGN KEY(shared_post_id) REFERENCES posts(post_id) ON UPDATE CASCADE ON DELETE CASCADE,
+        CONSTRAINT `share_post_ibfk_3` FOREIGN KEY(reference_id) REFERENCES posts(post_id) ON UPDATE CASCADE ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS photos (

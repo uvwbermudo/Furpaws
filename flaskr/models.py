@@ -338,8 +338,8 @@ class CreatePost:
 
 class SharePost:
 
-    def __init__(self, id=None, sharer_tag=None, shared_post_id=None, date_created=None):
-        self.id = id
+    def __init__(self, reference_id=None, sharer_tag=None, shared_post_id=None, date_created=None):
+        self.reference_id = reference_id
         self.sharer_tag = sharer_tag
         self.shared_post_id = shared_post_id
         if date_created is None:
@@ -349,20 +349,24 @@ class SharePost:
 
     def add(self):
         cursor = mysql.connection.cursor()
-        sql = f"INSERT INTO share_post(sharer_tag, shared_post_id, date_created)\
-                VALUES('{self.sharer_tag}', '{self.shared_post_id}','{self.date_created}')"
+        sql = f"INSERT INTO share_post(reference_id, sharer_tag, shared_post_id, date_created)\
+                VALUES('{self.reference_id}','{self.sharer_tag}', '{self.shared_post_id}','{self.date_created}')"
         cursor.execute(sql)
 
     # ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
     @classmethod
-    def query_filter(cls, sharer_tag=None, shared_post_id=None, order_by='date_created', order='DESC'):
+    def query_filter(cls, all=False, reference_id=None, sharer_tag=None, shared_post_id=None, order_by='date_created', order='DESC'):
         cursor = mysql.connection.cursor()
         sql = ''
         if sharer_tag:
             sql = f"SELECT * FROM share_post where sharer_tag='{sharer_tag}'"
         if shared_post_id:
             sql = f"SELECT * FROM share_post where shared_post_id='{shared_post_id}'"
+        if reference_id:
+            sql = f"SELECT * FROM share_post where reference_id='{reference_id}'"
         order = f" ORDER BY {order_by} {order};"
+        if all:
+            sql = f"SELECT * FROM share_post"
         sql = sql+order
         cursor.execute(sql)
         result = result_zip(cursor)
@@ -370,11 +374,22 @@ class SharePost:
         return result
 
     @classmethod
+    def query_get(cls, shared_post_id):
+        cursor = mysql.connection.cursor()
+        sql = f"SELECT * FROM share_post WHERE shared_post_id = '{shared_post_id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = SharePost.convert_to_object(result)
+        if result:
+            return result[0]
+        return result
+
+    @classmethod
     def convert_to_object(cls, rows):
         object_results = []
         for row in rows:
             new_obj = SharePost(
-                id=row['id'],
+                reference_id=row['reference_id'],
                 shared_post_id=row['shared_post_id'],
                 sharer_tag=row['sharer_tag'],
                 date_created=row['date_created']

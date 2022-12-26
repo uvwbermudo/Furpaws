@@ -10,7 +10,6 @@ from flask_mysql_connector import MySQL
 db_url = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 mysql = MySQL()
 
-
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = SECRET_KEY

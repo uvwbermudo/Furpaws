@@ -38,6 +38,8 @@ def home_page():
     # Querying main feed posts
     main_feed = Posts.query_filter(
         all=True, order_by='date_posted', order='DESC')
+    share_posts = SharePost.query_filter(
+        all=True, order_by='date_created', order='DESC')
     for post in main_feed:
         print(post.photos)
     if request.method == 'POST':
@@ -82,12 +84,18 @@ def home_page():
             return redirect(url_for('home.home_page'))
         errors = get_error_items(form)
         print(errors)
-    return render_template('home/home.html', edit_comment_form=edit_comment_form, edit_form=edit_form, form=form, main_feed=main_feed)
+    return render_template('home/home.html', edit_comment_form=edit_comment_form, edit_form=edit_form, form=form, main_feed=main_feed, share_posts=share_posts)
 
 
 @home.route('/home/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def delete_post(post_id):
+    related_posts = SharePost.query_filter(
+        shared_post_id=post_id, order_by='date_created', order='DESC')
+    if related_posts:
+        for post in related_posts:
+            Posts.delete(post.reference_id)
+            mysql.connection.commit()
     Posts.delete(post_id)
     mysql.connection.commit()
     flash(f'Post deleted successfully', category='success')
@@ -97,11 +105,18 @@ def delete_post(post_id):
 @home.route('/home/share-post/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def share_post(post_id):
+    related_post = Posts.query_get(
+        post_id=post_id)
+    shared_post = Posts(post_content=related_post.post_content,
+                        author_tag=related_post.author_tag)
+    shared_post.add()
+    mysql.connection.commit()
+    inserted_post = Posts.last_inserted()
     storing_variable = SharePost(
-        sharer_tag=current_user.tag, shared_post_id=post_id)
+        sharer_tag=current_user.tag, shared_post_id=related_post.post_id, reference_id=inserted_post.post_id)
     storing_variable.add()
     mysql.connection.commit()
-    flash(f'Post deleted successfully', category='success')
+    flash(f'Post shared successfully', category='success')
     return redirect(url_for('home.home_page'))
 
 

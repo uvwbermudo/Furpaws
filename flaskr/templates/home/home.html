@@ -86,7 +86,13 @@
         {% endfor %}
         {% if post.post_id in share_posts|map(attribute="reference_id")|list %}
           <div class="card">
-            <a href="#">
+            <div class="card-body">
+            {% for shared in share_posts %}
+            {% if shared.shared_post_id in share_posts|map(attribute="shared_post_id")|list and post.post_id == shared.reference_id %}
+            <a href="posts/{{shared.shared_post_id}}"> Visit Post </a>
+            <br>
+            {% endif %}
+            {% endfor %}
               {% for shared in share_posts %}
               {% if current_user.tag == shared.sharer_tag and post.post_id == shared.reference_id %}
               <br>
@@ -101,7 +107,7 @@
             <h2>
               {{ post.date_posted.strftime("%d,%b %Y").lower()}}
             </h2>
-            </a>
+            </div>
             <div class="card-footer" style="background-color:white; position:flex;">
               {% if current_user.tag in post.likes|map(attribute="author_tag")|list %}
                 {% for like in post.likes %}

@@ -55,7 +55,7 @@ def create_db():
         sharer_tag VARCHAR(25) NOT NULL,
         shared_post_id INT NOT NULL,
         date_created DATETIME NOT NULL,
-        PRIMARY KEY (id) ,
+        PRIMARY KEY (reference_id) ,
         CONSTRAINT `share_post_ibfk_1` FOREIGN KEY(sharer_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
         CONSTRAINT `share_post_ibfk_2` FOREIGN KEY(shared_post_id) REFERENCES posts(post_id) ON UPDATE CASCADE ON DELETE CASCADE,
         CONSTRAINT `share_post_ibfk_3` FOREIGN KEY(reference_id) REFERENCES posts(post_id) ON UPDATE CASCADE ON DELETE CASCADE

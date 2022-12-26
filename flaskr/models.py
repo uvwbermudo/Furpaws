@@ -221,13 +221,15 @@ class Posts:
 
     # ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
     @classmethod
-    def query_filter(cls, all=False, post_content=None, author_tag=None, order_by='date_posted', order='DESC'):
+    def query_filter(cls, all=False, post_id=None, post_content=None, author_tag=None, order_by='date_posted', order='DESC'):
         cursor = mysql.connection.cursor()
         sql = ''
         if post_content:
             sql = f"SELECT * FROM posts where post_content LIKE '%{post_content}%'"
         if author_tag:
             sql = f"SELECT * FROM posts where author_tag LIKE '%{author_tag}%'"
+        if post_id:
+            sql = f"SELECT * FROM posts where post_id LIKE '%{post_id}%'"
         order = f" ORDER BY {order_by} {order};"
         if all:
             sql = f"SELECT * FROM posts"

@@ -545,12 +545,19 @@ div.content::-webkit-scrollbar {
     
 }
 
+#upper-left{
+    position: absolute;
+    background-color: transparent;
+    left: 40px;
+    top: 40px;
+
+}
 
 .share-something {
     position: absolute;
-    width: 628px;
-    height: 65px;
-    left: 172px;
+    width: 850px;
+    height: 75px;
+    left: 170px;
     top: 60px;
     text-align: left;
     text-indent: 20px;
@@ -563,8 +570,9 @@ div.content::-webkit-scrollbar {
     background: #EBEBEB;
     border: none;
     letter-spacing: 0;
-    border-radius: 5px;
+    border-radius: 50px;
     transition: opacity 0.3s;
+    z-index: 100;
 
 }
 
@@ -578,15 +586,158 @@ div.content::-webkit-scrollbar {
     opacity: 65%;
 }
 
+.ss-add-post-photo-btns {
+    position: absolute;
+    top: 145px;
+    left: 200px;
+    width: 142px;
+    height: 45px;
+    border-radius: 15px;
+    background-color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+}
+
+.ss-add-post-video-btns {
+    position: absolute;
+    top: 145px;
+    left: 381px;
+    width: 138px;
+    height: 45px;
+    border-radius: 15px;
+    background-color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+}
+
+.ss-add-post-photo-btns:hover, .ss-add-post-video-btns:hover {
+    background-color: rgb(185, 240, 255);
+    transition: 0.2s;
+}
+
+.top-ss-profpic { 
+    position: absolute; 
+    width: 80px; 
+    height: 80px; 
+    overflow: hidden; 
+    border-radius: 50%;
+    top: 57px; 
+    left: 70px;
+}
+
+.top-ss-profpic img { 
+    width: auto; 
+    height: 100%; 
+    margin-left: -50px; 
+}
+
+#cpost-modal-title{
+    margin: 0 auto;
+}
+
+.cpost-upper{
+    position: relative;
+    left: 5px;
+    width: 300px;
+    height: 50px;
+
+}
+
+.cpost-upper h6, .cpost-upper h5{
+    padding: 5px 0px -100px 0px;
+    position: relative;
+}
+
+.cpost-upper h5{
+    margin-left: -128px;
+    top: -25px;
+}
+
+.cpost-upper h6{
+    margin-left: -100px;
+    top: -40px;
+}
+
+.cpost-profile-pic{
+    display: inline-block; 
+    position: absolute; 
+    width: 55px; 
+    height: 55px; 
+    overflow: hidden; 
+    border-radius: 50%;
+    top: -15px; 
+    left: -5px;
+}
+
+.cpost-profile- img { 
+    width: auto; 
+    height: 100%; 
+ 
+}
+
+
+.add-post-image-button {
+    position: absolute;
+    top: 145px;
+    left: 175px;
+    width: 142px;
+    height: 45px;
+    border-radius: 5%;
+    background-color: white;
+    border: none;
+}
+
+.add-post-video-button {
+    position: absolute;
+    top: 145px;
+    left: 331px;
+    width: 138px;
+    height: 45px;
+    border-radius: 5%;
+    background-color: white;
+    border: none;
+}
+
+.submit-post {
+    width: 100%;
+    background-color: #1DA1F2;
+    border-radius: 5px;
+    color: white;
+    padding: 7px;
+    border: none;
+    margin-top: 3%;
+}
+
+.add-post-btns {
+    background-color: none;
+    padding-right: 5px;
+    padding-left: 5px;
+    width: 45%;
+    text-align: center;
+    border-radius: 20px;
+    margin-left: 3%;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.add-post-btns:hover {
+    background-color: rgb(185, 240, 255);
+    transition: 0.2s;
+
+}
+
 .main-feed-posts {  
     position: relative;
     display: table;  
-    margin-top: 110px;
+    margin-top: 90px;
     width: 1060px;
-    height: 558px;
+    height: 458px;
     overflow-y: scroll;
-    /* border: 1px dashed black; */
-
+ 
 
 }
 
@@ -649,9 +800,7 @@ div.content::-webkit-scrollbar {
 
 .post-username{
     font-weight: bold;
-
     display: block;
-
     text-decoration: none;
     width: auto;
 }
@@ -686,7 +835,6 @@ div.content::-webkit-scrollbar {
     margin-left: 70px;
     border: none;
     background-color: transparent;
-    /* justify-items: right; */
     color: gray;
     cursor: pointer;  
     outline: none;
@@ -709,9 +857,9 @@ div.content::-webkit-scrollbar {
     display: block;
     cursor: pointer;
   }
+
 .dropdown-content a {
     display: block;
-    color: #000000;
     padding: 5px;
     text-decoration: none;
     background-color: #FFFFFF;
@@ -725,32 +873,47 @@ div.content::-webkit-scrollbar {
 .post-date{
     font-weight: lighter;
     text-align: right;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 }
 
 .post-middle-part{
     top: 160px;
     position: relative;
     display: flex;
+    overflow: hidden;
 
 }
 
-.post-uploaded-content{ 
-    width: 600px;
-    height: 370px;
-    /* border: 5px dashed #f7a239; */
-    object-fit: contain;
-    /* object-position: left; */
+.post-uploaded-content{
+    height: 375px;
+    width: 620px;
+
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
 }
+
+.post-uploaded-content img, .post-uploaded-content video{ 
+    height: 360px;
+    width: auto; 
+    display: block;
+    justify-items: center;
+}
+
 
 .post-description{
     margin-top: 2px;
-    margin-left: 30px;
+    margin-left: 5px;
     font-weight: lighter;
     font-family: Arial, Helvetica, sans-serif;
     width: 385px;
     height: 310px;
     border-top: 1px solid gray;
-    text-align: left
+    text-align: left;
+    position: absolute;
+    left: 625px;
 }
 
 .post-bottom-part{
@@ -762,7 +925,7 @@ div.content::-webkit-scrollbar {
 }
 
 .post-bottom-part h6{
-    padding: 10px 40px 0px 10px;
+    padding: 10px 40px 0px 10px
 }
 
 .post-bottom-part button{
@@ -789,56 +952,6 @@ div.content::-webkit-scrollbar {
 }
 
 
-.add-post-image-button {
-    position: absolute;
-    top: 145px;
-    left: 175px;
-    width: 142px;
-    height: 45px;
-    border-radius: 5%;
-    background-color: white;
-    border: none;
-}
-
-.add-post-video-button {
-    position: absolute;
-    top: 145px;
-    left: 331px;
-    width: 138px;
-    height: 45px;
-    border-radius: 5%;
-    background-color: white;
-    border: none;
-}
-
-.submit-post {
-    width: 100%;
-    background-color: #1DA1F2;
-    border-radius: 5px;
-    color: white;
-    padding: 7px;
-    border: none;
-    margin-top: 3%;
-}
-
-.add-post-btns {
-    background-color: none;
-    padding-right: 5px;
-    padding-left: 5px;
-    width: 45%;
-    text-align: center;
-    border-radius: 20px;
-    margin-left: 3%;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.add-post-btns:hover {
-    background-color: rgb(185, 240, 255);
-    transition: 0.2s;
-
-}
-
 /* START of POST WITH TEXT ONLY */
 
 .post-wto-container{
@@ -857,6 +970,7 @@ div.content::-webkit-scrollbar {
     border-radius: 50%;
     top: 90px;
     left: 20px; 
+    box-shadow:  0px 3px 3px rgba(0.25, 0, 0, 0.25)
 }
 
 .post-wto-profile-pic img { 
@@ -931,6 +1045,7 @@ div.content::-webkit-scrollbar {
     margin: 20px 0;
     text-decoration: none;
     width: auto;
+
 }
 
 .post-wto-right-side .post-wto-upper-right{
@@ -948,7 +1063,6 @@ div.content::-webkit-scrollbar {
     margin-left: 100px;
     border: none;
     background-color: transparent;
-    /* justify-items: right; */
     color: gray;
     cursor: pointer;  
     outline: none;
@@ -960,10 +1074,10 @@ div.content::-webkit-scrollbar {
 
 }
 
-
 .post-wto-date{
     font-weight: lighter;
     text-align: right;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 }
 
 .post-wto-middle-part{
@@ -1020,22 +1134,11 @@ div.content::-webkit-scrollbar {
 
 /* END of POST WITH TEXT ONLY CONTAINER */
 
-
-
-
 /* START of POST WITH MUTIPLE PHOTOS */
 .post-wmp-container{
-    top: 120px;
+    top: 120px; 
     position: relative;
-    display: flex;
-    flex-direction: column;
-    
-}
-
-.post-wmp-profile-pic img { 
-    width: auto; 
-    height: 100%; 
-    margin-left: -50px; 
+    flex-direction: column      
 }
 
 .post-wmp-rectangle-4 {
@@ -1044,7 +1147,7 @@ div.content::-webkit-scrollbar {
     height: 460px;
     top: 75px;
     background: #FFFFFF;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.21), 0 6px 6px rgba(0,0,0,0.25);
     border-radius: 20px;
 }
 
@@ -1055,56 +1158,7 @@ div.content::-webkit-scrollbar {
     top: 65px;
     background: #1DA1F2;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 20px;
-}
-
-.post-wmp-upper-left{
-    position: relative;
-    display: flex;
-    flex: row;
-    justify-content: space-between;
-    top: 80px;
-    left: 30px;
-}
-
-.post-wmp-upper-left div{
-    padding: 35px 8px 5px 10px;
-}
-
-.post-wmp-profile-pic { 
-    display: inline-block; 
-    position: relative; 
-    width: 60px; 
-    height: 60px; 
-    overflow: hidden; 
-    border-radius: 50%;
-    top: 0px; 
-    left: 15px;
-    right: 10px;
-}
-
-.post-wmp-profile-pic img { 
-    width: auto; 
-    height: 100%; 
-    margin-left: -50px; 
-}
-.post-wmp-username{
-    font-weight: bold;
-    border-right: 0.5px solid gray;
-    display: block;
-    line-height: 0.5px;
-    margin: 20px 0;
-    text-decoration: none;
-    width: auto;
-}
-
-.post-wmp-usertag{
-    font-weight: lighter;
-    display: block;
-    line-height: 0.5px;
-    margin: 20px 0;
-    text-decoration: none;
-    width: auto;
+    border-radius: 20px
 }
 
 .post-wmp-middle-part{
@@ -1112,173 +1166,332 @@ div.content::-webkit-scrollbar {
     position: absolute;
     display: flex;
     flex-direction: row;
-    height: 305px;
+    height: 315px;
     width: 1060px;
-    /* border: 2px dashed black; */
-    padding: 0px;
-    background: rgba(193, 193, 193, 0.37);
-    transition: transform 0.3s;
-    white-space: nowrap;
-    overflow-x: scroll;  /* add horizontal scrollbars to the container */
-}
-
-.slider-button{
-    border-radius: 50%;
-    position: absolute;
-    background-color: transparent;
-    outline: none;
-    color: transparent;
-    border: none;
-    top: 125px;
-    left: 1000px;
-}
-
-.slider-button:active .post-wmp-middle-part{
-    scroll-left: 100%;
-}
-
-.slider-button:hover{
-    color: darkslategrey;
-    transition: 0.9s;
 }
 
 .post-wmp-uploaded-content{
     position: relative;
-    display: inline-block;
-    margin: 0 0.1%;
-
-
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    width: 1060px;
+    align-items: center;
+    justify-content: center
 }
 
-.post-wmp-uploaded-content img, video{
-    display: inline-block;
+.slider-button {
+    display: none;
+  }
+
+.slider-button-visible {
+    position: absolute;
     height: 300px;
-    width: auto;
-    display: table;
-    transition: transform 0.5s;
+    width: 80px;
+    left: 980px;
+    border-radius: 0.5%;
+    opacity: 80%;
+    border: none;
+  }
 
-}
-
-.post-wmp-uploaded-content img:hover{
-    transform: translateY(-10px) scale(1.1); 
-    opacity: 1;
-}
+  .slider-button-visible:hover{
+    color: #1DA1F2;
+  }
+  
+.slider-button.hidden {
+    display: none
+  }
 
 
 
 .post-wmp-bottom-part{
-    top: 485px;
+    top: 25px;
     left: 50px;
     display: flex;
-    position: absolute;
-    justify-content: space-between;
+    position: relative;
+
 }
 
 .post-wmp-bottom-part h6{
     padding: 10px 40px 0px 10px;
 }
+
 .post-wmp-bottom-part button{
+
     border-radius: 50%;
+
     background-color: transparent;
     resize: none;
     outline: none;
     color: lightgray;
     border: none;
-}
-
-.post-wmp-hearts:hover{
-    color: red;
-}
-
-.post-wmp-comments:hover{
-    color: #1DA1F2;
-}
-
-.post-wmp-shares:hover{
-    color:  #1DA1F2;
-}
+} 
 
 /* END of POST WITH MULTIPLE PHOTOS */
+.post-wmp-uploaded-content img, .post-wmp-uploaded-content video {
+    position: relative;
+    height: 280px;
+    width: auto; 
+    display: block;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin-right: 10px;
+
+  }
 
 
+
+ #carousel-content-upper {
+    background: none;
+    border: none;
+  }
+  #carousel-header {
+    border: none;
+  }
+  #carousel-header button {
+    background: none;
+    border-radius: 100px 100px 0 0;
+    padding: 5px 10px;
+    opacity: 1;
+    position: relative;
+    top: 15px;
+    border: solid 2px white;
+  }
+ 
+  #carousel-header button:hover {
+    top: 3px;
+  }
+  #carousel-header span {
+    color: white;
+  }
+  #carousel-body{
+    padding: 0;
+    border: none;
+    position: relative;
+  }
+
+  .modal-clicked-photo{
+    width: 300px;
+    height: auto;
+
+  }
+  #carousel-body::before, #carousel-body::after {
+    content: "";
+    height: 50px;
+    width: 50px;
+    display: block;
+    position: absolute;
+    background: white;
+    border-radius: 3px 10px;
+  }
+ 
+  #carousel-body::before {
+    top: -5px;
+    left: -5px;
+  }
+  #carousel-body::after {
+    bottom: -5px;
+    right: -5px;
+    z-index: -1;
+  }
+  .modal-footer {
+    border: none;
+    margin-top: 60px;
+  }
+
+  #carousel-footer .btn {
+    margin: auto;
+    border: solid 2px white;
+    background: none;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 0.1em;
+    font-weight: bold;
+    padding: 0.2em 0.7em;
+  }
+    #carousel-footer .btn:hover {
+    background: white;
+    color: black;
+  }
+  .carousel-control-prev, .carousel-control-next {
+    font-size: 50em;
+    opacity: 1;
+    display: absolute; 
+    margin: auto;
+
+  }
+
+.carousel-control-next-icon, .carousel-control-prev-icon {
+    height: 30px;
+    width: 80px;
+    transition: 0.3s;
+  }
+
+  .carousel-control-next-icon:hover, .carousel-control-prev-icon:hover {
+    height: 45px;
+    width: 80px;
+    transition: 0.3s;
+  }
+
+  
+  .carousel-indicators {
+    bottom: -60px;
+
+  }
 
 /* Profile Page */
-.profile-info-container{
+.profile-feed{
     height: 680px;
-    margin-left: 10px;
-    width: 1060px;
-    height: 280px;
-    border: 2px dashed blue;
-
-
+    margin-left: 35px;
+    width: 1120px;
+    height: 1580px;
+    border: 2px dashed blue
 }
 
 .rectangle-profile{
     position: absolute;
     width: 1060px;
-    height: 244px;
-    top: 15px;
+    height: 200px;
+    top: 20px;
     background: #FFFFFF;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)  
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
 }
+
 
 .profile-right-side{
     position: absolute;
     left: 400px;
+    top: 15px;
 }
 
 .profile-info-pic { 
     display: inline-block; 
     position: absolute; 
-    width: 200px; 
-    height: 200px; 
+    width: 180px; 
+    height: 180px; 
     overflow: hidden; 
     border-radius: 50%;
-    top: 33px; 
-    left: 85px;
+    top: 28px; 
+    left: 95px;
     right: 10px;
+    border: none;
+    background: transparent;
 }
 
-.profile-info-pic img { 
+.profile-info-pic img {
+     
     width: auto; 
     height: 100%; 
-    margin-left: -50px;
+    border-radius: 50%;
+    width: 180px; 
+    height: 180px; 
 }
 
 .profile-username{
-    position: absolute;
-    top: 30px;
-    font-weight: lighter;
+    display: inline-block;
+    margin-right: 5px;
+    margin-top: 30px;
+    font-weight:lighter;
     width: 300px;
     height: 50px;
-    border: 2px dashed #000000;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: auto;
+    overflow-wrap: break-word;
 }
 
 .edit-profile{
-    position: absolute;
-    top: 40px;
-    width: 150px;
-    left: 350px;
+    position: relative;
+    display: inline-block;
+    margin-top: 0px;
+    width: 110px;
+    margin-left: 50px;
     border: none;
+    background-color:white;
+    color: gray;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+
 
 .no-of-posts{
     position: absolute;
-    top: 100px;
+    top: 110px;
+    width: 130px;
+    height: 30px;
+    font-weight:lighter;
+    text-align: left;
+    word-spacing: 5px;
+    font-size: 20px;
 }
+
+.no-of-posts span:first-of-type{
+    font-weight: bold;
+}
+
 
 .no-of-furiends{
     position: absolute;
-    top: 100px;
+    top: 110px;
     left: 200px;
+    width: 130px;
+    height: 30px;
+    text-align: left;
+    font-weight:lighter;
+    word-spacing: 5px;
+}
+
+.no-of-furiends span:first-of-type{
+    font-weight: bold;
 }
 
 .profile-name{
     position: absolute;
     top: 160px;
+    white-space: nowrap;
+    width: auto;
+    overflow-wrap: break-word;
+    left: 1px;
+    text-align: left;
+    word-spacing: 5px;
 }
 
-.profile-bio{
-    position: absolute;
-    top: 200px;
+#profile-picture-modal-title{
+    margin: 0 auto;
+}
+
+#change-profpic-middle-part button{
+    display: flex;
+    flex-direction: column;
+    height: 50px;
+    width: 400px;
+    background: transparent;
+    color: black;
+    border: none;
+    line-height: 50px;
+}
+
+.upload-photo-modal span{
+    margin: 0 auto;
+    color: #1DA1F2;
+    font-weight: bold;
+    border-bottom: 1px solid black;
+    width: 400px;
+
+}
+.remove-current-photo span{
+    margin: 0 auto;
+    color: rgb(190, 50, 10);
+    font-weight: bold;
+    border-bottom: 1px solid black;
+    width: 400px;
+}
+
+#modal-cancel span{
+    margin: 0 auto;
+    
+}
+
+#change-profpic-close{
+    border: none;
+    background-color: transparent;
 }

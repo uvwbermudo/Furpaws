@@ -172,36 +172,41 @@ $('#addPostModal').on('show.bs.modal', function (event) {
 })
 
 
-// Edit Post Modal
-// $('#editPostModal').on('show.bs.modal', function (event) {
-//     var button = $(event.relatedTarget)
-//     var recipient = button.data('whatever')
 
-//     var modal = $(this)
-//     modal.find('.modal-title').text('Edit post')
-//     modal.find('.modal-body input').val(recipient)
-// })
+// display button when image overflow and set button text to number of images na mi overflow
+function updateButton(post_id) {
+    var postId = post_id;
+    var container = $(`#gallery${postId}`)
+    var button = $(`#slider-button${postId}`);
+    var childrenImages = container.children('img').toArray()
+    var childrenVideos = container.children('video').toArray()
+    childrenImages.push(...childrenVideos)
 
-// var uploadField = document.getElementById("add_videos");
+    let sizeCounter = 0;
+    let overflowCount = 0;
+  
+    if (container[0].scrollWidth > container.width()) {
+        console.log(postId, 1)
 
-// uploadField.onchange = function () {
-//     if (this.files[0].size > 10097152) {
-//         alert("File is too large! \n File must not be greater than 10MB");
-//         this.value = "";
-//     };
-// };
+      for (let i = 0; i < childrenImages.length; i++) {
+        sizeCounter += $(childrenImages[i]).width();
 
-// var uploadField = document.getElementById("add_photos");
+        if (sizeCounter > container.width()) {
+          overflowCount += 1;
+          button.css('display', 'block')
+          container.css('justify-content', 'left')
+          button.addClass('slider-button-visible')    
+        }       
+      }
+    } else {
+        console.log(postId, 2)
+        button.css('display', 'none')
+    }
 
-// uploadField.onchange = function () {
-//     if (this.files[0].size > 2097152) {
-//         alert("File is too large! \n File must not be greater than 2MB");
-//         this.value = "";
-//     };
-// };
+    button.text('+' + overflowCount)
+  }  
 
-
-// Test -- Aaron
+  
 function openPage(pageUrl) {
     window.open(pageUrl);
 }

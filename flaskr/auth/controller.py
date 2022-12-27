@@ -1,3 +1,7 @@
+from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import exc
+from flaskr import get_error_items, get_form_fields, mysql
+from flaskr.models import Users
 from flask import Blueprint, render_template, request, flash, redirect, url_for, Response
 from flask_login import current_user, login_user, login_required, logout_user
 from . import auth
@@ -5,11 +9,7 @@ import wtforms_json
 from .forms import RegisterForm, EmailLogin, TagLogin
 import json
 wtforms_json.init()
-from flaskr.models import Users
-from flaskr import db
-from flaskr import get_error_items, get_form_fields
-from sqlalchemy import exc
-from werkzeug.security import generate_password_hash, check_password_hash
+
 
 @auth.route('/')
 def index():
@@ -21,6 +21,7 @@ def login():
     if current_user.is_authenticated:
         return redirect('/home')
     return render_template('auth/login.html')
+
 
 @auth.route('/register')
 def register():
@@ -44,11 +45,12 @@ def verify_register():
     country = request.json['country']
     form_fields = get_form_fields(form)
 
-    check = Users.query.get(tag)
-    check_email = Users.query.filter(Users.email == email).first()
-    
+    check = Users.query_get(tag)
+    print
+    check_email = Users.query_filter(email=email, exact_match=True)
+
     if request.method == 'POST':
-        
+
         if form.validate():
             if check or check_email:
                 errors = get_error_items(form)
@@ -57,21 +59,21 @@ def verify_register():
                 if check_email:
                     errors['email'] = ['Email is already being used.']
                 return Response(json.dumps([errors, form_fields]), status=422, mimetype='application/json')
-                
+
             new_user = Users(
-                email = email,
-                tag = tag,
-                password = generate_password_hash(password, method='sha256'),
-                account_type = account_type,
-                last_name = last_name,
-                first_name = first_name,
-                city = city,
-                zipcode = zipcode,
-                country = country,
-                state = state
-                )
-            db.session.add(new_user)
-            db.session.commit()
+                email=email,
+                tag=tag,
+                password=generate_password_hash(password, method='sha256'),
+                account_type=account_type,
+                last_name=last_name,
+                first_name=first_name,
+                city=city,
+                zipcode=zipcode,
+                country=country,
+                state=state
+            )
+            new_user.add()
+            mysql.connection.commit()
             flash(f'Successfully registered! you may log in.', category='success')
             return Response(json.dumps(['SUCCESS']), status=200)
         else:
@@ -97,15 +99,16 @@ def verify_login():
     password = request.json['password']
     form_fields = get_form_fields(form)
     if '@' in username:
-        check = Users.query.filter(Users.email == username).first()
+        check = Users.query_filter(username=username)
     else:
-        check = Users.query.get(username)
+        check = Users.query_get(username)
     if request.method == 'POST':
         if form.validate():
             if check:
                 if check_password_hash(check.password, password):
                     login_user(check)
-                    flash(f'Logged in. Hello, {check.first_name}!', category='success')
+                    flash(
+                        f'Logged in. Hello, {check.first_name}!', category='success')
                     return Response(json.dumps(['SUCCESS']), status=200)
                 else:
                     errors = get_error_items(form)
@@ -128,7 +131,6 @@ def verify_login():
             if (not check and '@' in username) and 'email' not in errors.keys():
                 errors['email'] = ['Email does not exist.']
             return Response(json.dumps([errors, form_fields]), status=404)
-        
 
 
 @auth.route('/logout')

@@ -76,6 +76,7 @@ def home_page():
             form.post_description.data = ''
             flash(f'Post added successfully!!', category='success')
             return redirect(url_for('home.home_page'))
+
         errors = get_error_items(form)
         print(errors)
     return render_template('home/home.html', edit_form=edit_form, form=form, main_feed=main_feed)

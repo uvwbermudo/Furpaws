@@ -1,7 +1,43 @@
 {% extends 'base.html' %}
+{% block title %} FurPaws - Profile {% endblock %}
 
 
 {% block body_content %}
-<h1>HELLO WORLD</h1>
+<div class="profile-feed">
+
+    <div class="modal" id="change-profpic-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="profile-picture-modal-title">Change Profile Photo</h5>
+              <button type="button" id="change-profpic-close" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="change-profpic-middle-part">
+                <button class="upload-photo-modal"> <span> Upload Photo</span> </button>
+                <button class="remove-current-photo"><span> Remove Current Photo</span></button>
+                <button type="button" id="modal-cancel" class="btn btn-secondary" data-bs-dismiss="modal"><span>Cancel</span></button>
+                
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    <div class="rectangle-profile" ></div>
+    <button class="profile-info-pic" data-bs-toggle="modal" data-bs-target="#change-profpic-modal"><img clas="profile-info-pic" src="../../static/img/postprofile.jpg"/> </button>
+    <div class="profile-right-side">
+        <h1 class="profile-username" align="left">{{current_user.tag}}</h1>
+        
+        <button class="edit-profile" href=""><span>Edit Profile </span></button>
+          
+
+        <h6 class="no-of-posts"><span>10</span> posts </h6>
+        <h6 class="no-of-furiends"><span>103</span>  furiends</h6>
+        <h6 class="profile-name" align="left">{{current_user.first_name}} {{current_user.last_name}}</h6>
+    </div>
+</div>
+
+
 
 {% endblock %}

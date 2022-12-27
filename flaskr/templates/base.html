@@ -67,6 +67,7 @@
     <script src="../../static/js/main.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
+
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
@@ -88,6 +89,7 @@
       let bsalert = new bootstrap.Toast(myalert)
       bsalert.show()
     </script>
+
   {% endfor %}
   {% endif %}
   {% endwith %}

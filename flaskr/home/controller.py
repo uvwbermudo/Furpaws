@@ -112,6 +112,24 @@ def search_layout():
     return render_template('home/search.html', search_result=session['search_query'])
 
 
+@home.route('/photos/delete/<photo_id>', methods=['POST'])
+@login_required
+def delete_photo(photo_id):
+    if request.method == 'POST':
+        print('Deleting', photo_id)
+        Photos.delete(photo_id)
+        mysql.connection.commit()
+        return Response(status=200)
+
+@home.route('/videos/delete/<video_id>', methods=['POST'])
+@login_required
+def delete_video(video_id):
+    if request.method == 'POST':
+        print('Deleting', video_id)
+        Videos.delete(video_id)
+        mysql.connection.commit()
+        return Response(status=200)
+
 @home.route('/search/<filter>', methods=['GET'])
 @login_required
 def search(filter):

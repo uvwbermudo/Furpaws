@@ -109,7 +109,11 @@ class Users(UserMixin):
         result = result_zip(cursor)
         result = Users.convert_to_object(result)
         if username:
-            return result[0]
+            print(result,'HI?')
+            if result:
+                return result[0]
+            else:
+                return []
         return result
     
     @classmethod
@@ -377,6 +381,12 @@ class Photos:
             object_results.append(new_obj)
         return object_results
 
+    @classmethod
+    def delete(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"DELETE FROM photos WHERE photo_id = '{id}'"
+        cursor.execute(sql)
+        
 
     @classmethod
     def query_get(cls, id):
@@ -463,6 +473,12 @@ class Videos:
     def post(self):
         post = Posts.query_get(self.parent_post)
         return post
+
+    @classmethod
+    def delete(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"DELETE FROM videos WHERE video_id = '{id}'"
+        cursor.execute(sql)
     
 
 

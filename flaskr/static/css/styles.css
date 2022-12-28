@@ -720,3 +720,114 @@ div.content::-webkit-scrollbar {
         transform: translateY(0);
     }
 }
+
+.top-ss-profpic {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    border-radius: 50%;
+    top: 57px;
+    left: 70px;
+}
+
+.top-ss-profpic img {
+    width: auto;
+    height: 100%;
+    margin-left: -50px;
+}
+
+.ss-add-post-photo-btns {
+    position: absolute;
+    top: 145px;
+    left: 200px;
+    width: 142px;
+    height: 45px;
+    border-radius: 15px;
+    background-color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+}
+
+.ss-add-post-video-btns {
+    position: absolute;
+    top: 145px;
+    left: 381px;
+    width: 138px;
+    height: 45px;
+    border-radius: 15px;
+    background-color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+}
+
+.ss-add-post-photo-btns:hover,
+.ss-add-post-video-btns:hover {
+    background-color: rgb(185, 240, 255);
+    transition: 0.2s;
+}
+
+#cpost-modal-title {
+    margin: 0 auto;
+}
+
+.cpost-upper {
+    position: relative;
+    left: 5px;
+    width: 300px;
+    height: 50px;
+
+}
+
+.cpost-upper h6,
+.cpost-upper h5 {
+    padding: 5px 0px -100px 0px;
+    position: relative;
+}
+
+.cpost-upper h5 {
+    margin-left: -128px;
+    top: -25px;
+}
+
+.cpost-upper h6 {
+    margin-left: -100px;
+    top: -40px;
+}
+
+.cpost-profile-pic {
+    display: inline-block;
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    overflow: hidden;
+    border-radius: 50%;
+    top: -15px;
+    left: -5px;
+}
+
+.cpost-profile- img {
+    width: auto;
+    height: 100%;
+
+}
+
+.post-usertag {
+    font-weight: lighter;
+    display: block;
+    line-height: 0.5px;
+    margin: 25px 0;
+    text-decoration: none;
+    width: auto;
+}
+
+.post-username {
+    font-weight: bold;
+    display: block;
+    text-decoration: none;
+    width: auto;
+}

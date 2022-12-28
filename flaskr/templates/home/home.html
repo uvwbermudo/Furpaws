@@ -9,6 +9,16 @@
       <button class="share-something" data-bs-toggle="modal" data-bs-target="#addPostModal" data-bs-whatever="@getbootstrap" type="button">
 		    Share something...
 	    </button>
+      <img class="top-ss-profpic" img src="../../static/img/postprofile.jpg"/>
+
+      <label data-bs-toggle="modal" data-bs-target="#addPostModal"class="ss-add-post-photo-btns" name="add_photos"><img src="../../static/img/image-line.png"/>
+        Add Photos
+      </label>
+      <label data-bs-toggle="modal" data-bs-target="#addPostModal" name="add_videos" class="ss-add-post-video-btns">
+        <img src="../../static/img/movie-line.png">
+            Add Videos
+      </label>
+
 	    <div class="modal fade" id="addPostModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		    <div class="modal-dialog" role="document">
 			    <div class="modal-content">
@@ -23,7 +33,11 @@
 				    <div class="modal-body"><form method='post' action='' enctype="multipart/form-data">
 					    <div class="form-group">
 						    <label for="message-text" class="col-form-label float-start">
-							    picture, {{current_user.first_name}} <br/> {{current_user.tag}}
+							    <div class="cpost-upper">
+                    <img class="cpost-profile-pic" img src="../../static/img/postprofile.jpg"/>
+                    <br>
+                    <h5 class="post-username">{{current_user.tag}}</h5>
+                  </div>
 						    </label>
 						    {{form.post_description(class="form-control", placeholder="How are you feeling today, "+ current_user.tag + "?")}}
 				      </div>

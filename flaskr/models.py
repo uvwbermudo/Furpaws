@@ -183,8 +183,13 @@ class Posts:
 
     def add(self):
         cursor = mysql.connection.cursor()
-        sql = f'INSERT INTO posts(author_tag, post_content, date_posted)\
-                VALUES("{self.author_tag}", "{self.post_content}", "{self.date_posted}")'
+        sql = None
+        if self.post_content:
+            sql = f'INSERT INTO posts(author_tag, post_content, date_posted)\
+                    VALUES("{self.author_tag}", "{self.post_content}", "{self.date_posted}")'
+        else:
+            sql = f'INSERT INTO posts(author_tag, date_posted)\
+                    VALUES("{self.author_tag}", "{self.date_posted}")'
         cursor.execute(sql)
 
     @classmethod

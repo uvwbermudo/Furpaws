@@ -40,8 +40,6 @@ def home_page():
         all=True, order_by='date_posted', order='DESC')
     share_posts = SharePost.query_filter(
         all=True, order_by='date_created', order='DESC')
-    for post in main_feed:
-        print(post.photos)
     if request.method == 'POST':
         photos = request.files.getlist('files[]')
         videos = request.files.getlist('add_videos')
@@ -49,8 +47,11 @@ def home_page():
         if form.validate_on_submit():
             # Adding data to Posts table
             print('VALID')
-            storing_variable = Posts(
-                post_content=form.post_description.data.replace('"', "''"), author_tag=get_user_info.tag)
+            if form.post_description.data:
+                storing_variable = Posts(
+                    post_content=form.post_description.data.replace('"', "''"), author_tag=get_user_info.tag)
+            else:
+                storing_variable = Posts(author_tag=get_user_info.tag)
             storing_variable.add()
             mysql.connection.commit()
             last_inserted_post = Posts.last_inserted()
@@ -116,6 +117,20 @@ def share_post(post_id):
         sharer_tag=current_user.tag, shared_post_id=related_post.post_id, reference_id=inserted_post.post_id)
     storing_variable.add()
     mysql.connection.commit()
+    parent_photos = Photos.query_filter(parent_post=post_id)
+    parent_videos = Videos.query_filter(parent_post=post_id)
+    if parent_photos:
+        for every_photo in parent_photos:
+            photo_data = Photos(photo_url=every_photo.photo_url,
+                                parent_post=inserted_post.post_id)
+            photo_data.add()
+            mysql.connection.commit()
+    if parent_videos:
+        for every_video in parent_videos:
+            video_data = Videos(video_url=every_video.video_url,
+                                parent_post=inserted_post.post_id)
+            video_data.add()
+            mysql.connection.commit()
     flash(f'Post shared successfully', category='success')
     return redirect(url_for('home.home_page'))
 

@@ -9,27 +9,33 @@
 {% block body_content %}
 <div class="main-feed" id="main-feed">
     <div class="rectangle-3"></div>
-    <div class="rectangle-4"></div>
-      <button class="share-something" data-bs-toggle="modal" data-bs-target="#addPostModal" data-bs-whatever="@getbootstrap" type="button">
-        Share something...
-      </button>
-    <img class="top-ss-profpic" img src="../../static/img/postprofile.jpg"/></img>
+    <div class="rectangle-4">
+      <div class="rect-4-top">
+        <img class="top-ss-profpic" img src="../../static/img/postprofile.jpg"/>
+        <button class="share-something" data-bs-toggle="modal" data-bs-target="#addPostModal" data-bs-whatever="@getbootstrap" type="button">
+          Share something...
+        </button>
+      </div>
+
+      <div class="rect-4-bot">
+        <label data-bs-toggle="modal" data-bs-target="#addPostModal"class="ss-add-post-photo-btns" name="add_photos"><img src="../../static/img/image-line.png"/>
+          Add Photos
+        </label>
+        <label data-bs-toggle="modal" data-bs-target="#addPostModal" name="add_videos" class="ss-add-post-video-btns">
+          <img src="../../static/img/movie-line.png">
+              Add Videos
+        </label>
+      </div>
+    </div>
+      
     
-    <label data-bs-toggle="modal" data-bs-target="#addPostModal"class="ss-add-post-photo-btns" name="add_photos"><img src="../../static/img/image-line.png"/>
-      Add Photos
-    </label>
-    <label data-bs-toggle="modal" data-bs-target="#addPostModal" name="add_videos" class="ss-add-post-video-btns">
-      <img src="../../static/img/movie-line.png">
-          Add Videos
-    </label>
+
 
     <div class="modal fade" id="addPostModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="cpost-modal-title">
-              Create Post
-            </h5>
+            <h5 class="modal-title" id="cpost-modal-title">Create Post</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
               <span aria-hidden="true"></span>
             </button>
@@ -39,55 +45,33 @@
               <div class="form-group">
                 <label for="message-text" class="col-form-label float-start">
                   <div class="cpost-upper">
-                    <img class="cpost-profile-pic" img src="../../static/img/postprofile.jpg"/></img>
-                    <h5 class="post-username">{{current_user.first_name}}</h5>
-                    <h6 class="post-usertag" style="font-weight: lighter;">@{{current_user.tag}}</h6>
+                    <img class="cpost-profile-pic" img src="../../static/img/postprofile.jpg"/>
+                    <h5 class="post-username">{{current_user.tag}}</h5>
                   </div>
                 </label>
 
                 {{form.post_description(class="form-control")}}
               </div>
             </div>
-          <div class="image-preview">
-            
-          {% if current_user.photos %}
-          {% for photo in current_user.photos %}
-          <div>
-            <img class="modal-clicked-photo"src="{{photo.photo_url}}" ></img>
-          <div>
-            <button class="btn btn-success" style="width: 150px" > Replace </button>
-            <input type="submit" class="btn btn-danger" style="width: 150px"/>
-            </div>
-          </div>
-          {% endfor %}
-
-        {% else %}
-            {% for video in current_user.videos %}
-            <div>
-              <video src="{{video.video_url}}"></video>
-            <div>
-              <button class="btn btn-success" style="width: 150px"> Replace </button>
-              <input type="submit" class="btn btn-danger" style="width: 150px"/>
-              </div>
-            </div>
-            {% endfor %}
-        {% endif %}
-
-          </div>
-          <div class="modal-footer"> 
+  
+          <div class="modal-footer" style="justify-content: flex-start;"> 
             <label for="add_photos" class="add-post-btns" name="add_photos"><img src="../../static/img/image-line.png"/>
                   Add Photos
             </label>
-
             <label for="add_videos" name="add_videos" class="add-post-btns">
             <img src="../../static/img/movie-line.png">
                 Add Videos
             </label>
+
+            
             <input type="file" name="files[]" multiple="true" id="add_photos" accept="image/png, image/jpg, image/jpeg" onclick="imageTooLargeAlert();" hidden>
-            <input type="file" name="add_videos" multiple="true" id="add_videos" accept="video/mp4" onclick="videoTooLargeAlert();"hidden>
+            <input type="file" name="add_videos" multiple="true" id="add_videos" accept="video/mp4" onclick="videoTooLargeAlert();" hidden>
+            <div class="add-post-preview-container" id="add-post-preview-container">
+            </div>
+            <div class="add-post-preview-container2" id="add-post-preview-container2">
+            </div>
 
             {{form.csrf_token}}{{form.add_post_button(class="submit-post")}}
-
             </form>
             <div id="videoAlertBox">
               <div class="videoAlertMessage">
@@ -123,8 +107,7 @@
 
     <div class="main-feed-posts">
     {% for post in main_feed %}
-      
-    
+
       <!-- Delete Post Modal -->
       <div class="modal fade" id="deletePostModal{{post.post_id}}" tabindex="-1" aria-labelledby="deletePostModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -165,29 +148,32 @@
             </div>
             <div class="modal-body">
               <form action="/home/update/{{post.post_id}}" method="POST">
-              <textarea class="form-control" name="post_description" id="post_description" placeholder="post.post_content">{{post.post_content}}</textarea>
+              <textarea class="form-control" name="post_description" id="post_description">{{post.post_content}}</textarea>
+            
             
             {% if post.photos %}
+            <div class="edit-post-media-cont">
               {% for photo in post.photos %}
-              <div>
-                <img class="modal-clicked-photo"src="{{photo.photo_url}}" ></img>
-              <div>
-                <button class="btn btn-success" style="width: 150px" > Replace </button>
-                <input type="submit" class="btn btn-danger" style="width: 150px"/>
-                </div>
+              <div class="media-wrapper-img" id="media-wrapper-img{{photo.photo_id}}">
+                <img class="modal-clicked-photo" src="{{photo.photo_url}}">
+                <button id="deletepic{{photo.photo_id}}" type="button" class="btn text-white" hx-post="/photos/delete/confirm/{{photo.photo_id}}" hx-trigger="click" hx-target="#deletepic{{photo.photo_id}}" hx-swap="outerHTML"><i class="bi-trash-fill text-white"></i><span class="ps-1">Remove</span></button>
               </div>
-              {% endfor %}
 
-            {% else %}
+              {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% if post.videos %}
+               <div class="edit-post-media-cont">
                 {% for video in post.videos %}
-                <div>
+                <div class="media-wrapper-vid" id="media-wrapper-vid{{video.video_id}}">
                   <video src="{{video.video_url}}"></video>
-                <div>
-                  <button class="btn btn-success" style="width: 150px"> Replace </button>
-                  <input type="submit" class="btn btn-danger" style="width: 150px"/>
-                  </div>
+                  <button id="deletevid{{video.video_id}}" type="button" class="btn text-white" hx-post="/videos/delete/confirm/{{video.video_id}}" hx-trigger="click" hx-target="#deletevid{{video.video_id}}" hx-swap="outerHTML"><i class="bi-trash-fill text-white"></i><span class="ps-1">Remove</span></button>
                 </div>
+
+                
                 {% endfor %}
+              </div>
             {% endif %}
            
             <div class="modal-footer">    
@@ -203,12 +189,9 @@
 
 
 <div class="modal fade" id="uploaded-content-modal{{post.post_id}}" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" id="carousel-dialog" role="document">
+  <div class="modal-dialog carouse-dialog" id="carousel-dialog" role="document">
     <div class="modal-content" id="carousel-content-upper">
       <div class="modal-header" id="carousel-header">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body" id="carousel-body">
 
@@ -251,12 +234,12 @@
               {% if post.photos %}            
                 {% for photo in post.photos %}
                   {% if loop.first %}
-                    <div class="carousel-item active">
-                      <img class="d-block w-100" src="{{photo.photo_url}}"/>
+                    <div class="carousel-item active ">
+                      <img class="d-block w-100 carousel-constraint" src="{{photo.photo_url}}"/>
                     </div>
                   {% else %}
                     <div class="carousel-item">
-                      <img class="d-block w-100" src="{{photo.photo_url}}"/>
+                      <img class="d-block w-100 carousel-constraint" src="{{photo.photo_url}}"/>
                     </div>
                   {% endif %}
                 {% endfor %}
@@ -268,16 +251,16 @@
                     {% if loop.first %}
                       {% if not post.photos %}
                         <div class="carousel-item active">
-                          <video class="d-block w-100" src="{{video.video_url}}" controls></video> 
+                          <video class="d-block w-100 carousel-constraint" src="{{video.video_url}}" controls></video> 
                         </div>
                         {% else %}
-                        <div class="carousel-item ">
-                          <video class="d-block w-100" src="{{video.video_url}}" controls></video> 
+                        <div class="carousel-item">
+                          <video class="d-block w-100  carousel-constraint" src="{{video.video_url}}" controls></video> 
                         </div>
                       {% endif %}
                     {% else %}
                       <div class="carousel-item ">
-                        <video class="d-block w-100" src="{{video.video_url}}" controls></video> 
+                        <video class="d-block w-100 carousel-constraint " src="{{video.video_url}}" controls></video> 
                       </div>
                     {% endif %}
                 {% endfor %}
@@ -302,16 +285,14 @@
 </div>
 
 <!-- post containers -->
-{% if (post.videos or post.photos) and post.post_content %}
+{% if ((post.videos or post.photos) and not ((post.videos and post.photos) or post.videos|length >1 or post.photos|length>1)) and post.post_content %}
 <div class="post-container"> 
   <div class="post-rectangle-3"></div>
   <div class="post-rectangle-4"></div>
 
   <div class="post-upper-left">
     <img class="post-profile-pic" img src="../../static/img/postprofile.jpg"/></img>
-    <h3 class="post-username">{{post.author.first_name}} </h3>
-    <h3 style="font-weight: lighter;">|</h3>
-    <h5 class="post-usertag" style="font-weight: lighter;">@{{post.author_tag}} </h5>
+    <h5 class="post-usertag" style="font-weight: bold;">{{post.author_tag}} </h5>
   </div>
 
   <div class="post-middle-part">
@@ -332,8 +313,12 @@
         <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
         </svg></button>
         <div class="dropdown-content">
-          <a  data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}">Edit</a>
+          {% if post.author_tag == current_user.tag %} 
+          <a data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}">Edit</a>
           <a data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">Delete</a>
+          {%else%}
+          <a>Report</a>
+          {%endif%}
         </div>
       </div>
       <div class="post-date">{{ post.date_posted.strftime("%d, %b %Y").lower()}}</div>
@@ -368,9 +353,7 @@
       
       <div class="post-wto-upper-left">
         <img class="post-wto-prof-pic "img src="../../static/img/postprofile.jpg"/>
-        <h3 class="post-wto-username">{{post.author.first_name}} </h3>
-        <h3 style="font-weight: lighter;">|</h3>
-        <h5 class="post-wto-usertag">@{{post.author_tag}} </h5>
+        <h5 class="post-wto-usertag" style="font-weight: bold">{{post.author_tag}} </h5>
       </div>
 
       <div class="post-wto-middle-part">
@@ -383,8 +366,12 @@
           <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
           </svg></button>
           <div class="dropdown-content">
+            {% if post.author_tag == current_user.tag %} 
             <a data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}">Edit</a>
             <a data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">Delete</a>
+            {%else%}
+            <a>Report</a>
+            {%endif%}
           </div>
         </div>
         <h6 class="post-wto-date">{{ post.date_posted.strftime("%d, %b %Y").lower()}}</h6>
@@ -413,16 +400,32 @@
   {% elif post.videos or post.photos %}
   <div class="post-wmp-container"> 
     <div class="post-wmp-rectangle-3"></div>
-    <div class="post-wmp-rectangle-4"></div>
+    <div class="post-wmp-rectangle-4" id="post-rect-4{{post.post_id}}"></div>
 
     <div class="post-upper-left">
       <img class="post-profile-pic" img src="../../static/img/postprofile.jpg"/></img>
-      <h3 class="post-username">{{post.author.first_name}} </h3>
-      <h3 style="font-weight: lighter;">|</h3>
-      <h5 class="post-usertag" style="font-weight: lighter;">@{{post.author_tag}} </h5>
+      <h5 class="post-usertag" style="font-weight: bold;">{{post.author_tag}} </h5>
+     
     </div>
 
-    <div class="post-wmp-middle-part"  onload="updateButton({{post.post_id}});">    
+    
+
+    <div class="post-wmp-middle-part" onload="updateButton({{post.post_id}});">   
+      {% if post.post_content %}
+      <div class="post-wmp-desc d-block"><span>{{post.post_content}}</span></div>
+      <style>
+        #slider-button{{post.post_id}} {
+          margin-top: 54px;
+        }
+
+        #post-rect-4{{post.post_id}} {
+          height: 490px
+        }
+        
+        
+      </style>
+        {% endif %} 
+
       {% if post.photos or post.videos %}
       <div class="post-wmp-uploaded-content" id="gallery{{post.post_id}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"> 
         {% if post.photos %}
@@ -439,16 +442,16 @@
       </div>
     <button id="slider-button{{post.post_id}}" class="slider-button" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"></button> 
   {% endif %}
-
+  
+  <script src="https://code.jquery.com/jquery-3.6.1.js"
+  integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+  crossorigin="anonymous"></script>
     <script type="text/javascript">   
     $("#gallery{{post.post_id}}").ready(
       function(){
       updateButton({{post.post_id}})
     });  
       </script> 
-      <script src="https://code.jquery.com/jquery-3.6.1.js"
-      integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
-      crossorigin="anonymous"></script>
     </div>
     
     <div class="post-upper-right">
@@ -457,14 +460,18 @@
         <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
         </svg></button>
         <div class="dropdown-content">
-          <a  data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}">Edit</a>
+          {% if post.author_tag == current_user.tag %} 
+          <a data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}">Edit</a>
           <a data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">Delete</a>
+          {%else%}
+          <a>Report</a>
+          {%endif%}
         </div>
       </div>
       <div class="post-date">{{ post.date_posted.strftime("%d, %b %Y").lower()}}</div>
     </div>
 
-      <div class="post-wmp-bottom-part">
+      <div class="post-wmp-bottom-part" id="post-bottom{{post.post_id}}">
         <button class="post-wto-hearts">
           <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>

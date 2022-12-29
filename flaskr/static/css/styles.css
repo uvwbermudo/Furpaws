@@ -4,13 +4,18 @@ body {
     width: 100%;
 }
 
-html {
-    zoom: 90%;
-}
-
 * {
     font-family: 'Readex Pro', sans-serif;
 }
+
+body {
+    overflow-y: visible;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
 
 .landing-bg {
     background-image:
@@ -401,11 +406,10 @@ input[data-autocompleted] {
 
 
 .search-container {
-    position: absolute;
+    position: relative;
     width: 458px;
-    height: 45px;
-    left: 491px;
-    top: 27px;
+    height: 35px;
+    left: 50%;
     font-size: 16px;
     font-weight: 200;
     letter-spacing: 0;
@@ -419,10 +423,11 @@ input[data-autocompleted] {
     text-indent: 15px;
 }
 
+
 .sidebar {
     margin: 0;
     padding: 0;
-    width: 276px;
+    width: 235px;
     background-color: white;
     position: fixed;
     height: 100%;
@@ -434,11 +439,20 @@ input[data-autocompleted] {
     display: block;
     color: black;
     padding: 12px;
+    padding-left: 18px;
     text-decoration: none;
     font-family: 'Readex Pro';
     font-style: normal;
     text-align: justify-all;
-    font-size: 18px;
+    font-size: 15px;
+}
+
+.sidebar > pre > a > img {
+    height: 20px;
+}
+
+.sidebar > pre > a > span {
+    padding-left: 32px;
 }
 
 /* Active/current link */
@@ -452,16 +466,20 @@ input[data-autocompleted] {
     color: #1DA1F2;
 }
 
+
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
 div.content {   
+    margin-left: 0;
     position: relative;
-    width: calc(100% - 276px);
+    width: calc(100% - 235px);
     height: 645px;
-    left: 276px;
+    left: 235px;
     overflow-y: scroll;
+    overflow-x: hidden;
 
     background: rgba(193, 193, 193, 0.37);
 }
+
 
 div.content::-webkit-scrollbar {
     display: none;
@@ -490,7 +508,7 @@ div.content::-webkit-scrollbar {
     width: 149px;
     height: 0px;
     left: 64px;
-    top: 221px;
+    top: 210px;
     border: 0.3px solid rgb(135, 135, 135)
 }
 
@@ -506,8 +524,8 @@ div.content::-webkit-scrollbar {
     position: absolute;
     width: 5px;
     height: 24px;
-    left: 271px;
-    top: 255px;
+    left: 230px;
+    top: 208px;
     animation: 0.25s ease-out slideInRight;
     background: #1DA1F2;
     border-radius: 10px 0px 0px 10px;
@@ -523,7 +541,6 @@ div.content::-webkit-scrollbar {
         transform: translate3d(0, 0, 0);
     }
 }
-
 .main-feed {
     margin-left: 20px;
     display: flex;
@@ -534,16 +551,39 @@ div.content::-webkit-scrollbar {
 
 .rectangle-3 {
     position: absolute;
-    width: 1060px;
+    width: 960px;
     height: 144px;
     top: 65px;
     background: #1DA1F2;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
 }
 
+
+
+.rect-4-top {
+    width: calc(100% - 100px);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding-top: 30px;
+    column-gap: 20px;
+}
+
+.rect-4-bot {
+    width: calc(100% - 100px);
+    display: flex;
+    margin-left: 160px;
+    margin-top: 5px;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+
 .rectangle-4 {
     position: absolute;
-    width: 1060px;
+    justify-content: start;
+    width: 960px;
     height: 170px;
     top: 30px;
     background: #FFFFFF;
@@ -561,11 +601,9 @@ div.content::-webkit-scrollbar {
 }
 
 .share-something {
-    position: absolute;
+    position: relative;
     width: 850px;
     height: 75px;
-    left: 170px;
-    top: 60px;
     text-align: left;
     text-indent: 20px;
     font-family: 'Readex Pro';
@@ -594,9 +632,7 @@ div.content::-webkit-scrollbar {
 }
 
 .ss-add-post-photo-btns {
-    position: absolute;
-    top: 145px;
-    left: 200px;
+    position: relative;
     width: 142px;
     height: 45px;
     border-radius: 15px;
@@ -608,9 +644,7 @@ div.content::-webkit-scrollbar {
 }
 
 .ss-add-post-video-btns {
-    position: absolute;
-    top: 145px;
-    left: 381px;
+    position: relative;
     width: 138px;
     height: 45px;
     border-radius: 15px;
@@ -627,58 +661,182 @@ div.content::-webkit-scrollbar {
 }
 
 .top-ss-profpic { 
-    position: absolute; 
+    position: relative; 
     width: 80px; 
     height: 80px; 
     overflow: hidden; 
     border-radius: 50%;
-    top: 57px; 
-    left: 70px;
 }
 
-.top-ss-profpic img { 
+.top-ss-profpic img {
     width: auto; 
     height: 100%; 
     margin-left: -50px; 
 }
 
-#cpost-modal-title{
-    margin: 0 auto;
-}
-
 .cpost-upper{
     position: relative;
-    left: 5px;
-    width: 300px;
-    height: 50px;
-
-}
-
-.cpost-upper h6, .cpost-upper h5{
-    padding: 5px 0px -100px 0px;
-    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    
 }
 
 .cpost-upper h5{
-    margin-left: -128px;
-    top: -25px;
+    text-align: center;
+    vertical-align: middle;
+} 
+
+.cpost-upper .post-username {
+    padding: 0px;
+    padding-left: 12px;
 }
 
-.cpost-upper h6{
-    margin-left: -100px;
-    top: -40px;
-}
 
 .cpost-profile-pic{
-    display: inline-block; 
-    position: absolute; 
     width: 55px; 
     height: 55px; 
-    overflow: hidden; 
     border-radius: 50%;
-    top: -15px; 
-    left: -5px;
+    display: inline-block; 
+    overflow: hidden; 
 }
+
+#add-post-preview-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    overflow-x: auto;
+    position: relative;
+    width: 100%;
+}
+
+#add-post-preview-container .img-wrapper {
+    padding-top: 10px;
+    position: relative;
+}
+
+#add-post-preview-container .close{
+    position: absolute;
+    top: 5px;
+    right: 0px;
+    line-height: 10px;
+    font-size: 30px;
+    height: 25px;
+    cursor: pointer;
+    z-index: 100;
+    font-weight: bold;
+    transition: linear .1s;
+    padding: 5px;
+    background-color: white;
+    margin-top: 5px;
+    border-radius: 50%;
+}
+
+#add-post-preview-container .close:hover{
+    transform: scale(1.2);
+
+}
+
+.edit-post-media-cont {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    overflow-x: auto;
+    position: relative;
+    width: 100%;
+}
+
+.edit-post-media-cont .media-wrapper-img {
+    padding-top: 10px;
+    position: relative;
+    margin-right: 5px;
+}
+
+.edit-post-media-cont .media-wrapper-img img{
+    height: 300px;
+}
+
+.edit-post-media-cont .media-wrapper-vid {
+    padding-top: 10px;
+    position: relative;
+    margin-right: 5px;
+}
+
+.edit-post-media-cont .media-wrapper-vid video{
+    height: 150px;
+}
+
+.edit-post-media-cont button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #fa6b6b;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    width: 100%;
+    font-size: 16px;
+}
+
+
+.edit-post-media-cont button:hover {
+    background-color: #f14d4d;
+
+}
+
+.edit-post-media-cont .media-wrapper-img button:active {
+    background-color: #f53535;
+}
+
+.edit-post-media-cont .media-wrapper-vid {
+    padding-top: 10px;
+    position: relative;
+}
+
+
+#add-post-preview-container2{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    overflow-x: auto;
+    position: relative;
+    width: 100%;
+}
+
+#add-post-preview-container2 .img-wrapper {
+    padding-top: 10px;
+    position: relative;
+
+
+}
+
+#add-post-preview-container2 .close{
+    position: absolute;
+    top: 5px;
+    right: 0px;
+    line-height: 10px;
+    font-size: 30px;
+    height: 25px;
+    cursor: pointer;
+    z-index: 100;
+    font-weight: bold;
+    transition: linear .1s;
+    padding: 5px;
+    background-color: white;
+    margin-top: 5px;
+    border-radius: 50%;
+}
+
+#add-post-preview-container2 .close:hover{
+    transform: scale(1.2);
+
+}
+
+
 
 .cpost-profile- img { 
     width: auto; 
@@ -808,13 +966,17 @@ div.content::-webkit-scrollbar {
 .post-username{
     font-weight: bold;
     display: block;
+    padding-top: 26px;
     text-decoration: none;
+    margin-bottom: 0px;
+    left: 15px;
     width: auto;
 }
 
 .post-usertag{
     font-weight: lighter;
     display: block;
+    padding-top: 12px;
     line-height: 0.5px;
     margin: 25px 0;
     text-decoration: none;
@@ -864,6 +1026,10 @@ div.content::-webkit-scrollbar {
     display: block;
     cursor: pointer;
   }
+
+.dropdown-menu{
+    position: relative;
+}
 
 .dropdown-content a {
     display: block;
@@ -1048,6 +1214,7 @@ div.content::-webkit-scrollbar {
 .post-wto-usertag{
     font-weight: lighter;
     display: block;
+    padding-top: 12px;
     line-height: 0.5px;
     margin: 20px 0;
     text-decoration: none;
@@ -1158,6 +1325,16 @@ div.content::-webkit-scrollbar {
     border-radius: 20px;
 }
 
+.post-wmp-desc {
+    position: relative;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    top:0;
+    bottom: 0;
+    text-indent: 35px;
+}
+
+
 .post-wmp-rectangle-3 {
     position: absolute;
     width: 1060px;
@@ -1173,6 +1350,7 @@ div.content::-webkit-scrollbar {
     position: absolute;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     height: 315px;
     width: 1060px;
 }
@@ -1193,8 +1371,9 @@ div.content::-webkit-scrollbar {
 
 .slider-button-visible {
     position: absolute;
-    height: 300px;
+    height: 280px;
     width: 80px;
+    margin-top:18px ;
     left: 980px;
     border-radius: 0.5%;
     opacity: 80%;
@@ -1241,32 +1420,29 @@ div.content::-webkit-scrollbar {
     width: auto; 
     display: block;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    margin-right: 10px;
-
   }
 
+#top-nav {
+    height: 60px;
+}
 
 
  #carousel-content-upper {
     background: none;
     border: none;
   }
+
   #carousel-header {
     border: none;
   }
   #carousel-header button {
     background: none;
-    border-radius: 100px 100px 0 0;
-    padding: 5px 10px;
     opacity: 1;
     position: relative;
-    top: 15px;
-    border: solid 2px white;
+    top: 3px;
+    font-size: 30px;
   }
  
-  #carousel-header button:hover {
-    top: 3px;
-  }
   #carousel-header span {
     color: white;
   }
@@ -1281,28 +1457,26 @@ div.content::-webkit-scrollbar {
     height: auto;
 
   }
-  #carousel-body::before, #carousel-body::after {
-    content: "";
-    height: 50px;
-    width: 50px;
-    display: block;
-    position: absolute;
-    background: white;
-    border-radius: 3px 10px;
-  }
  
   #carousel-body::before {
     top: -5px;
     left: -5px;
   }
+
+  .carousel-constraint {
+    min-height: 500px;
+    max-height: 600px;
+    max-width: 1200px;
+  }
+
   #carousel-body::after {
     bottom: -5px;
     right: -5px;
     z-index: -1;
   }
+
   .modal-footer {
     border: none;
-    margin-top: 60px;
   }
 
   #carousel-footer .btn {
@@ -1313,14 +1487,20 @@ div.content::-webkit-scrollbar {
     font-size: 0.8em;
     letter-spacing: 0.1em;
     font-weight: bold;
+    margin-top: 30px;
     padding: 0.2em 0.7em;
   }
+
     #carousel-footer .btn:hover {
     background: white;
     color: black;
   }
+
   .carousel-control-prev, .carousel-control-next {
     font-size: 50em;
+    height: 75px;
+    margin-top: 0px;
+    background-color: rgba(95, 95, 95, 0.205);
     opacity: 1;
     display: absolute; 
     margin: auto;
@@ -1689,4 +1869,23 @@ div.content::-webkit-scrollbar {
 .search-result-container img {
     height: 80px;
     border-radius: 50%;
+}
+
+.confirm-delete-media-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.confirm-delete-media-div .cancel{
+    background-color:#757575;
+}
+
+.confirm-delete-media-div button.cancel:active{
+    background-color:#4d4a4a;
+}
+
+.confirm-delete-media-div .cancel:hover{
+    background-color:#6e6969;
 }

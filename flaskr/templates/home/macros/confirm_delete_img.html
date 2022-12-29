@@ -1,0 +1,5 @@
+<div class="w-100 confirm-delete-media-div" id="confirm-deletepic{{photo_id}}">
+    <button type="button" class="btn confirm text-white"><i class="bi-trash-fill "></i> <span class="ps-1" hx-post="/photos/delete/{{photo_id}}" hx-target="#media-wrapper-img{{photo_id}}" hx-swap="delete">Confirm</span></button>
+    <button type="button" class="btn cancel text-white" hx-post="/photos/delete/cancel/{{photo_id}}" hx-target="#confirm-deletepic{{photo_id}}" hx-swap="outerHTML">Cancel</button>
+</div>
+

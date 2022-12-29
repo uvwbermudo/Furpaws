@@ -5,6 +5,94 @@ $('document').ready(function () {
     console.log('Ready')
 })
 
+$("#username").keyup(function(event) {
+    if (event.keyCode === 13) {
+        $("#login_button").click();
+    }
+});
+
+$("#user_password").keyup(function(event) {
+    if (event.keyCode === 13) {
+        $("#login_button").click();
+    }
+});
+
+$('#add_photos').on('change', function() {
+    source = this.files
+    $("#add-post-preview-container").empty()
+    
+    for(let i=0; i<source.length; i++) {
+        let new_html = $(`<div id=prev${i} class="img-wrapper"></div>`)
+        let new_elem = $(`<img>`)
+        let new_elem_x = $(`<span id="close${i}" class="close" onclick="imgListPop(${i});">&times</span>`)
+        new_html.append(new_elem_x)
+        new_html.append(new_elem)
+        new_url = URL.createObjectURL($(source[i])[0])
+        new_elem.attr('src', new_url)
+        new_elem.css("height","300px")
+        new_elem_x.css("background-color","#fa6b6b")
+        new_elem_x.css("color","white")
+        $("#add-post-preview-container").append(new_html)
+    }
+})
+
+function imgListPop(index){
+    actual_index = index
+    index = $(`#prev${index}`).index()
+    const input = document.getElementById('add_photos')
+    console.log(input.files,1)
+    const dt = new DataTransfer()
+    const { files } = input
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      if (index !== i)
+        dt.items.add(file) // here you exclude the file. thus removing it.
+    }
+    
+    input.files = dt.files // Assign the updates list
+    console.log(input.files,2)
+    $(`div#prev${actual_index}`).remove();
+
+}
+
+$('#add_videos').on('change', function() {
+    source = this.files
+    $("#add-post-preview-container2").empty()
+    
+    for(let i=0; i<source.length; i++) {
+        let new_html = $(`<div id=prev${i}2 class="img-wrapper"></div>`)
+        let new_elem = $(`<video>`)
+        let new_elem_x = $(`<span id="close${i}2" class="close" onclick="vidListPop(${i});">&times</span>`)
+        new_html.append(new_elem_x)
+        new_html.append(new_elem)
+        new_url = URL.createObjectURL($(source[i])[0])
+        new_elem.attr('src', new_url)
+        new_elem.css("height","150px")
+        new_elem_x.css("background-color","#fa6b6b")
+        new_elem_x.css("color","white")
+
+        $("#add-post-preview-container2").append(new_html)
+    }
+})
+
+function vidListPop(index){
+    actual_index = index
+    index = $(`#prev${index}2`).index()
+    const input = document.getElementById('add_videos')
+    console.log(input.files,1)
+    const dt = new DataTransfer()
+    const { files } = input
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      if (index !== i)
+        dt.items.add(file) // here you exclude the file. thus removing it.
+    }
+    
+    input.files = dt.files // Assign the updates list
+    console.log(input.files,2)
+    $(`div#prev${actual_index}2`).remove();
+
+}
 
 
 function register_user() {
@@ -254,6 +342,9 @@ function updateButton(post_id) {
         button.css('display', 'none')
     }
 
+
+    
+
     button.text('+' + overflowCount)
   }  
 
@@ -270,3 +361,4 @@ function validate_search() {
     }
     return true;
 }
+

@@ -112,6 +112,16 @@ def search_layout():
     return render_template('home/search.html', search_result=session['search_query'])
 
 
+@home.route('/photos/delete/confirm/<photo_id>', methods=['POST'])
+@login_required
+def confirm_delete_photo(photo_id):
+    return render_template('home/macros/confirm_delete_img.html', photo_id=photo_id)
+
+@home.route('/photos/delete/cancel/<photo_id>', methods=['POST'])
+@login_required
+def cancel_delete_photo(photo_id):
+    return render_template('home/macros/cancel_delete_img.html', photo_id=photo_id)
+
 @home.route('/photos/delete/<photo_id>', methods=['POST'])
 @login_required
 def delete_photo(photo_id):
@@ -120,6 +130,16 @@ def delete_photo(photo_id):
         Photos.delete(photo_id)
         mysql.connection.commit()
         return Response(status=200)
+
+@home.route('/videos/delete/confirm/<video_id>', methods=['POST'])
+@login_required
+def confirm_delete_video(video_id):
+    return render_template('home/macros/confirm_delete_vid.html', video_id=video_id)
+
+@home.route('/videos/delete/cancel/<video_id>', methods=['POST'])
+@login_required
+def cancel_delete_video(video_id):
+    return render_template('home/macros/cancel_delete_vid.html', video_id=video_id)
 
 @home.route('/videos/delete/<video_id>', methods=['POST'])
 @login_required

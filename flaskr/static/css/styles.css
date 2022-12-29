@@ -781,9 +781,14 @@ div.content::-webkit-scrollbar {
     font-size: 16px;
 }
 
+
 .edit-post-media-cont button:hover {
     background-color: #f14d4d;
 
+}
+
+.edit-post-media-cont .media-wrapper-img button:active {
+    background-color: #f53535;
 }
 
 .edit-post-media-cont .media-wrapper-vid {
@@ -1864,4 +1869,23 @@ div.content::-webkit-scrollbar {
 .search-result-container img {
     height: 80px;
     border-radius: 50%;
+}
+
+.confirm-delete-media-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.confirm-delete-media-div .cancel{
+    background-color:#757575;
+}
+
+.confirm-delete-media-div button.cancel:active{
+    background-color:#4d4a4a;
+}
+
+.confirm-delete-media-div .cancel:hover{
+    background-color:#6e6969;
 }

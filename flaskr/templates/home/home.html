@@ -155,8 +155,8 @@
             <div class="edit-post-media-cont">
               {% for photo in post.photos %}
               <div class="media-wrapper-img" id="media-wrapper-img{{photo.photo_id}}">
-                <img class="modal-clicked-photo"src="{{photo.photo_url}}">
-                <button type="button" class="btn text-white" hx-post="/photos/delete/{{photo.photo_id}}" hx-trigger="click" hx-target="#media-wrapper-img{{photo.photo_id}}" hx-swap="delete"><i class="bi-trash-fill text-white"></i><span class="ps-1">Remove</span></button>
+                <img class="modal-clicked-photo" src="{{photo.photo_url}}">
+                <button id="deletepic{{photo.photo_id}}" type="button" class="btn text-white" hx-post="/photos/delete/confirm/{{photo.photo_id}}" hx-trigger="click" hx-target="#deletepic{{photo.photo_id}}" hx-swap="outerHTML"><i class="bi-trash-fill text-white"></i><span class="ps-1">Remove</span></button>
               </div>
 
               {% endfor %}
@@ -168,7 +168,7 @@
                 {% for video in post.videos %}
                 <div class="media-wrapper-vid" id="media-wrapper-vid{{video.video_id}}">
                   <video src="{{video.video_url}}"></video>
-                  <button type="button" class="btn text-white" hx-post="/videos/delete/{{video.video_id}}" hx-trigger="click" hx-target="#media-wrapper-vid{{video.video_id}}" hx-swap="delete"><i class="bi-trash-fill text-white"></i><span class="ps-1">Remove</span></button>
+                  <button id="deletevid{{video.video_id}}" type="button" class="btn text-white" hx-post="/videos/delete/confirm/{{video.video_id}}" hx-trigger="click" hx-target="#deletevid{{video.video_id}}" hx-swap="outerHTML"><i class="bi-trash-fill text-white"></i><span class="ps-1">Remove</span></button>
                 </div>
 
                 

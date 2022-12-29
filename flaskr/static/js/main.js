@@ -224,6 +224,40 @@ function imageTooLargeAlert(imageDialogTextContent, imageDialogOkButton) {
 
 }
 
+// display button when image overflow and set button text to number of images na mi overflow
+function updateButton(post_id) {
+    var postId = post_id;
+    var container = $(`#gallery${postId}`)
+    var button = $(`#slider-button${postId}`);
+    var childrenImages = container.children('img').toArray()
+    var childrenVideos = container.children('video').toArray()
+    childrenImages.push(...childrenVideos)
+
+    let sizeCounter = 0;
+    let overflowCount = 0;
+
+    if (container[0].scrollWidth > container.width()) {
+        console.log(postId, 1)
+
+        for (let i = 0; i < childrenImages.length; i++) {
+            sizeCounter += $(childrenImages[i]).width();
+
+            if (sizeCounter > container.width()) {
+                overflowCount += 1;
+                button.css('display', 'block')
+                container.css('justify-content', 'left')
+                button.addClass('slider-button-visible')
+            }
+        }
+    } else {
+        console.log(postId, 2)
+        button.css('display', 'none')
+    }
+
+
+    button.text('+' + overflowCount)
+}
+
 
 // Test -- Aaron
 function openPage(pageUrl) {

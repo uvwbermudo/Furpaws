@@ -103,7 +103,7 @@
           {% endfor %}
           {% if post.post_id in share_posts|map(attribute="reference_id")|list %}
             <!-- SHARED POST WITH ONE PHOTO/VIDEO AND WITH DESCRIPTION -->
-            {% if (post.videos or post.photos)| length == 1 and post.post_content %}
+            {% if ((post.videos or post.photos) and not ((post.videos and post.photos) or post.videos|length >1 or post.photos|length>1)) and post.post_content %}
               <div class="shadow-sm rounded" style="background-color: #1DA1F2;"><br>
                 <div class="card" style="border: none;">
                   <div class="card-header" style="background-color:white;">
@@ -206,7 +206,7 @@
                 </div>
               <!-- END OF SHARED POST WITH ONE PHOTO/VIDEO AND WITH DESCRIPTION -->
               <!-- SHARED POST WITH MULTIPLE PHOTOS OR VIDEOS AND WITH DESCRIPTION -->
-              {% elif (post.videos or post.photos)|length > 1 and post.post_content %}
+              {% elif post.videos|length > 1 or post.photos|length > 1 and post.post_content %}
                 <div class="shadow-sm rounded" style="background-color: #1DA1F2;"><br>
                   <div class="card" style="border: none;">
                     <div class="card-header" style="background-color:white;">
@@ -242,17 +242,38 @@
                       <div class="post-wmp-uploaded-content" id="gallery{{post.post_id}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}">
                         {% if post.photos %}
                           {% for photo in post.photos %}
-                              <img src="{{photo.photo_url}}" style="position: relative;
-                              height: 280px;
-                              width: auto; 
-                              display: block;
-                              box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-                              "
-                              data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
+                              <img src="{{photo.photo_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
                           {% endfor %}
                         {% endif %}
-                      </div>
-                    </div>
+                        {% if post.videos %}
+                          {% for video in post.videos %}
+                            <video src="{{video.video_url}}" data-bs-toggle="modal" data-bs-target="uploaded-content-modal{{post.post_id}}" controls ></video>
+                          {% endfor %}
+                        {% endif %}
+
+                      <button id="slider-button{{post.post_id}}" class="slider-button" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"></button>
+                  </div>
+                  <script src="https://code.jquery.com/jquery-3.6.1.js"
+                  integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+                  crossorigin="anonymous"></script>
+                    <script type="text/javascript">   
+                    $("#gallery{{post.post_id}}").ready(
+                      function(){
+                      updateButton({{post.post_id}})
+                    });  
+                  </script>
+                </div>
+                <style>
+                  #slider-button{{post.post_id}} {
+                    margin-top: 54px;
+                  }
+          
+                  #post-rect-4{{post.post_id}} {
+                    height: 490px
+                  }
+                  
+                  
+                </style>
                     <div class="card-footer text-start" style="background-color: white; border: none;">
                       <div class="row">
                         <div class="col-1">
@@ -339,17 +360,37 @@
                       <div class="post-wmp-uploaded-content" id="gallery{{post.post_id}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}">
                         {% if post.photos %}
                           {% for photo in post.photos %}
-                              <img src="{{photo.photo_url}}" style="position: relative;
-                              height: 280px;
-                              width: auto; 
-                              display: block;
-                              box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-                              "
-                              data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
+                              <img src="{{photo.photo_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
                           {% endfor %}
                         {% endif %}
+                        {% if post.videos %}
+                          {% for video in post.videos %}
+                            <video src="{{video.video_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}" controls></video>
+                          {% endfor %}
+                        {% endif %}
+                        <button id="slider-button{{post.post_id}}" class="slider-button" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"></button>
                       </div>
+                      <script src="https://code.jquery.com/jquery-3.6.1.js"
+                      integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+                      crossorigin="anonymous"></script>
+                        <script type="text/javascript">   
+                        $("#gallery{{post.post_id}}").ready(
+                          function(){
+                          updateButton({{post.post_id}})
+                        });  
+                      </script>
                     </div>
+                    <style>
+                      #slider-button{{post.post_id}} {
+                        margin-top: 54px;
+                      }
+              
+                      #post-rect-4{{post.post_id}} {
+                        height: 490px
+                      }
+                      
+                      
+                    </style>
                     <div class="card-footer text-start" style="background-color: white; border: none;">
                       <div class="row">
                         <div class="col-1">
@@ -503,45 +544,9 @@
                 </div>
                 <!-- END OF SHARED POST WITH TEXT ONLY -->
               {% endif %}
-            <!-- <div class="card">
-              <div class="card-body">
-                {% for shared in share_posts %}
-                  {% if shared.shared_post_id in share_posts|map(attribute="shared_post_id")|list and post.post_id == shared.reference_id %}
-                    <a href="posts/{{shared.shared_post_id}}"> Visit Post </a>
-                    <br>
-                  {% endif %}
-                {% endfor %}
-                {% for shared in share_posts %}
-                  {% if current_user.tag == shared.sharer_tag and post.post_id == shared.reference_id %}
-                    <br>
-                    <button type="button" class="btn btn-danger mb-3" data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">
-                      Delete
-                    </button>
-                    <br>
-                  {% endif %}
-                {% endfor %}
-                @{{post.author_tag}}
-                {{post.post_content}}
-                <h2>
-                  {{ post.date_posted.strftime("%d,%b %Y").lower()}}
-                </h2>
-              </div>
-              <div class="card-footer" style="background-color:white; position:flex;">
-                {% if current_user.tag in post.likes|map(attribute="author_tag")|list %}
-                  {% for like in post.likes %}
-                    {% if current_user.tag == like.author_tag %}
-                      <a href="home/unlike-post/{{like.id}}"><img src="../../static/img/like_filled.png" width="35px" height="33px"></a>
-                    {% endif %}
-                  {% endfor %}
-                {% else %}
-                  <a href="home/like-post/{{post.post_id}}"><img src="../../static/img/like_unfilled.png" width="35px" height="33px"></a>
-                {% endif %}
-                {{ post.likes|length }}
-              </div>
-            </div> -->
           {% else %}
             <!-- REGULAR POST WITH ONE PHOTO/VIDEO AND WITH DESCRIPTION -->
-            {% if (post.videos or post.photos)| length == 1 and post.post_content %}
+            {% if ((post.videos or post.photos) and not ((post.videos and post.photos) or post.videos|length >1 or post.photos|length>1)) and post.post_content %}
             <div class="shadow-sm rounded" style="background-color: #1DA1F2;"><br>
               <div class="card" style="border: none;">
                 <div class="card-header" style="background-color:white;">
@@ -688,17 +693,37 @@
                     <div class="post-wmp-uploaded-content" id="gallery{{post.post_id}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}">
                       {% if post.photos %}
                         {% for photo in post.photos %}
-                            <img src="{{photo.photo_url}}" style="position: relative;
-                            height: 280px;
-                            width: auto; 
-                            display: block;
-                            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-                            "
-                            data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
+                            <img src="{{photo.photo_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
                         {% endfor %}
                       {% endif %}
+                      {% if post.videos %}
+                        {% for video in post.videos %}
+                          <video src="{{video.video_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}" controls></video>
+                        {% endfor %}
+                      {% endif %}
+                      <button id="slider-button{{post.post_id}}" class="slider-button" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"></button>
                     </div>
+                    <script src="https://code.jquery.com/jquery-3.6.1.js"
+                    integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+                    crossorigin="anonymous"></script>
+                      <script type="text/javascript">   
+                      $("#gallery{{post.post_id}}").ready(
+                        function(){
+                        updateButton({{post.post_id}})
+                      });  
+                    </script>
                   </div>
+                  <style>
+                    #slider-button{{post.post_id}} {
+                      margin-top: 54px;
+                    }
+            
+                    #post-rect-4{{post.post_id}} {
+                      height: 490px
+                    }
+                    
+                    
+                  </style>
                   <div class="card-footer text-start" style="background-color: white; border: none;">
                     <div class="row">
                       <div class="col-1">
@@ -794,17 +819,37 @@
                     <div class="post-wmp-uploaded-content" id="gallery{{post.post_id}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}">
                       {% if post.photos %}
                         {% for photo in post.photos %}
-                            <img src="{{photo.photo_url}}" style="position: relative;
-                            height: 280px;
-                            width: auto; 
-                            display: block;
-                            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-                            "
-                            data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
+                            <img src="{{photo.photo_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
                         {% endfor %}
                       {% endif %}
+                      {% if post.videos %}
+                        {% for video in post.videos %}
+                          <video src="{{video.video_url}}" data-bs-toggle="moadl" data-bs-target="#uploaded-content-modal{{post.post_id}}" controls></video>
+                        {% endfor %}
+                      {% endif %}
+                      <button id="slider-button{{post.post_id}}" class="slider-button" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"></button>
                     </div>
+                    <script src="https://code.jquery.com/jquery-3.6.1.js"
+                    integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+                    crossorigin="anonymous"></script>
+                      <script type="text/javascript">   
+                      $("#gallery{{post.post_id}}").ready(
+                        function(){
+                        updateButton({{post.post_id}})
+                      });  
+                    </script>
                   </div>
+                  <style>
+                    #slider-button{{post.post_id}} {
+                      margin-top: 54px;
+                    }
+            
+                    #post-rect-4{{post.post_id}} {
+                      height: 490px
+                    }
+                    
+                    
+                  </style>
                   <div class="card-footer text-start" style="background-color: white; border: none;">
                     <div class="row">
                       <div class="col-1">
@@ -869,6 +914,137 @@
                 </div>
               </div>
             <!-- END OF REGULAR POST WITH MULTIPLE PHOTOS OR VIDEOS BUT WITH NO DESCRIPTION -->
+            <!-- REGULAR POST WITH MULTIPLE PHOTOS OR VIDEOS AND WITH DESCRIPTION -->
+            {% elif post.videos|length > 1 or post.photos|length > 1 and post.post_content %}
+            <div class="shadow-sm rounded" style="background-color: #1DA1F2;"><br>
+              <div class="card" style="border: none;">
+                <div class="card-header" style="background-color:white;">
+                  <div class="row">
+                    <div class="col text-start">
+                      {{post.author_tag}}
+                    </div>
+                    <div class="col text-end">
+                      {{ post.date_posted.strftime("%d,%b %Y").lower()}}
+                      {% if post.author_tag == current_user.tag %}
+                        <div class="btn-group">
+                          <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                              <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                              </svg>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}">Edit</a></li>
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">Delete</a></li>
+                          </ul>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row text-start" style="margin-left:10px;">
+                    <hr>
+                    {{post.post_content}}
+                  </div>
+                  <br>
+                  <div class="post-wmp-uploaded-content" id="gallery{{post.post_id}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}">
+                    {% if post.photos %}
+                      {% for photo in post.photos %}
+                          <img src="{{photo.photo_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
+                      {% endfor %}
+                    {% endif %}
+                    {% if post.videos %}
+                      {% for video in post.videos %}
+                        <video src="{{video.video_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}" controls></video>
+                      {% endfor %}
+                    {% endif %}
+                    <button id="slider-button{{post.post_id}}" class="slider-button" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"></button>
+                  </div>
+                  <script src="https://code.jquery.com/jquery-3.6.1.js"
+                  integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+                  crossorigin="anonymous"></script>
+                    <script type="text/javascript">   
+                    $("#gallery{{post.post_id}}").ready(
+                      function(){
+                      updateButton({{post.post_id}})
+                    });  
+                  </script>
+                </div>
+                <style>
+                  #slider-button{{post.post_id}} {
+                    margin-top: 54px;
+                  }
+          
+                  #post-rect-4{{post.post_id}} {
+                    height: 490px
+                  }
+                  
+                  
+                </style>
+                <div class="card-footer text-start" style="background-color: white; border: none;">
+                  <div class="row">
+                    <div class="col-1">
+                      {% if current_user.tag in post.likes|map(attribute="author_tag")|list %}
+                        {% for like in post.likes %}
+                          {% if current_user.tag == like.author_tag %}
+                            <a class="post-wto-hearts-unfilled" href="home/unlike-post/{{like.id}}" style="border:none; outline:none; background-color:white">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                              </svg>
+                            </a>
+                          {% endif %}
+                        {% endfor %}
+                      {% else %}
+                        <a class="post-wto-hearts" href="home/like-post/{{post.post_id}}" style="border:none; outline:none; background-color:white">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                          </svg>
+                        </a>
+                      {% endif %}
+                    </div>
+                    <div class="col-1">
+                      <h6>{{post.likes|length}}</h6>
+                    </div>
+                    <div class="col-1">
+                      {% if current_user.tag in post.comments|map(attribute="author_tag")|list %}
+                      <button class="post-wto-comments-filled" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" style="border:none; outline:none; background-color:white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
+                          <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                        </svg></button>
+                      {% else %}
+                      <button class="post-wto-comments" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" style="border:none; outline:none; background-color:white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
+                          <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                        </svg></button>
+                      {% endif %}
+                    </div>
+                    <div class="col-1">
+                      <h6>{{post.comments|length}}</h6>
+                    </div>
+                    <div class="col-1">
+                      {% if current_user.tag in post.sharedposts|map(attribute="sharer_tag")|list %}
+                      <button class="post-wto-shares-filled" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}" style="border:none; outline:none; background-color:white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
+                        <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
+                        </svg>
+                      </button>
+                      {% else %}
+                      <button class="post-wto-shares" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}" style="border:none; outline:none; background-color:white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
+                        <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
+                        </svg>
+                      </button>
+                      {% endif %}
+                    </div>
+                    <div class="col-1">
+                      <h6>{{post.sharedposts|length}}</h6>
+                      <br>
+                    </div>
+                  </div> 
+                </div>
+              </div>
+            </div>
+          <!-- END OF REGULAR POST WITH MULTIPLE PHOTOS OR VIDEOS AND WITH DESCRIPTION -->
             <!-- REGULAR POST WITH TEXT ONLY -->
             {% elif not post.photos and post.post_content %}
               <div class="row">
@@ -977,52 +1153,10 @@
               </div>
               <!-- END OF REGULAR POST WITH TEXT ONLY -->
             {% endif %}
-            <!-- <div class="card">
-              <div class="card-header">
-                {{post.post_id}}
-              </div>
-              <div class="card-body">
-                <div class="card-text">
-                  @{{ post.author_tag }}
-                  {{post.post_content}}
-                  <h2>
-                    {{ post.date_posted.strftime("%d,%b %Y").lower()}}
-                  </h2>
-                </div>
-                {% if post.author_tag == current_user.tag %}
-                  <button type="button" class="btn btn-danger mb-3" data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">
-                    Delete
-                  </button>
-                  <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}" data-bs-whatever="@getbootstrap" type="button">
-                    Edit
-                  </button>
-                {% endif %}
-                  <button class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}">
-                    Share 
-                  </button>
-                  <u>Shares</u> {{post.sharedposts|length}}
-                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}">
-                  View Comments
-                </button>
-                <br/>
-              </div>
-              <div class="card-footer" style="background-color:white; position:flex;">
-                {% if current_user.tag in post.likes|map(attribute="author_tag")|list %}
-                  {% for like in post.likes %}
-                    {% if current_user.tag == like.author_tag %}
-                      <a href="home/unlike-post/{{like.id}}"><img src="../../static/img/like_filled.png" width="35px" height="33px"></a>
-                    {% endif %}
-                  {% endfor %}
-                {% else %}
-                  <a href="home/like-post/{{post.post_id}}"><img src="../../static/img/like_unfilled.png" width="35px" height="33px"></a>
-                {% endif %}
-                {{ post.likes|length }}
-              </div>
-            </div> -->
           {% endif %}
         {% else %}
           <!-- REGULAR POST WITH ONE PHOTO/VIDEO AND WITH DESCRIPTION -->
-          {% if (post.videos or post.photos)| length == 1 and post.post_content %}
+          {% if ((post.videos or post.photos) and not ((post.videos and post.photos) or post.videos|length >1 or post.photos|length>1)) and post.post_content %}
           <div class="shadow-sm rounded" style="background-color: #1DA1F2;"><br>
             <div class="card" style="border: none;">
               <div class="card-header" style="background-color:white;">
@@ -1134,7 +1268,7 @@
             </div>
           <!-- END OF REGULAR POST WITH ONE PHOTO/VIDEO AND WITH DESCRIPTION -->
           <!-- REGULAR POST WITH MULTIPLE PHOTOS OR VIDEOS AND WITH DESCRIPTION -->
-          {% elif (post.videos or post.photos)|length > 1 and post.post_content %}
+          {% elif post.videos|length > 1 or post.photos|length > 1 and post.post_content %}
             <div class="shadow-sm rounded" style="background-color: #1DA1F2;"><br>
               <div class="card" style="border: none;">
                 <div class="card-header" style="background-color:white;">
@@ -1169,17 +1303,37 @@
                   <div class="post-wmp-uploaded-content" id="gallery{{post.post_id}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}">
                     {% if post.photos %}
                       {% for photo in post.photos %}
-                          <img src="{{photo.photo_url}}" style="position: relative;
-                          height: 280px;
-                          width: auto; 
-                          display: block;
-                          box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-                          "
-                          data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
+                          <img src="{{photo.photo_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
                       {% endfor %}
                     {% endif %}
+                    {% if post.videos %}
+                      {% for video in post.videos %}
+                        <video src="{{video.video_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}" controls></video>
+                      {% endfor %}
+                    {% endif %}
+                    <button id="slider-button{{post.post_id}}" class="slider-button" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"></button>
                   </div>
+                  <script src="https://code.jquery.com/jquery-3.6.1.js"
+                  integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+                  crossorigin="anonymous"></script>
+                    <script type="text/javascript">   
+                    $("#gallery{{post.post_id}}").ready(
+                      function(){
+                      updateButton({{post.post_id}})
+                    });  
+                  </script>
                 </div>
+                <style>
+                  #slider-button{{post.post_id}} {
+                    margin-top: 54px;
+                  }
+          
+                  #post-rect-4{{post.post_id}} {
+                    height: 490px
+                  }
+                  
+                  
+                </style>
                 <div class="card-footer text-start" style="background-color: white; border: none;">
                   <div class="row">
                     <div class="col-1">
@@ -1272,20 +1426,40 @@
                   </div>
                 </div>
                 <div class="card-body">
-                  <div class="post-wmp-uploaded-content" id="gallery{{post.post_id}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}">
+                  <div class="post-wmp-uploaded-content" onload="updateButton({{post.post_id}});" id="gallery{{post.post_id}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}">
                     {% if post.photos %}
                       {% for photo in post.photos %}
-                          <img src="{{photo.photo_url}}" style="position: relative;
-                          height: 280px;
-                          width: auto; 
-                          display: block;
-                          box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-                          "
-                          data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
+                          <img src="{{photo.photo_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
                       {% endfor %}
                     {% endif %}
+                    {% if post.videos %}
+                      {% for video in post.videos %}
+                        <video src="{{video.video_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}" controls></video>
+                      {% endfor %}
+                    {% endif %}
+                    <button id="slider-button{{post.post_id}}" class="slider-button" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"></button>
                   </div>
+                  <script src="https://code.jquery.com/jquery-3.6.1.js"
+                  integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+                  crossorigin="anonymous"></script>
+                    <script type="text/javascript">   
+                    $("#gallery{{post.post_id}}").ready(
+                      function(){
+                      updateButton({{post.post_id}})
+                    });  
+                  </script>
                 </div>
+                <style>
+                  #slider-button{{post.post_id}} {
+                    margin-top: 54px;
+                  }
+          
+                  #post-rect-4{{post.post_id}} {
+                    height: 490px
+                  }
+                  
+                  
+                </style>
                 <div class="card-footer text-start" style="background-color: white; border: none;">
                   <div class="row">
                     <div class="col-1">
@@ -1669,7 +1843,7 @@
                 </div>
                 <div class="modal-body">
                   <form action="/home/update/{{post.post_id}}" method="POST">
-                    <textarea class="form-control" name="post_description" id="post_description" placeholder="{{post.post_content}}" required>{{post.post_content}}</textarea>
+                    <textarea class="form-control" name="post_description" id="post_description" placeholder="{{post.post_content}}">{{post.post_content}}</textarea>
                 </div>
                 <h5 align="left">
                   Image Preview:

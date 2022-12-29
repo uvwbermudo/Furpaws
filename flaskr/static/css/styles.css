@@ -1070,13 +1070,12 @@ div.content::-webkit-scrollbar {
     justify-content: center
 }
 
-.post-uploaded-content {
-    height: 375px;
-    width: 620px;
-
-    position: relative;
+.post-wmp-middle-part {
+    top: 160px;
+    position: absolute;
     display: flex;
-    overflow: hidden;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 315px;
+    width: 1060px;
 }

@@ -6,7 +6,7 @@
     <br>
     {% for post in respective_post %}
       <!-- REGULAR POST WITH ONE PHOTO/VIDEO AND WITH DESCRIPTION -->
-      {% if (post.videos or post.photos)| length == 1 and post.post_content %}
+      {% if ((post.videos or post.photos) and not ((post.videos and post.photos) or post.videos|length >1 or post.photos|length>1)) and post.post_content %}
         <div class="shadow-sm rounded" style="background-color: #1DA1F2; width:1150px;"><br>
           <div class="card" style="border: none;">
             <div class="card-header" style="background-color:white;">
@@ -118,7 +118,7 @@
           </div>
         <!-- END OF REGULAR POST WITH ONE PHOTO/VIDEO AND WITH DESCRIPTION -->
         <!-- REGULAR POST WITH MULTIPLE PHOTOS OR VIDEOS AND WITH DESCRIPTION -->
-        {% elif (post.videos or post.photos)|length > 1 and post.post_content %}
+        {% elif post.videos|length > 1 or post.photos|length > 1 and post.post_content %}
           <div class="shadow-sm rounded" style="background-color: #1DA1F2; width:1150px;"><br>
             <div class="card" style="border: none;">
               <div class="card-header" style="background-color:white;">
@@ -153,17 +153,37 @@
                 <div class="post-wmp-uploaded-content" id="gallery{{post.post_id}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}">
                   {% if post.photos %}
                     {% for photo in post.photos %}
-                        <img src="{{photo.photo_url}}" style="position: relative;
-                        height: 280px;
-                        width: auto; 
-                        display: block;
-                        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-                        "
-                        data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
+                        <img src="{{photo.photo_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
                     {% endfor %}
                   {% endif %}
+                  {% if post.videos %}
+                    {% for video in post.videos %}
+                      <video src="{{video.video_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}" controls></video>
+                    {% endfor %}
+                  {% endif %}
+                  <button id="slider-button{{post.post_id}}" class="slider-button" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"></button>
                 </div>
+                <script src="https://code.jquery.com/jquery-3.6.1.js"
+                integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+                crossorigin="anonymous"></script>
+                  <script type="text/javascript">   
+                  $("#gallery{{post.post_id}}").ready(
+                    function(){
+                    updateButton({{post.post_id}})
+                  });  
+                </script>
               </div>
+              <style>
+                #slider-button{{post.post_id}} {
+                  margin-top: 54px;
+                }
+        
+                #post-rect-4{{post.post_id}} {
+                  height: 490px
+                }
+                
+                
+              </style>
               <div class="card-footer text-start" style="background-color: white; border: none;">
                 <div class="row">
                   <div class="col-1">
@@ -268,8 +288,34 @@
                         data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"/>
                     {% endfor %}
                   {% endif %}
-                </div>
-              </div>
+                <{% if post.videos %}
+                {% for video in post.videos %}
+                  <video src="{{video.video_url}}" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}" controls></video>
+                {% endfor %}
+              {% endif %}
+              <button id="slider-button{{post.post_id}}" class="slider-button" data-bs-toggle="modal" data-bs-target="#uploaded-content-modal{{post.post_id}}"></button>
+            </div>
+            <script src="https://code.jquery.com/jquery-3.6.1.js"
+            integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+            crossorigin="anonymous"></script>
+              <script type="text/javascript">   
+              $("#gallery{{post.post_id}}").ready(
+                function(){
+                updateButton({{post.post_id}})
+              });  
+            </script>
+          </div>
+          <style>
+            #slider-button{{post.post_id}} {
+              margin-top: 54px;
+            }
+    
+            #post-rect-4{{post.post_id}} {
+              height: 490px
+            }
+            
+            
+          </style>
               <div class="card-footer text-start" style="background-color: white; border: none;">
                 <div class="row">
                   <div class="col-1">

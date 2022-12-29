@@ -22,5 +22,5 @@ class EditPostForm(FlaskForm):
 
 class EditCommentForm(FlaskForm):
     edit_comment_textbox = TextAreaField(validators=[
-        Length(max=150), DataRequired()])
+        Length(max=150), Optional()])
     edit_comment_button = SubmitField("Edit Comment")

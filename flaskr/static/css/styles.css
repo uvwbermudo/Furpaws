@@ -896,3 +896,187 @@ div.content::-webkit-scrollbar {
 .post-wto-shares {
     color: grey;
 }
+
+.post-wto-shares-filled {
+    color: #1DA1F2
+}
+
+/* START OF POST WITH MULTIPLE PHOTOS  */
+
+.slider-button {
+    display: none;
+}
+
+.slider-button-visible {
+    position: absolute;
+    height: 300px;
+    width: 80px;
+    left: 980px;
+    border-radius: 0.5%;
+    opacity: 80%;
+    border: none;
+}
+
+.slider-button-visible:hover {
+    color: #1DA1F2;
+}
+
+.slider-button.hidden {
+    display: none
+}
+
+/* END of POST WITH MULTIPLE PHOTOS */
+.post-wmp-uploaded-content img,
+.post-wmp-uploaded-content video {
+    position: relative;
+    height: 280px;
+    width: auto;
+    display: block;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin-right: 10px;
+
+}
+
+
+
+#carousel-content-upper {
+    background: none;
+    border: none;
+}
+
+#carousel-header {
+    border: none;
+}
+
+#carousel-header button {
+    background: none;
+    border-radius: 100px 100px 0 0;
+    padding: 5px 10px;
+    opacity: 1;
+    position: relative;
+    top: 15px;
+    border: solid 2px white;
+}
+
+#carousel-header button:hover {
+    top: 3px;
+}
+
+#carousel-header span {
+    color: white;
+}
+
+#carousel-body {
+    padding: 0;
+    border: none;
+    position: relative;
+}
+
+.modal-clicked-photo {
+    width: 300px;
+    height: auto;
+
+}
+
+#carousel-body::before,
+#carousel-body::after {
+    content: "";
+    height: 50px;
+    width: 50px;
+    display: block;
+    position: absolute;
+    background: white;
+    border-radius: 3px 10px;
+}
+
+#carousel-body::before {
+    top: -5px;
+    left: -5px;
+}
+
+#carousel-body::after {
+    bottom: -5px;
+    right: -5px;
+    z-index: -1;
+}
+
+.modal-footer {
+    border: none;
+    margin-top: 60px;
+}
+
+#carousel-footer .btn {
+    margin: auto;
+    border: solid 2px white;
+    background: none;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 0.1em;
+    font-weight: bold;
+    padding: 0.2em 0.7em;
+}
+
+#carousel-footer .btn:hover {
+    background: white;
+    color: black;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    font-size: 50em;
+    opacity: 1;
+    display: absolute;
+    margin: auto;
+
+}
+
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+    height: 30px;
+    width: 80px;
+    transition: 0.3s;
+}
+
+.carousel-control-next-icon:hover,
+.carousel-control-prev-icon:hover {
+    height: 45px;
+    width: 80px;
+    transition: 0.3s;
+}
+
+
+.carousel-indicators {
+    bottom: -60px;
+
+}
+
+.post-profile-pic {
+    display: inline-block;
+    position: relative;
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    border-radius: 50%;
+    top: 5px;
+}
+
+.post-wmp-uploaded-content {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    width: 1060px;
+    align-items: center;
+    justify-content: center
+}
+
+.post-uploaded-content {
+    height: 375px;
+    width: 620px;
+
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+}

@@ -41,7 +41,7 @@ def home_page():
     share_posts = SharePost.query_filter(
         all=True, order_by='date_created', order='DESC')
     if request.method == 'POST':
-        photos = request.files.getlist('files[]')
+        photos = request.files.getlist('add_photos')
         videos = request.files.getlist('add_videos')
         print(photos)
         if form.validate_on_submit():
@@ -236,9 +236,9 @@ def view_post(post_id):
     form = AddPostForm()
     edit_form = EditPostForm()
     edit_comment_form = EditCommentForm()
-    post = Posts.query_filter(
+    respective_post = Posts.query_filter(
         post_id=post_id, order_by='date_posted', order='DESC')
-    return render_template("home/posts.html", post=post, edit_comment_form=edit_comment_form, edit_form=edit_form, form=form)
+    return render_template("home/posts.html", respective_post=respective_post, edit_comment_form=edit_comment_form, edit_form=edit_form, form=form)
 
 
 @home.route('/posts/update/<post_id>', methods=['POST'])

@@ -1249,13 +1249,14 @@ div.content::-webkit-scrollbar {
 }
 
 .post-wto-bottom-part{
-    top: 335px;
-    left: -250px;
+    top: 15px;
+    left: -120px;
     display: inline-flex;
     flex-direction: row;
     position: relative;
-    
+
 }
+
 
 .post-wto-bottom-part h6{
     padding: 10px 40px 0px 10px;

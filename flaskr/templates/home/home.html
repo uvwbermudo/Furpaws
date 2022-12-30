@@ -353,31 +353,35 @@
       <div class="post-wto-rectangle-3">
         <div class="post-wto-rectangle-4">
         
-          <div class="post-wto-upper-left">
-            <img class="post-wto-prof-pic "img src="../../static/img/postprofile.jpg"/>
-            <h5 class="post-wto-usertag" style="font-weight: bold">{{post.author_tag}} </h5>
+          <div class="post-wto-upper">
+            <div class="post-wto-upper-left">
+              <img class="post-wto-prof-pic "img src="../../static/img/postprofile.jpg"/>
+              <h5 class="post-wto-usertag" style="font-weight: bold">{{post.author_tag}} </h5>
+            </div>
+            
+            <div class="post-wto-upper-right">
+              <div class="dropdown">
+                <button class="post-wto-settings"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                </svg></button>
+                <div class="dropdown-content">
+                  {% if post.author_tag == current_user.tag %} 
+                  <a data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}">Edit</a>
+                  <a data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">Delete</a>
+                  {%else%}
+                  <a>Report</a>
+                  {%endif%}
+                </div>
+              </div>
+              <h6 class="post-wto-date">{{ post.date_posted.strftime("%d, %b %Y").lower()}}</h6>
+            </div>
           </div>
-    
+
           <div class="post-wto-middle-part">
             <h5 class="post-wto-description">{{ post.post_content}}</h5>
           </div>
     
-          <div class="post-wto-upper-right">
-            <div class="dropdown">
-              <button class="post-wto-settings"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-              <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-              </svg></button>
-              <div class="dropdown-content">
-                {% if post.author_tag == current_user.tag %} 
-                <a data-bs-toggle="modal" data-bs-target="#editPostModal{{post.post_id}}">Edit</a>
-                <a data-bs-toggle="modal" data-bs-target="#deletePostModal{{post.post_id}}">Delete</a>
-                {%else%}
-                <a>Report</a>
-                {%endif%}
-              </div>
-            </div>
-            <h6 class="post-wto-date">{{ post.date_posted.strftime("%d, %b %Y").lower()}}</h6>
-          </div>
+         
       
           <div class="post-wto-bottom-part">
             <button class="post-wto-hearts">
@@ -394,10 +398,10 @@
               <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
             </svg></button>
             <h6>1.5k</h6>
-          </div>
         </div>
-      </div>
-      </div>
+       </div>
+    </div>
+  </div>
       
 <!-- END of Post with text only container -->
 

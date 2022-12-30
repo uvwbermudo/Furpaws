@@ -1,0 +1,5 @@
+<div class="w-100 confirm-delete-media-div" id="confirm-deletevid{{video_id}}">
+    <button type="button" class="btn confirm text-white"><i class="bi-trash-fill "></i> <span class="ps-1" hx-post="/videos/delete/{{video_id}}" hx-target="#media-wrapper-vid{{video_id}}" hx-swap="delete">Confirm</span></button>
+    <button type="button" class="btn cancel text-white" hx-post="/videos/delete/cancel/{{video_id}}" hx-target="#confirm-deletevid{{video_id}}" hx-swap="outerHTML">Cancel</button>
+</div>
+

@@ -14,13 +14,15 @@
 </head>
 <body>
     {% include 'toast.html'%}
-    <nav class="navbar navbar-expand-lg sticky-top" style="box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); background-color: white">
+    <nav class="navbar navbar-expand-lg sticky-top" style="box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); background-color: white" id="top-nav">
       <pre>     
-    <a class="navbar-brand" href="#"><img src="../../static/img/FurpawsImgLogo.png" alt="logo"><img src="../../static/img/FurpawsTextLogo.png" alt="logo"></a></pre>
-    <input type="text" class="search-container" id="#" name="#" placeholder="Search">
+    <a class="navbar-brand ms-3" href="/home"><img src="../../static/img/FurpawsImgLogo.png" alt="logo" style="height: 35px;"><img src="../../static/img/FurpawsTextLogo.png" alt="logo" style="height:24px;"></a></pre>
+    <form action="/home/search" method="GET" onsubmit="return validate_search()">
+    <input class="search-container" id="searchbar" name="searchbar" placeholder="Search">
+    </form>
     <div class="collapse navbar-collapse justify-content-end" id="navbar">
-      <div class="navbar-nav">
-        <li class="nav-item dropdown">
+      <div class="navbar-nav me-4">
+        <li class="nav-item dropstart">
           <a
             class="nav-link dropdown-toggle"
             href="#"
@@ -30,14 +32,14 @@
             aria-haspopup="true"
             aria-expanded="false"
           >
-          <img src="../../static/img/test_profilepic.png" alt="test_profilepic">
+          <img src="../../static/img/test_profilepic.png" alt="test_profilepic" style="height:40px; ">
           </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+    
+          <div class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" id="add_colleges" href="/logout"
               >Logout</a
             >
-            <a class="dropdown-item" id="update_colleges" href="/update-colleges">Settings</a>
-            <a class="dropdown-item" id="delete_colleges" href="/delete-colleges">Another option</a>
+            <a class="dropdown-item" id="update_colleges" href="">Settings</a>
           </div>
         </li>
       </div>
@@ -45,14 +47,13 @@
   </nav>
   <div class="sidebar">
       <br/>
-      <p align="center"><img src="../../static/img/test_profilepicwdiffsize.png" alt="test_profilepicwdiffsize"></p>
-      <br/> 
-      <img class="line-1" src="../../static/img/line-1.png" alt="line-1"/><img class="indicator" src="../../static/img/indicator.png" alt="indicator">
-      <pre><a class="active" href="/home">       <img src="../../static/img/mainfeed_logo.png" alt="mainfeed_logo">       Main Feed</a><a href="messages.html">      <img src="../../static/img/messages_logo.png" alt="messages_logo">     Messages</a><a href="/profile">       <img src="../../static/img/pawfile_logo.png" alt="pawfile_logo">       Pawfile</a><a href="friends.html">       <img src="../../static/img/furiends_logo.png" alt="furiends_logo">      Furiends</a><a href="jobs.html">        <img src="../../static/img/jobs_logo.png" alt="jobs_logo">       Jobs</a> </pre>
+      <p align="center"><img src="../../static/img/test_profilepicwdiffsize.png" alt="test_profilepicwdiffsize" style="width: 160px;"></p>
+      <img class="indicator" src="../../static/img/indicator.png" alt="indicator">
+      <pre><a class="active" href="/home">       <img src="../../static/img/mainfeed_logo.png" alt="mainfeed_logo"><span>Main Feed</span></a><a href="messages.html">      <img src="../../static/img/messages_logo.png" alt="messages_logo" style="height: 26px;"><span>Messages</span></a><a href="/profile">       <img src="../../static/img/pawfile_logo.png" alt="pawfile_logo"><span>Pawfile</span></a><a href="friends.html">       <img src="../../static/img/furiends_logo.png" alt="furiends_logo"><span>Furiends</span></a><a href="jobs.html">        <img src="../../static/img/jobs_logo.png" alt="jobs_logo"><span>Jobs</span></a> </pre>
 
     </div>
   
-  <div class="content" align="center">  
+  <div class="content" align="center" id="main-content">  
     {% block body_content %}{% endblock %}
   </div>
 
@@ -64,6 +65,7 @@
     <script src="https://unpkg.com/htmx.org@1.8.4" integrity="sha384-wg5Y/JwF7VxGk4zLsJEcAojRtlVp1FKKdGy1qN+OMtdq72WRvX/EdRdqg/LOhYeV" crossorigin="anonymous"></script>
     <script src="../../static/js/main.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -86,6 +88,7 @@
       let bsalert = new bootstrap.Toast(myalert)
       bsalert.show()
     </script>
+
   {% endfor %}
   {% endif %}
   {% endwith %}

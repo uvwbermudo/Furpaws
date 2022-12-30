@@ -12,6 +12,7 @@ class AddPostForm(FlaskForm):
     add_post_button = SubmitField("Add Post")
 
 
+
 class EditPostForm(FlaskForm):
     post_description = TextAreaField(validators=[
         Length(max=150), Optional()])

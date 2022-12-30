@@ -37,7 +37,8 @@ def create_db():
         post_content TEXT,
         date_posted DATETIME NOT NULL,
         PRIMARY KEY (post_id) ,
-        CONSTRAINT `posts_ibfk_1` FOREIGN KEY (author_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE
+        CONSTRAINT `posts_ibfk_1` FOREIGN KEY (author_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
+        FULLTEXT(post_content)
     );
 
     CREATE TABLE IF NOT EXISTS create_post (

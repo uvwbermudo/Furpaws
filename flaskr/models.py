@@ -34,6 +34,17 @@ class Users(UserMixin):
         self.zipcode = zipcode
         self.country = country
 
+    def __repr__(self):
+        return f'User: {self.tag}, {self.email}'
+
+    def __hash__(self):
+        return hash(self.tag)
+
+    def __eq__(self, other):
+        if isinstance(other, Users):
+            return self.tag == other.tag
+        return False
+
     @classmethod
     def convert_to_object(cls, rows):
         if not rows:
@@ -76,7 +87,8 @@ class Users(UserMixin):
 
     # query with filter, use True exact match for exact match duh
     # RETURNS A LIST OF ROWS SO IT NEEDS TO BE INDEXED
-    def query_filter(email=None, name=None, exact_match=False, username=None, tag=None):
+    @classmethod
+    def query_filter(cls, email=None, name=None, exact_match=False, username=None, tag=None, account_type=None):
         cursor = mysql.connection.cursor()
         sql = ''
         if exact_match:
@@ -93,11 +105,27 @@ class Users(UserMixin):
             sql = f"SELECT * FROM USERS WHERE MATCH(first_name,last_name,tag,email) AGAINST('{name}')"
         if username:
             sql = f"SELECT * FROM USERS WHERE email='{username}' or tag='{username}'"
+        if account_type:
+            sql = sql + f" AND account_type = '{account_type}'"
         cursor.execute(sql)
         result = result_zip(cursor)
         result = Users.convert_to_object(result)
         if username:
+            print(result, 'HI?')
+        if result:
             return result[0]
+        else:
+            return []
+
+    @classmethod
+    def query_all(cls, account_type=None):
+        cursor = mysql.connection.cursor()
+        sql = "SELECT * FROM users"
+        if account_type:
+            sql = sql + f" WHERE account_type = '{account_type}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Users.convert_to_object(result)
         return result
 
     # to update user, just call Users.update_user(<params here>)
@@ -175,6 +203,18 @@ class Posts:
         else:
             self.date_posted = date_posted
 
+    def __repr__(self):
+        return f'Post {self.post_id}, {self.author_tag}'
+
+    def __hash__(self):
+        return int(self.post_id)
+
+    def __eq__(self, other):
+        if isinstance(other, Posts):
+            return self.post_id == other.post_id
+        else:
+            return False
+
     @classmethod
     def update_post(cls, target_post, post_content):
         cursor = mysql.connection.cursor()
@@ -183,6 +223,8 @@ class Posts:
 
     def add(self):
         cursor = mysql.connection.cursor()
+        if not self.post_content:
+            self.post_content = ''
         sql = None
         if self.post_content:
             sql = f'INSERT INTO posts(author_tag, post_content, date_posted)\
@@ -230,7 +272,7 @@ class Posts:
         cursor = mysql.connection.cursor()
         sql = ''
         if post_content:
-            sql = f"SELECT * FROM posts where post_content LIKE '%{post_content}%'"
+            sql = f"SELECT * FROM posts WHERE MATCH(post_content) AGAINST ('{post_content}')"
         if author_tag:
             sql = f"SELECT * FROM posts where author_tag LIKE '%{author_tag}%'"
         if post_id:
@@ -441,6 +483,12 @@ class Photos:
         return object_results
 
     @classmethod
+    def delete(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"DELETE FROM photos WHERE photo_id = '{id}'"
+        cursor.execute(sql)
+
+    @classmethod
     def query_get(cls, id):
         cursor = mysql.connection.cursor()
         sql = f"SELECT * FROM photos WHERE photo_id = '{id}'"
@@ -523,6 +571,12 @@ class Videos:
     def post(self):
         post = Posts.query_get(self.parent_post)
         return post
+
+    @classmethod
+    def delete(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"DELETE FROM videos WHERE video_id = '{id}'"
+        cursor.execute(sql)
 
 
 class Comments:

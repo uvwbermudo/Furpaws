@@ -323,9 +323,9 @@ class Posts:
         return likes
 
     @property
-    def sharedposts(self):
-        sharedposts = SharePost.query_filter(shared_post_id=self.post_id)
-        return sharedposts
+    def shares(self):
+        shares = SharePost.query_filter(shared_post_id=self.post_id)
+        return shares
 
 
 class CreatePost:

@@ -40,7 +40,7 @@ def home_page():
     share_posts = SharePost.query_filter(
         all=True, order_by='date_created', order='DESC')
     if request.method == 'POST':
-        photos = request.files.getlist('add_photos')
+        photos = request.files.getlist('files[]')
         videos = request.files.getlist('add_videos')
         print(photos)
         if form.validate_on_submit():

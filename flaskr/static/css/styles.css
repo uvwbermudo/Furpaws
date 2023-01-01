@@ -1101,6 +1101,20 @@ h5 {
 
 .post-hearts:hover {
     color: red;
+    cursor: pointer;
+}
+
+.post-hearts {
+    color: rgb(224, 214, 214);
+}
+
+.post-hearts-filled {
+    color: red;
+}
+
+.post-hearts-filled:hover {
+    color: red;
+    cursor: pointer;
 }
 
 .post-comments:hover {
@@ -1282,6 +1296,20 @@ h5 {
 
 .post-wto-hearts:hover {
     color: red;
+    cursor: pointer;
+}
+
+.post-wto-hearts {
+    color: rgb(224, 214, 214);
+}
+
+.post-wto-hearts-filled {
+    color: red;
+}
+
+.post-wto-hearts-filled:hover {
+    color: red;
+    cursor: pointer;
 }
 
 .post-wto-comments:hover {

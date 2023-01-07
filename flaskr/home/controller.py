@@ -306,11 +306,10 @@ def like(post_id):
     like = Likes.query_filter(
         author_tag=current_user.tag, post_liked=post_id, order_by='date_liked')
     if current_user.tag in map(lambda x: x.author_tag, post.likes):
-        like = Likes.query_get(post_liked=post_id)
-        print(like)
-        if post.post_id == like.post_liked:
-            Likes.delete(like.id)
-            mysql.connection.commit()
+        for every_like in post.likes:
+            if current_user.tag == every_like.author_tag:
+                Likes.delete(every_like.id)
+                mysql.connection.commit()
     else:
         like = Likes(author_tag=current_user.tag, post_liked=post_id)
         like.add()
@@ -405,11 +404,11 @@ def like_on_visited_post(post_id):
         post_id=post_id)[0]
     like = Likes.query_filter(
         author_tag=current_user.tag, post_liked=post_id, order_by='date_liked')
-    if not post:
-        return jsonify({'error': 'Post does not exist.'}, 400)
-    elif like:
-        Likes.delete(like[0].id)
-        mysql.connection.commit()
+    if current_user.tag in map(lambda x: x.author_tag, post.likes):
+        for every_like in post.likes:
+            if current_user.tag == every_like.author_tag:
+                Likes.delete(every_like.id)
+                mysql.connection.commit()
     else:
         like = Likes(author_tag=current_user.tag, post_liked=post_id)
         like.add()

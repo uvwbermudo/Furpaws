@@ -639,13 +639,13 @@ class Comments:
         cursor = mysql.connection.cursor()
         sql = ''
         if comment_id:
-            sql = f"SELECT * FROM comments WHERE comment_id='{comment_id}'"
+            sql = f'SELECT * FROM comments WHERE comment_id="{comment_id}"'
         if post_commented:
-            sql = f"SELECT * FROM comments WHERE post_commented='{post_commented}'"
+            sql = f'SELECT * FROM comments WHERE post_commented="{post_commented}"'
         if author_tag:
-            sql = f"SELECT * FROM comments WHERE author_tag='{author_tag}'"
+            sql = f'SELECT * FROM comments WHERE author_tag="{author_tag}"'
         if comment_content:
-            sql = f"SELECT * FROM comments WHERE comment_content='{comment_content}'"
+            sql = f'SELECT * FROM comments WHERE comment_content="{comment_content}"'
         cursor.execute(sql)
         result = result_zip(cursor)
         result = Comments.convert_to_object(result)
@@ -687,9 +687,13 @@ class Likes:
         return object_results
 
     @classmethod
-    def query_get(cls, id):
+    def query_get(cls, id=None, post_liked=None):
         cursor = mysql.connection.cursor()
-        sql = f"SELECT * FROM likes WHERE id = '{id}'"
+        sql = ''
+        if id:
+            sql = f"SELECT * FROM likes WHERE id = '{id}'"
+        if post_liked:
+            sql = F"SELECT * FROM likes where post_liked = '{post_liked}'"
         cursor.execute(sql)
         result = result_zip(cursor)
         result = Likes.convert_to_object(result)

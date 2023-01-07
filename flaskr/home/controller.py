@@ -5,7 +5,7 @@ import cloudinary.api
 from flaskr.models import Users, Posts, CreatePost, Photos, Videos, Comments, Likes, SharePost
 from flaskr import mysql, get_error_items
 from .forms import AddPostForm, EditPostForm, EditCommentForm
-from flask import Blueprint, render_template, request, flash, redirect, url_for, Response, request, session
+from flask import Blueprint, render_template, request, flash, redirect, url_for, Response, request, session, jsonify
 from flask_login import current_user, login_user, login_required, logout_user
 from . import home
 from config import CLOUDINARY_API_CLOUD_FOLDER
@@ -254,10 +254,12 @@ def search(filter):
 @home.route('/home/create-comment/<post_id>', methods=['POST'])
 @login_required
 def add_comment(post_id):
-    comment_text = request.form.get('comment_textbox')
-
+    data = request.get_json()
+    comment_text = data
+    post = Posts.query_filter(
+        post_id=post_id)[0]
     if not comment_text:
-        flash(f'Comment cannot be empty!', category='error')
+        return jsonify({'error': 'Comment cannot be empty!'})
     else:
         related_post = Posts.query_get(
             post_id=post_id)
@@ -266,64 +268,55 @@ def add_comment(post_id):
                 post_commented=related_post.post_id, author_tag=current_user.tag, comment_content=comment_text.replace('"', "''"))
             new_comment.add()
             mysql.connection.commit()
+            get_comment_id = Comments.query_filter(
+                post_commented=related_post.post_id, author_tag=current_user.tag, comment_content=comment_text.replace('"', "''"))
+            comment_id = get_comment_id[0].comment_id
         else:
             flash(f'Post does not exist!', category='error')
 
-    return redirect(url_for('home.home_page'))
+    return jsonify({"id": comment_id, "commented": current_user.tag in map(lambda x: x.author_tag, post.comments),  "comments": len(post.comments), "comment": comment_text, "author_tag": current_user.tag, "commented_post": related_post.post_id, "date_commented": new_comment.date_commented.strftime("%d, %b %Y").lower()})
 
 
-@home.route('/home/delete-comment/<int:comment_id>', methods=['GET', 'POST'])
+@home.route('/home/delete-comment/<int:comment_id>/<post_id>', methods=['GET', 'DELETE'])
 @login_required
-def delete_comment(comment_id):
+def delete_comment(comment_id, post_id):
+    post = Posts.query_filter(
+        post_id=post_id)[0]
     Comments.delete(comment_id)
     mysql.connection.commit()
-    return redirect(url_for('home.home_page'))
+    element_id = "main-feed-comments-" + post_id
+    return jsonify({"id": comment_id, "commented_post": post_id, "element_id": element_id, "comments": len(post.comments), "commented": current_user.tag in map(lambda x: x.author_tag, post.comments)})
 
 
-@home.route('/home/update-comment/<comment_id>', methods=['POST'])
+@home.route('/home/update-comment/<comment_id>/<post_id>', methods=['PUT'])
 @login_required
-def edit_comment(comment_id):
-    form = EditCommentForm(request.form)
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            new_comment_content = request.form['edit_comment_textbox'].replace(
-                '"', "''")
-            Comments.update_comment(comment_id, new_comment_content)
-            mysql.connection.commit()
-            flash('Comment Edited Successfully!', category='success')
-            return redirect(url_for('home.home_page'))
-    return render_template('home/home.html', form=form)
+def edit_comment(comment_id, post_id):
+    data = request.json['text']
+    new_comment_content = data
+    Comments.update_comment(comment_id, new_comment_content)
+    mysql.connection.commit()
+    return jsonify({"id": comment_id, "newComment": new_comment_content, "author_tag": current_user.tag, "post_commented": post_id})
 
 
-@home.route('/home/like-post/<post_id>', methods=['GET'])
+@home.route('/home/like-post/<post_id>', methods=['GET', 'POST'])
 @login_required
 def like(post_id):
-    post = Posts.query_get(
-        post_id=post_id)
+    post = Posts.query_filter(
+        post_id=post_id)[0]
     like = Likes.query_filter(
         author_tag=current_user.tag, post_liked=post_id, order_by='date_liked')
-    if not post:
-        flash(f'Post does not exist.', category='error')
+    if current_user.tag in map(lambda x: x.author_tag, post.likes):
+        like = Likes.query_get(post_liked=post_id)
+        print(like)
+        if post.post_id == like.post_liked:
+            Likes.delete(like.id)
+            mysql.connection.commit()
     else:
         like = Likes(author_tag=current_user.tag, post_liked=post_id)
         like.add()
         mysql.connection.commit()
 
-    return redirect(url_for('home.home_page'))
-
-
-@home.route('/home/unlike-post/<id>', methods=['GET'])
-@login_required
-def unlike(id):
-    like = Likes.query_get(
-        id=id)
-    if not like:
-        flash(f'Error.', category='error')
-    else:
-        Likes.delete(id)
-        mysql.connection.commit()
-
-    return redirect(url_for('home.home_page'))
+    return jsonify({"likes": len(post.likes), "liked": current_user.tag in map(lambda x: x.author_tag, post.likes)})
 
 
 @home.route('/posts/<post_id>', methods=['GET', 'POST'])
@@ -360,10 +353,12 @@ def edit_on_visited_post(post_id):
 @home.route('/posts/create-comment/<post_id>', methods=['POST'])
 @login_required
 def add_comment_on_visited_post(post_id):
-    comment_text = request.form.get('comment_textbox')
-
+    data = request.get_json()
+    comment_text = data
+    post = Posts.query_filter(
+        post_id=post_id)[0]
     if not comment_text:
-        flash(f'Comment cannot be empty!', category='error')
+        return jsonify({'error': 'Comment cannot be empty!'})
     else:
         related_post = Posts.query_get(
             post_id=post_id)
@@ -372,61 +367,52 @@ def add_comment_on_visited_post(post_id):
                 post_commented=related_post.post_id, author_tag=current_user.tag, comment_content=comment_text.replace('"', "''"))
             new_comment.add()
             mysql.connection.commit()
+            get_comment_id = Comments.query_filter(
+                post_commented=related_post.post_id, author_tag=current_user.tag, comment_content=comment_text.replace('"', "''"))
+            comment_id = get_comment_id[0].comment_id
         else:
             flash(f'Post does not exist!', category='error')
 
-    return redirect(url_for('home.view_post', post_id=post_id))
+    return jsonify({"id": comment_id, "commented": current_user.tag in map(lambda x: x.author_tag, post.comments),  "comments": len(post.comments), "comment": comment_text, "author_tag": current_user.tag, "commented_post": related_post.post_id, "date_commented": new_comment.date_commented.strftime("%d, %b %Y").lower()})
 
 
-@home.route('/posts/delete-comment/<int:comment_id>/<post_id>', methods=['GET', 'POST'])
+@home.route('/posts/delete-comment/<int:comment_id>/<post_id>', methods=["GET", "DELETE"])
 @login_required
 def delete_comment_on_visited_post(comment_id, post_id):
+    post = Posts.query_filter(
+        post_id=post_id)[0]
     Comments.delete(comment_id)
     mysql.connection.commit()
-    return redirect(url_for('home.view_post', post_id=post_id))
+    element_id = "comments-" + post_id
+    return jsonify({"id": comment_id, "commented_post": post_id, "element_id": element_id, "comments": len(post.comments), "commented": current_user.tag in map(lambda x: x.author_tag, post.comments)})
 
 
-@home.route('/posts/update-comment/<comment_id>/<post_id>', methods=['POST'])
+@home.route('/posts/update-comment/<comment_id>/<post_id>', methods=['PUT'])
 @login_required
 def edit_comment_on_visited_post(comment_id, post_id):
-    form = EditCommentForm(request.form)
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            new_comment_content = request.form['edit_comment_textbox'].replace(
-                '"', "''")
-            Comments.update_comment(comment_id, new_comment_content)
-            mysql.connection.commit()
-            flash('Comment Edited Successfully!', category='success')
-            return redirect(url_for('home.view_post', post_id=post_id))
-    return render_template('home/posts.html', form=form, post_id=post_id)
+    data = request.json['text']
+    new_comment_content = data
+    Comments.update_comment(comment_id, new_comment_content)
+    mysql.connection.commit()
+
+    return jsonify({"id": comment_id, "newComment": new_comment_content, "author_tag": current_user.tag, "post_commented": post_id})
 
 
-@home.route('/posts/like-post/<post_id>', methods=['GET'])
+@home.route('/posts/like-post/<post_id>', methods=['POST'])
 @login_required
 def like_on_visited_post(post_id):
-    post = Posts.query_get(
-        post_id=post_id)
+    post = Posts.query_filter(
+        post_id=post_id)[0]
     like = Likes.query_filter(
         author_tag=current_user.tag, post_liked=post_id, order_by='date_liked')
     if not post:
-        flash(f'Post does not exist.', category='error')
+        return jsonify({'error': 'Post does not exist.'}, 400)
+    elif like:
+        Likes.delete(like[0].id)
+        mysql.connection.commit()
     else:
         like = Likes(author_tag=current_user.tag, post_liked=post_id)
         like.add()
         mysql.connection.commit()
 
-    return redirect(url_for('home.view_post', post_id=post_id))
-
-
-@home.route('/posts/unlike-post/<id>/<post_id>', methods=['GET'])
-@login_required
-def unlike_on_visited_post(id, post_id):
-    like = Likes.query_get(
-        id=id)
-    if not like:
-        flash(f'Error.', category='error')
-    else:
-        Likes.delete(id)
-        mysql.connection.commit()
-
-    return redirect(url_for('home.view_post', post_id=post_id))
+    return jsonify({"likes": len(post.likes), "liked": current_user.tag in map(lambda x: x.author_tag, post.likes)})

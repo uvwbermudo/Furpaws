@@ -47,35 +47,27 @@
                     {% if current_user.tag in post.likes|map(attribute="author_tag")|list %}
                       {% for like in post.likes %}
                         {% if current_user.tag == like.author_tag %}
-                          <a class="post-hearts-filled" href="/posts/unlike-post/{{like.id}}/{{like.post_liked}}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                              <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                            </svg>
-                          </a>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="post-hearts-filled" id="like-button-{{post.post_id}}" onclick="likeVisitedPostNorm({{post.post_id}});" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                        </svg>
                         {% endif %}
                       {% endfor %}
                     {% else %}
-                      <a class="post-hearts" href="/posts/like-post/{{post.post_id}}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                        </svg>
-                      </a>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="post-hearts" id="like-button-{{post.post_id}}" onclick="likeVisitedPostNorm({{post.post_id}});" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                    </svg>
                     {% endif %}
-                    <h6> {{post.likes|length}} </h6>
+                    <h6 id="likes-count-{{post.post_id}}"> {{post.likes|length}} </h6>
                     {% if current_user.tag in post.comments|map(attribute="author_tag")|list %}
-                      <button class="post-comments" style="color:#1DA1F2" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
-                          <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
-                        </svg>
-                      </button>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" id="comment-button-{{post.post_id}}" class="post-comments-filled" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" viewBox="0 0 16 16">
+                        <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                      </svg>
                     {% else %}
-                      <button class="post-comments" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
-                          <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
-                        </svg>
-                      </button>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" id="comment-button-{{post.post_id}}" class="post-comments" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" viewBox="0 0 16 16">
+                        <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                      </svg>
                     {% endif %}
-                      <h6>{{post.comments|length}}</h6>
+                      <h6 id="comments-length-{{post.post_id}}">{{post.comments|length}}</h6>
                     {% if current_user.tag in post.shares|map(attribute="sharer_tag") %}
                       <button class="post-shares" style="color:#1DA1F2" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
                         <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
@@ -135,35 +127,27 @@
                       {% if current_user.tag in post.likes|map(attribute="author_tag")|list %}
                         {% for like in post.likes %}
                           {% if current_user.tag == like.author_tag %}
-                            <a class="post-wto-hearts-filled" href="/posts/unlike-post/{{like.id}}/{{like.post_liked}}">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                              </svg>
-                            </a>
+                          <svg xmlns="http://www.w3.org/2000/svg" class="post-wto-hearts-filled" id="like-button-{{post.post_id}}" onclick="likeVisitedPost({{post.post_id}});" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                          </svg>
                           {% endif %}
                         {% endfor %}
                       {% else %}
-                        <a class="post-wto-hearts" href="/posts/like-post/{{post.post_id}}">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                          </svg>
-                        </a>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="post-wto-hearts" id="like-button-{{post.post_id}}" onclick="likeVisitedPost({{post.post_id}});" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                      </svg>
                       {% endif %}
-                      <h6> {{post.likes|length}} </h6>
+                      <h6 id="likes-count-{{post.post_id}}">{{post.likes|length}}</h6>
                       {% if current_user.tag in post.comments|map(attribute="author_tag")|list %}
-                        <button class="post-wto-comments" style="color:#1DA1F2" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
-                            <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
-                          </svg>
-                        </button>
+                        <svg xmlns="http://www.w3.org/2000/svg" id="comment-button-{{post.post_id}}" width="30" height="30" fill="currentColor" class="post-wto-comments-filled" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" viewBox="0 0 16 16">
+                          <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                        </svg>
                       {% else %}
-                        <button class="post-wto-comments" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
-                            <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
-                          </svg>
-                        </button>
+                        <svg xmlns="http://www.w3.org/2000/svg" id="comment-button-{{post.post_id}}" width="30" height="30" fill="currentColor" class="post-wto-comments" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}"  viewBox="0 0 16 16">
+                          <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                        </svg>
                       {% endif %}
-                        <h6>{{post.comments|length}}</h6>
+                        <h6 id="comments-length-{{post.post_id}}">{{post.comments|length}}</h6>
                       {% if current_user.tag in post.shares|map(attribute="sharer_tag")|list %}
                         <button class="post-wto-shares" style="color:#1DA1F2" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
                           <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
@@ -276,35 +260,27 @@
                     {% if current_user.tag in post.likes|map(attribute="author_tag")|list %}
                       {% for like in post.likes %}
                         {% if current_user.tag == like.author_tag %}
-                          <a class="post-wto-hearts-filled" href="/posts/unlike-post/{{like.id}}/{{like.post_liked}}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="post-wto-hearts-filled" id="like-button-{{post.post_id}}" onclick="likeVisitedPost({{post.post_id}});" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
                               <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                             </svg>
-                          </a>
                         {% endif %}
                       {% endfor %}
                     {% else %}
-                      <a class="post-wto-hearts" href="/posts/like-post/{{post.post_id}}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                        </svg>
-                      </a>
+                      <svg xmlns="http://www.w3.org/2000/svg" id="like-button-{{post.post_id}}" class="post-wto-hearts" onclick="likeVisitedPost({{post.post_id}});" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                      </svg>
                     {% endif %}
-                    <h6>{{post.likes|length}}</h6>
+                    <h6 id="likes-count-{{post.post_id}}">{{post.likes|length}}</h6>
                     {% if current_user.tag in post.comments|map(attribute="author_tag")|list %}
-                      <button class="post-comments" style="color:#1DA1F2" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
-                          <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
-                        </svg>
-                      </button>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" id="comment-button-{{post.post_id}}" class="post-comments-filled" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}"viewBox="0 0 16 16">
+                        <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                      </svg>
                     {% else %}
-                      <button class="post-comments" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
-                          <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
-                        </svg>
-                      </button>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" id="comment-button-{{post.post_id}}" class="post-comments" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" viewBox="0 0 16 16">
+                        <path d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                      </svg>
                     {% endif %}
-                    <h6>{{post.comments|length}}</h6>
+                    <h6 id="comments-length-{{post.post_id}}">{{post.comments|length}}</h6>
                     {% if current_user.tag in post.shares|map(attribute="sharer_tag") %}
                       <button class="post-shares" style="color:#1DA1F2" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
                         <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
@@ -523,18 +499,80 @@
             </div>
             <div class="modal-body bg-info bg-opacity-10" >
               <div class="container-fluid">
-                <div class="collapse" id="comments-{{post.post_id}}">
+                <div class="comments" id="comments-{{post.post_id}}">
+                  Comments:
                   {% if post.author_tag == current_user.tag %}
                     {% for comments in post.comments %}
                       {% if comments.author_tag == current_user.tag %}
-                        <div class="row p-3 bg-white border-bottom">
+                        <div class="row p-3 bg-white border-bottom" id="comment-{{comments.comment_id}}">
+                          <div class="col-1 p-1 text-end">
+                            profile picture
+                          </div>
                           <div class="col-1 p-1 text-center">
                             <a href="#">{{comments.author_tag}}</a> :
                           </div>
-                          <div class="col p-1 text-start">
+                          <div class="col p-1 text-start" id="comment-content-{{comments.comment_id}}">
                             {{comments.comment_content}}
                           </div>
+                          <div class="col-2 p-1 text-end">
+                            <div class="btn-group">
+                              {{comments.date_commented.strftime("%d, %b %Y").lower()}}
+                              <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                                  <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                  </svg>
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentModal{{comments.comment_id}}">Edit</a></li>
+                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comments.comment_id}}">Delete</a></li>
+                                <li><a class="dropdown-item">Report</a></li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      {% else %}
+                        <div class="row p-3 bg-white border-bottom" id="comment-{{comments.comment_id}}">
                           <div class="col-1 p-1 text-end">
+                            profile picture
+                          </div>
+                          <div class="col-1 p-1 text-center">
+                            <a href="#">{{comments.author_tag}}</a> :
+                          </div>
+                          <div class="col p-1 text-start" id="comment-content-{{comments.comment_id}}">
+                            {{comments.comment_content}}
+                          </div>
+                          <div class="col-2 p-1 text-end">
+                            {{comments.date_commented.strftime("%d, %b %Y").lower()}}
+                            <div class="btn-group">
+                              <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                                  <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                  </svg>
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comments.comment_id}}">Delete</a></li>
+                                <li><a class="dropdown-item">Report</a></li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  {% else %}
+                    {% for comments in post.comments %}
+                      {% if comments.author_tag == current_user.tag %}
+                        <div class="row p-3 bg-white border-bottom" id="comment-{{comments.comment_id}}">
+                          <div class="col-1 p-1 text-end">
+                            profile picture
+                          </div>
+                          <div class="col-1 p-1 text-center">
+                            <a href="#">{{comments.author_tag}}</a> :
+                          </div>
+                          <div class="col p-1 text-start" id="comment-content-{{comments.comment_id}}">
+                            {{comments.comment_content}}
+                          </div>
+                          <div class="col-2 p-1 text-end">
+                            {{comments.date_commented.strftime("%d, %b %Y").lower()}}
                             <div class="btn-group">
                               <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
@@ -544,19 +582,24 @@
                               <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentModal{{comments.comment_id}}">Edit</a></li>
                                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comments.comment_id}}">Delete</a></li>
+                                <li><a class="dropdown-item">Report</a></li>
                               </ul>
                             </div>
                           </div>
                         </div>
                       {% else %}
-                        <div class="row p-3 bg-white border-bottom">
+                        <div class="row p-3 bg-white border-bottom" id="comment-{{comments.comment_id}}">
+                          <div class="col-1 p-1 text-end">
+                            profile picture
+                          </div>
                           <div class="col-1 p-1 text-center">
                             <a href="#">{{comments.author_tag}}</a> :
                           </div>
-                          <div class="col p-1 text-start">
+                          <div class="col p-1 text-start" id="comment-content-{{comments.comment_id}}">
                             {{comments.comment_content}}
                           </div>
-                          <div class="col-1 p-1 text-end">
+                          <div class="col-2 p-1 text-end">
+                            {{comments.date_commented.strftime("%d, %b %Y").lower()}}
                             <div class="btn-group">
                               <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
@@ -564,68 +607,23 @@
                                   </svg>
                               </button>
                               <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comments.comment_id}}">Delete</a></li>
+                                <li><a class="dropdown-item">Report</a></li>
                               </ul>
                             </div>
                           </div>
                         </div>
-                      {% endif %}
-                    {% endfor %}
-                  {% else %}
-                    {% for comments in post.comments %}
-                        {% if comments.author_tag == current_user.tag %}
-                          <div class="row p-3 bg-white border-bottom">
-                            <div class="col-1 p-1 text-center">
-                              <a href="#">{{comments.author_tag}}</a> :
-                            </div>
-                            <div class="col p-1 text-start">
-                              {{comments.comment_content}}
-                            </div>
-                            <div class="col-1 p-1 text-end">
-                              <div class="btn-group">
-                                <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu">
-                                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentModal{{comments.comment_id}}">Edit</a></li>
-                                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comments.comment_id}}">Delete</a></li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        {% else %}
-                          <div class="card">
-                            <div class="card-body">
-                              <a href="#">{{comments.author_tag}}</a>
-                              {{comments.comment_content}}
-                            </div>
-                          </div>
-                          <br>
-                        {% endif%}
+                      {% endif%}
                     {% endfor %}
                   {% endif %}
                 </div>
-                <p class="card-text">
-                  {% if post.comments|length > 0 %}
-                    <a data data-bs-toggle="collapse" href="#comments-{{post.post_id}}" role="button">
-                      <small>
-                        View {{post.comments|length}} Comments
-                      </small>
-                    </a>
-                  {% else %}
-                    <small class="text-muted">No comments!</small>
-                  {% endif %}
-                </p>
               </div>
             </div>
             <div class="modal-footer">
-              <form class="input-group mb-3" method="POST" action="/posts/create-comment/{{post.post_id}}">
-              <textarea class="form-control" style="width: 115px;" id="comment_textbox" name="comment_textbox" placeholder="Say something about this post..."></textarea>
+              <form class="input-group mb-3" id="create-comment-{{post.post_id}}" method="POST" action="/posts/create-comment/{{post.post_id}}">
+              <textarea class="form-control" style="width: 115px;" id="comment_textbox{{post.post_id}}" name="comment_textbox" placeholder="Say something about this post..." required></textarea>
               {{form.csrf_token}}
               <br><pre> </pre>
-              <button type="submit" 
+              <button onclick="commentVisitedPost({{post.post_id}});" type="submit" 
               style=
               "border-radius: 10px;
               width:170px;
@@ -654,12 +652,12 @@
               <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}"></button>
             </div>
             <div class="modal-body">
-              <form action="/posts/update-comment/{{comments.comment_id}}/{{comments.post_commented}}" method="POST">
-                <textarea class="form-control" name="edit_comment_textbox" id="edit_comment_textbox" placeholder="{{comments.comment_content}}" required>{{comments.comment_content}}</textarea>
+              <form id="edit-comment-{{comments.comment_id}}" action="/posts/update-comment/{{comments.comment_id}}/{{comments.post_commented}}" method="PUT">
+                <textarea class="form-control" name="edit_comment_textbox" id="editCommentTextbox{{comments.comment_id}}" placeholder="{{comments.comment_content}}" required>{{comments.comment_content}}</textarea>
             </div>
             <div class="modal-footer">
               {{edit_comment_form.csrf_token}}
-              {{edit_comment_form.edit_comment_button(class="submit-post")}}</form>
+              <button class="submit-post" onclick="editCommentVisitedPost({{post.post_id}}, {{comments.comment_id}});" type="submit" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" id="edit_comment_button{{comments.comment_id}}" name="edit_comment_button">Save changes</button></form>
               <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" style="width:100%">
                 Cancel
               </button>
@@ -684,9 +682,9 @@
               <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}">
                 Cancel
               </button>
-              <form action="{{url_for('home.delete_comment_on_visited_post', comment_id=comments.comment_id, post_id=comments.post_commented)}}" method="POST">
+              <form id="delete-comment-{{comments.comment_id}}" action="{{url_for('home.delete_comment_on_visited_post', comment_id=comments.comment_id, post_id=comments.post_commented)}}" method="DELETE">
                 {{form.csrf_token}}
-                <input type="submit" class="btn btn-danger" value="Delete">
+                <input type="submit" onclick="deleteCommentVisitedPost({{post.post_id}}, {{comments.comment_id}})" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" class="btn btn-danger" value="Delete">
               </form>
             </div>
           </div>

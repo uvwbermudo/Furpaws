@@ -1119,6 +1119,17 @@ h5 {
 
 .post-comments:hover {
     color: #1DA1F2;
+    cursor: pointer
+}
+
+.post-comments-filled {
+    color: #1DA1F2;
+    cursor: pointer
+}
+
+.post-comments {
+    color: rgb(224, 214, 214);
+    cursor: pointer
 }
 
 .post-shares:hover {
@@ -1312,8 +1323,22 @@ h5 {
     cursor: pointer;
 }
 
+.post-wto-comments {
+    color: rgb(224, 214, 214);
+    cursor: pointer
+}
+
 .post-wto-comments:hover {
     color: #1DA1F2;
+}
+
+.post-wto-comments-filled {
+    color: #1DA1F2
+}
+
+.post-wto-comments-filled:hover {
+    color: #1DA1F2;
+    cursor: pointer
 }
 
 .post-wto-shares:hover {
@@ -1928,4 +1953,21 @@ h5 {
 
 .confirm-delete-media-div .cancel:hover {
     background-color: #6e6969;
+}
+
+@keyframes append-animate {
+    from {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+.new-comment {
+    transform-origin: 50% 0;
+    animation: append-animate .3s linear;
 }

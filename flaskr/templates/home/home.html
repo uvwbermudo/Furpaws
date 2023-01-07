@@ -239,21 +239,21 @@
                               </button>
                               <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentModal{{comments.comment_id}}">Edit</a></li>
-                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comments.comment_id}}">Delete</a></li>
+                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal{{comments.comment_id}}">Delete</a></li>
                                 <li><a class="dropdown-item">Report</a></li>
                               </ul>
                             </div>
                           </div>
                         </div>
                       {% else %}
-                        <div class="row p-3 bg-white border-bottom">
+                        <div class="row p-3 bg-white border-bottom" id="main-feed-comment-{{comments.comment_id}}">
                           <div class="col-1 p-1 text-end">
                             profile picture
                           </div>
                           <div class="col-1 p-1 text-center">
                             <a href="#">{{comments.author_tag}}</a> :
                           </div>
-                          <div class="col p-1 text-start">
+                          <div class="col p-1 text-start" id="comment-content-{{comments.comment_id}}">
                             {{comments.comment_content}}
                           </div>
                           <div class="col-2 p-1 text-end">
@@ -265,7 +265,7 @@
                                   </svg>
                               </button>
                               <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comments.comment_id}}">Delete</a></li>
+                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal{{comments.comment_id}}">Delete</a></li>
                                 <li><a class="dropdown-item">Report</a></li>
                               </ul>
                             </div>
@@ -276,14 +276,14 @@
                   {% else %}
                     {% for comments in post.comments %}
                         {% if comments.author_tag == current_user.tag %}
-                          <div class="row p-3 bg-white border-bottom">
+                          <div class="row p-3 bg-white border-bottom" id="main-feed-comment-{{comments.comment_id}}">
                             <div class="col-1 p-1 text-end">
                               profile picture
                             </div>
                             <div class="col-1 p-1 text-center">
                               <a href="#">{{comments.author_tag}}</a> :
                             </div>
-                            <div class="col p-1 text-start">
+                            <div class="col p-1 text-start" id="comment-content-{{comments.comment_id}}">
                               {{comments.comment_content}}
                             </div>
                             <div class="col-2 p-1 text-end">
@@ -296,21 +296,21 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                   <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentModal{{comments.comment_id}}">Edit</a></li>
-                                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentModal{{comments.comment_id}}">Delete</a></li>
+                                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal{{comments.comment_id}}">Delete</a></li>
                                   <li><a class="dropdown-item">Report</a></li>
                                 </ul>
                               </div>
                             </div>
                           </div>
                         {% else %}
-                        <div class="row p-3 bg-white border-bottom">
+                        <div class="row p-3 bg-white border-bottom" id="main-feed-comment-{{comments.comment_id}}">
                           <div class="col-1 p-1 text-end">
                             profile picture
                           </div>
                           <div class="col-1 p-1 text-center">
                             <a href="#">{{comments.author_tag}}</a> :
                           </div>
-                          <div class="col p-1 text-start">
+                          <div class="col p-1 text-start" id="comment-content-{{comments.comment_id}}">
                             {{comments.comment_content}}
                           </div>
                           <div class="col-2 p-1 text-end">
@@ -382,11 +382,11 @@
           </div>
         </div>
 
-        <div class="modal fade" id="deleteCommentModal{{comments.comment_id}}" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
+        <div class="modal fade" id="deleteCommentsModal{{comments.comment_id}}" tabindex="-1" role="dialog" aria-labelledby="deleteCommentsModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="deleteCommentModalLabel">
+                <h1 class="modal-title fs-5" id="deleteCommentsModalLabel">
                   Delete Comment
                 </h1>
                 <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}"></button>
@@ -507,8 +507,11 @@
             <div class="post-container">
               {% for shared in share_posts %}
                   {% if post.post_id == shared.reference_id %}
-                  <div class="card mt-4" style="border:none;">
-                    <p align="left"><br><strong>@{{shared.sharer_tag}}</strong> shared this <u><strong>post</strong></u></p>
+                  <div class="card p-3 mt-5" style="border:none;">
+                    <!-- <p align="left"><br><strong>@{{shared.sharer_tag}}</strong> shared this <u><strong>post</strong></u></p> -->
+                    <div class="col-3 text-center">
+                      <b>@{{shared.sharer_tag}}</b> shared this <u><b>post</b></u>
+                    </div>
                   </div>
                   {% endif %}
                 {% endfor %}
@@ -587,8 +590,11 @@
             <div class="post-wto-container">
               {% for shared in share_posts %}
                 {% if post.post_id == shared.reference_id %}
-                <div class="card mt-4" style="border:none;">
-                  <p align="left"><br><strong>@{{shared.sharer_tag}}</strong> shared this <u><strong>post</strong></u></p>
+                <div class="card p-3 mt-5" style="border:none;">
+                  <!-- <p align="left"><br><strong>@{{shared.sharer_tag}}</strong> shared this <u><strong>post</strong></u></p> -->
+                  <div class="col-3 text-center">
+                    <b>@{{shared.sharer_tag}}</b> shared this <u><b>post</b></u>
+                  </div>
                 </div>
                 {% endif %}
               {% endfor %}
@@ -671,8 +677,11 @@
             <div class="post-wmp-container">
               {% for shared in share_posts %}
                 {% if post.post_id == shared.reference_id %}
-                <div class="card mt-4" style="border:none;">
-                  <p align="left"><br><strong>@{{shared.sharer_tag}}</strong> shared this <u><strong>post</strong></u></p>
+                <div class="card p-3 mt-5" style="border:none;">
+                  <!-- <p align="left"><br><strong>@{{shared.sharer_tag}}</strong> shared this <u><strong>post</strong></u></p> -->
+                  <div class="col-3 text-center">
+                    <b>@{{shared.sharer_tag}}</b> shared this <u><b>post</b></u>
+                  </div>
                 </div>
                 {% endif %}
               {% endfor %}

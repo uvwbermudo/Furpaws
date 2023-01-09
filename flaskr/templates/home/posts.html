@@ -69,12 +69,12 @@
                     {% endif %}
                       <h6 id="comments-length-{{post.post_id}}">{{post.comments|length}}</h6>
                     {% if current_user.tag in post.shares|map(attribute="sharer_tag") %}
-                      <button class="post-shares" style="color:#1DA1F2" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
+                      <button class="post-shares" style="color:#1DA1F2" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="27" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
                         <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
                         </svg>
                       </button>
                     {% else %}
-                      <button class="post-shares" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
+                      <button class="post-shares" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="27" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
                         <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
                         </svg>
                       </button>
@@ -149,12 +149,12 @@
                       {% endif %}
                         <h6 id="comments-length-{{post.post_id}}">{{post.comments|length}}</h6>
                       {% if current_user.tag in post.shares|map(attribute="sharer_tag")|list %}
-                        <button class="post-wto-shares" style="color:#1DA1F2" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
+                        <button class="post-wto-shares" style="color:#1DA1F2" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="27" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
                           <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
                           </svg>
                         </button>
                       {% else %}
-                        <button class="post-wto-shares" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
+                        <button class="post-wto-shares" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="27" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
                           <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
                           </svg>
                         </button>
@@ -282,12 +282,12 @@
                     {% endif %}
                     <h6 id="comments-length-{{post.post_id}}">{{post.comments|length}}</h6>
                     {% if current_user.tag in post.shares|map(attribute="sharer_tag") %}
-                      <button class="post-shares" style="color:#1DA1F2" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
+                      <button class="post-shares" style="color:#1DA1F2" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="27" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
                         <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
                         </svg>
                       </button>
                     {% else %}
-                      <button class="post-shares" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
+                      <button class="post-shares" data-bs-toggle="modal" data-bs-target="#sharePostModal{{post.post_id}}"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="27" fill="currentColor" border-color="blue" class="bi bi-share-fill" viewBox="0 0 16 16">
                         <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
                         </svg>
                       </button>

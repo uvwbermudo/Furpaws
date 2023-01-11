@@ -1,50 +1,218 @@
-{% if query|length < 1 %}
-<h3 class="text-muted">No results for this search</h3>
-{% endif %}
 
-{% for result in query %}
-{% if result.__class__.__name__ == 'Users' %}
-<div class="container mb-4">
-    <div class="container-decorator"></div>
-    <div class="search-result-container " id="">
-        <a href="/profiles/{{result.tag}}"> <img src="../../static/img/test_profilepicwdiffsize.png" alt=""></a>
-        <div class="result-profile-info">
-            <a href="/profiles/{{result.tag}}" class="fs-4 text-dark">{{result.first_name}} {{result.last_name}}</a>
-            <p class="text-muted">@{{result.tag}}</p>
-            <p class="text-muted">
-                {% if result.account_type == 'pet_owner' %}
-                Pet Owner
-                {% else %}
-                Freelancer
-                {% endif %}
-            </p>
-            <p>Lives in {{result.city}}</p>
-            <p>69 friends</p>
-        </div>
-        <a type="button" class="btn btn-fp-blue btn-small rounded-5 me-2 text-decoration-none ms-auto" href="/profiles/{{result.tag}}" style="min-width: 100px;">Visit Profile</a>
-    </div>
+<script src="https://code.jquery.com/jquery-3.6.1.js"
+integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+crossorigin="anonymous"></script>
+
+<div class="search-result-main-container">
+
+	<div class="search-result-anchors">
+		<div class="search-result-side-content">
+			<span class="text-muted">On this page</span>
+			{% if query_user|length > 0 %}
+			<a href="#user-results" class="text-decoration-none">Users</a>
+			{% endif %}
+			{% if query_post|length > 0 %}
+			<a href="#posts-results" class="text-decoration-none">Posts</a>
+			{% endif %}
+			{% if query_user|length < 1 and query_post|length < 1 %}
+			<a>No Results</a>
+			{% endif %}
+
+		</div>
+	</div>
+
+	<div class="search-result-mid">
+	{% if query_user|length < 1 and query_post|length < 1 %}
+		<h5 class="text-muted">No results for this search</h5>
+	{% endif %}
+
+	{% if query_user %}
+		<div class="mb-4 actual-results-container" id="user-results">
+			<h6 style="text-align: left; padding-left:10px; padding-bottom:10px" class="fw-medium d-block">People</h6>
+		{% for result in query_user %}
+			<div class="search-result-container search-result" id="">
+					<div class="left-pfp">
+						<a href="/profiles/{{result.tag}}">
+							<img src="../../static/img/postprofile.jpg" alt="">
+						</a> 
+					</div>
+					<div class="result-profile-info">
+						<div class="name">
+						{% set first_name = result.first_name.split(' ') %}
+							<a href="/profiles/{{result.tag}}" class="text-dark fw-bolder">
+								<p class="d-inline">{{first_name[0]}} {{result.last_name}}</p>
+								<p class="text-muted d-inline fw-semibold">&middot; {{result.tag}}</p>
+							</a>
+						</div>
+
+							<p class="text-muted d-inline">
+							{% if result.account_type == 'pet_owner' %}
+								Pet Owner
+							{% else %}
+									Freelancer
+							{% endif %}
+							</p>
+							<p class="d-inline fw-light">{{result.city}}, {{result.country}}</p>
+					</div>
+			</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+	
+	{% if query_post %}
+	<div class=" mb-4 actual-results-container" id="posts-results" style="background-color: transparent; padding-top:0px">
+		<h6 style="text-align: left; padding:10px 0px 18px 10px; margin-bottom:0px" class="fw-medium bg-white d-block">Posts</h6>
+		{% for result in query_post %}
+			<div class="search-result-post search-result">
+					<div class="search-result-post-upper">
+						{% set first_name = result.author.first_name.split(' ') %}
+							<a href="/profiles/{{result.author_tag}}"> 
+								<img src="../../static/img/postprofile.jpg" alt="" style="height: 58px; width:58px; overflow:hidden; border-radius:50%">
+							</a>
+							<div style="padding-bottom:0px; padding-left: 10px;">
+									<a href="/profiles/{{result.author_tag}}" class="post-upper text-dark pb-1 fs-5 fw-bold">
+									<p class="d-inline fw-medium" style="font-size:14px;">
+										{{first_name[0]}} {{result.author.last_name}}
+									</p>
+									<p class="d-inline text-muted fw-normal" style="font-size:14px;">
+										&middot; {{result.author_tag}}
+									</p>
+								</a>	
+								<p class="text-muted" style="font-size: 12px; margin:0; text-align:left;">{{ result.date_posted.strftime("%d, %b %Y").lower()}}</p>
+								</div>
+							<a class="text-decoration-none ms-auto text-muted" href="/posts/{{result.post_id}}" style="font-size:14px;">View Post</a>
+					</div>
+
+					{% if result.post_content%}
+					<div class="search-result-post-desc">
+							{{result.post_content}}
+					</div>
+					{% endif %}
+
+					{% if result.photos or result.videos %}
+					<div class="search-result-post-media">
+						{% if result.photos|length == 1 %}
+							<img src="{{result.photos[0].photo_url}}" alt="">
+						{% elif result.videos|length == 1 %}
+						<video class="" src="{{result.videos[0].video_url}}" controls></video> 
+						{% else %}
+						<div id="search-result-post-carousel{{result.post_id}}" class="carousel slide">
+							<div class="carousel-indicators">
+								{% if result.photos or result.videos %}
+              		{% if result.photos %}
+                  	{% for photo in result.photos %}
+                      {% if loop.first %}
+												<button type="button" data-bs-target="#search-result-post-carousel{{result.post_id}}" data-bs-slide-to="{{loop.index0}}" class="active"></button>
+											{% else %}
+												<button type="button" data-bs-target="#search-result-post-carousel{{result.post_id}}" data-bs-slide-to="{{loop.index0}}"></button>
+											{% endif %}	
+										{% endfor %}
+									{% endif %}
+
+									{% if result.videos %}
+										{% for video in result.videos %}
+                  		{% set loop_index = result.photos|length + loop.index0 %}
+                      	{% if loop.first %}
+                        	{% if not result.photos %}
+														<button type="button" data-bs-target="#search-result-post-carousel{{result.post_id}}" data-bs-slide-to="{{loop_index}}" class="active"></button>
+													{% else %}
+														<button type="button" data-bs-target="#search-result-post-carousel{{result.post_id}}" data-bs-slide-to="{{loop_index}}"></button>
+													{% endif %}
+													{% else %}
+													<button type="button" data-bs-target="#search-result-post-carousel{{result.post_id}}" data-bs-slide-to="{{loop_index}}"></button>
+												{% endif %}
+										{% endfor %}
+									{% endif %}
+								{% endif %}
+							</div>
+
+							<div class="carousel-inner search-result-inner-carousel" id="search-result-inner-carousel{{result.post_id}}">
+								{% if result.photos %}            
+                	{% for photo in result.photos %}
+                  	{% if loop.first %}
+                    	<div class="carousel-item active ">
+                     	 <img class="" src="{{photo.photo_url}}"/>
+                    	</div>
+                  	{% else %}
+                    <div class="carousel-item">
+                      <img class="" src="{{photo.photo_url}}"/>
+                    </div>
+                  	{% endif %}
+                	{% endfor %}
+              	{% endif %}
+
+              {% if result.videos %}
+                {% for video in result.videos %}
+                  {% set loop_index = result.photos|length + loop.index0 %}
+                    {% if loop.first %}
+                      {% if not result.photos %}
+                        <div class="carousel-item active">
+                          <video class="" src="{{video.video_url}}" controls></video> 
+                        </div>
+                        {% else %}
+                        <div class="carousel-item">
+                          <video class="" src="{{video.video_url}}" controls></video> 
+                        </div>
+                      {% endif %}
+                    {% else %}
+                      <div class="carousel-item ">
+                        <video class=" " src="{{video.video_url}}" controls></video> 
+                      </div>
+                    {% endif %}
+                {% endfor %}
+              {% endif %}
+							</div>
+							<script>
+								// Get all of the images in the container
+								$('.search-result-inner-carousel').ready(function() {
+
+									let maxHeight = 0;
+									$('#search-result-inner-carousel{{result.post_id}} img').each(function(){
+										if ($(this).height() > maxHeight) {
+											maxHeight = $(this).height();
+										}
+									})
+
+									$('#search-result-inner-carousel{{result.post_id}} video').each(function(){
+										if ($(this).height() > maxHeight) {
+											maxHeight = $(this).height();
+										}
+									})
+			
+									$('#search-result-inner-carousel{{result.post_id}}').height(maxHeight);
+									
+								})
+								
+							</script>
+
+
+							<button class="carousel-control-prev" type="button" data-bs-target="#search-result-post-carousel{{result.post_id}}" data-bs-slide="prev">
+								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+								<span class="visually-hidden">Previous</span>
+							</button>
+							<button class="carousel-control-next" type="button" data-bs-target="#search-result-post-carousel{{result.post_id}}" data-bs-slide="next">
+								<span class="carousel-control-next-icon" aria-hidden="true"></span>
+								<span class="visually-hidden">Next</span>
+							</button>
+						</div>
+						{% endif %}
+					</div>
+					{% endif %}
+		</div>
+		{% endfor %}
+		</div>
+		{% endif %}
+
+
+	</div>
+
+	<div class="search-result-ad ">
+		<div  class="search-result-side-content">
+			<img src="../../static/img/ad2.png" alt="">
+		</div>
+	</div>
+	
+
+
+
 </div>
-{% endif %}
-{% endfor %}
-
-{% for result in query %}
-{% if result.__class__.__name__ == 'Posts' %}
-
-<div class="container mb-4">
-    <div class="container-decorator" style="width: 60%; margin-right:0px"></div>
-    <div class="search-result-post">
-        <div class="search-result-post-upper">
-            <a href="/profiles/{{result.author_tag}}"> <img src="../../static/img/test_profilepicwdiffsize.png" alt=""></a>
-            <a href="/profiles/{{result.author_tag}}" class="post-upper text-dark pb-1 fs-5 fw-bold">{{result.author.first_name}}</a>
-            <h4 class="text-muted" style="font-weight: lighter; margin-left:5px;">|</h4>
-            <a href="/profiles/{{result.author_tag}}" class="post-upper post-tag text-dark text-muted pb-1">@{{result.author_tag}}</a>
-            <a type="button" class="btn btn-fp-blue btn-small rounded-5 me-2 text-decoration-none ms-auto" href="/posts/{{result.post_id}}" style="min-width: 100px;">View Full Post</a>
-        </div>
-        <div class="container post-content">
-            {{result.post_content}}
-        </div>
-    </div>
-
-</div>
-{% endif %}
-{% endfor %}

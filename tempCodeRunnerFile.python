@@ -1,0 +1,4 @@
+s = "INSERT INTO jobs(job_id,date_accepted,date_posted,date_finished,job_status,job_type \
+sexy sex"
+
+print(s)

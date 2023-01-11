@@ -154,39 +154,50 @@ def delete_video(video_id):
 @login_required
 def search(filter):
     query = session['search_query']
+    query_user = []
+    query_post = []
     if filter == 'pet_owners':
-        search_query = Users.query_filter(account_type='pet_owner', name=query)
-        search_query.extend(Users.query_filter(account_type='pet_owner', tag=query))
-        search_query.extend(Users.query_filter(account_type='pet_owner', email=query))
+        query_user.extend(Users.query_filter(account_type='pet_owner', name=query))
+        query_user.extend(Users.query_filter(account_type='pet_owner', tag=query))
+        query_user.extend(Users.query_filter(account_type='pet_owner', email=query))
 
     if filter == 'freelancers':
-        search_query = Users.query_filter(account_type='freelancer', name=query)
-        search_query.extend(Users.query_filter(account_type='freelancer', tag=query))
-        search_query.extend(Users.query_filter(account_type='freelancer', email=query))
+        query_user = Users.query_filter(account_type='freelancer', name=query)
+        query_user.extend(Users.query_filter(account_type='freelancer', tag=query))
+        query_user.extend(Users.query_filter(account_type='freelancer', email=query))
 
     if filter == 'all':
-        search_query = Users.query_filter(name=query)
-        search_query.extend(Users.query_filter(email=query))
-        search_query.extend(Users.query_filter(tag=query))
-        search_query.extend(Posts.query_filter(post_content=query))
-        search_query.extend(Posts.query_filter(author_tag=query))
+        query_user.extend(Users.query_filter(name=query))
+        query_user.extend(Users.query_filter(email=query))
+        query_user.extend(Users.query_filter(tag=query))
+        query_post.extend(Posts.query_filter(post_content=query))
+        query_post.extend(Posts.query_filter(author_tag=query))
         by_name = []
         by_name.extend(Users.query_filter(name=query))
         by_name.extend(Users.query_filter(email=query))
         for user in by_name:
-            search_query.extend(user.posts)
+            query_post.extend(user.posts)
 
     if filter == 'posts':
-        search_query = Posts.query_filter(post_content=query)
-        search_query.extend(Posts.query_filter(author_tag=query))
+        query_post.extend(Posts.query_filter(post_content=query))
+        query_post.extend(Posts.query_filter(author_tag=query))
         by_name = []
         by_name.extend(Users.query_filter(name=query))
         by_name.extend(Users.query_filter(email=query))
         for user in by_name:
-            search_query.extend(user.posts)
+            query_post.extend(user.posts)
 
-    search_query = list(set(search_query))
+    query_post = list(set(query_post))
+    for idx,post in enumerate(query_post):
+        if not post.post_content or post.post_content.isspace():
+            print(post.date_posted)
+            if not post.videos or not post.photos:
+                query_post.pop(idx)
 
-    return render_template('home/search_results.html', query=search_query)
+    query_post = sorted(query_post, key=lambda post: post.date_posted, reverse=True)
+    
+    query_user = list(set(query_user))
+
+    return render_template('home/search_results.html', query_post=query_post, query_user=query_user)
 
 

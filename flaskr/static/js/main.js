@@ -1,8 +1,12 @@
 const csrf = $('#csrf_token').val();
 
-
 $('document').ready(function () {
     console.log('Ready')
+    const input = document.querySelector('input[type="date"]');
+    // Get today's date in the format YYYY-MM-DD
+    const today = new Date().toISOString();
+    // Set the minimum allowed date to be today's date
+    input.min = today;
 })
 
 $("#username").keyup(function(event) {

@@ -1,0 +1,58 @@
+<div id="PE_job_posting_cont" class="">
+    <div id="PE_job_posting_controls" >
+        <button type="button" style="z-index: 20;" class="button-17 add-job-btn border-0" data-bs-toggle="modal" data-bs-target="#create-job-form" >&plus; Post Job</button>
+    </div>
+    <div id="PE_job_posting_feed" class="">
+        <div class="d-flex flex-row w-100 align-items-center" style="column-gap: 5px;">
+            <span class="d-inline-block text-muted" style="font-size: 12px;">Available Jobs</span>
+            <hr class="d-inline-block d-inline" style="flex:1; margin-right:25px">
+        </div>
+        
+        <div id="PE-job-posted-cont" style="row-gap: 5px;">
+            {% if available_jobs|length == 0 %}
+            <h5 style="margin-top: 10px; margin-left:25px;" class="text-muted d-block">No available jobs.</h5>
+            {% else %}
+            {% for job in available_jobs %}
+                <div class="PE-jobs-posted" style="margin-top: 10px;" >
+                    <div>
+                        <img src="../../static/img/test_profilepic.png" alt=""  style="border-radius: 50%; overflow:hidden;">
+                    </div>
+                    <div>
+                        <span  class="text-muted fs-10">Freelancer</span>
+                        <span class="fs-14 fw-bolder" style="max-width: 120px; white-space:wrap;">Pet Owner Name</span>
+                    </div>
+                    <div class> 
+                        <span class="text-muted fs-10">Job type</span>
+                        <span class="fs-12 fw-semibold">{{job.job_type}}</span>
+                    </div>      
+                    <div>
+                        <span  class="text-muted fs-10">Job Schedule</span>
+                        <span class="fs-12 fw-semibold" style="max-width: 80px; white-space:wrap;">{{job.job_schedule}}</span>
+                    </div>
+                    <div>
+                        <span  class="text-muted fs-10">Job Rate</span>
+                        <span class="fs-12 fw-semibold">&dollar;{{job.job_rate}}</span>
+                    </div>
+                    <div>
+                        {% if job.job_status == 'Waiting' %}
+                        {% set badge_class = "text-bg-warning" %}
+                        {% endif %}
+                        <span class="text-muted fs-10">Status</span>
+                        <span class="fs-10 badge {{badge_class}} fw-normal rounded-5" style="max-width: 60px ;">{{job.job_status}}</span>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary fs-12 rounded-5" data-bs-toggle="modal" data-bs-target="#job-{{job.job_id}}" style="max-width: 120px;">
+                        Job Details
+                      </button>
+                    </div>
+
+                </div>
+                
+            {%endfor%}
+            {% endif %}
+        </div>
+
+    </div>
+</div> 
+
+

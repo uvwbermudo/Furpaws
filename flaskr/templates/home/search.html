@@ -4,7 +4,7 @@
 
 
 {% block body_content %}
-<div class="container flex flex-row pt-3 search-results-filter">
+<div class="pt-3 search-results-filter">
 	<button type="button" class="btn rounded-5 me-2" hx-trigger="load, click" hx-target="#search-results-container" hx-get="/search/all" hx-swap="append" style="min-width: 90px;" >All</button>
 	<button type="button" class="btn  rounded-5 me-2" hx-trigger="click" hx-target="#search-results-container" hx-get="/search/posts" hx-swap="append" style="min-width: 90px;">Posts</button>
 	<button type="button" class="btn rounded-5 me-2" hx-trigger="click" hx-target="#search-results-container" hx-get="/search/pet_owners" hx-swap="append" style="min-width: 90px;">Pet Owners</button>

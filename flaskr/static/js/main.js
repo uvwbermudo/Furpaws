@@ -148,8 +148,8 @@ function register_user() {
                 form_span.html('');
                 if (field in response[0]) {
                     if (!scrolled) {
-                        $('.register-section').animate({
-                            scrollTop: $("#" + field).offset().top
+                        $('html, body').animate({
+                            scrollTop: $("#" + field).offset().top - 100
                         });
                         scrolled = true;
                     }

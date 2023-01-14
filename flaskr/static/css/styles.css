@@ -1,22 +1,20 @@
 @import "button-layout.css";
 
-
-html,
-body {
-    height: 100vh;
-    width: 100vw;
-    font-family: 'Readex Pro', sans-serif;
+html {
+    height: 100%;
 }
 
-
 body {
+    min-height: 100vh;
+    max-width: 1920px;
     padding-top: 60px;
-    overflow-y: hidden;
-}
+    font-family: 'Readex Pro', sans-serif;
+    margin-right: auto;
+    margin-left: auto;
+    overflow-y: scroll;
+    background: rgba(193, 193, 193, 0.37);
 
-/* body::-webkit-scrollbar {
-    display: none;
-} */
+}
 
 
 .fs-14 {
@@ -99,6 +97,11 @@ body {
 
 .load-from-right {
     animation: load-from-right .5s linear;
+}
+
+.hidden-anchor{
+    position: absolute;
+    top: -100px;
 }
 
 @keyframes load-from-right {
@@ -378,7 +381,6 @@ input[data-autocompleted] {
     width: 50vw;
     background-color: white;
     margin-left: 5vw;
-    overflow-y: scroll;
 }
 
 @media all and (max-width: 1000px) {
@@ -429,10 +431,14 @@ input[data-autocompleted] {
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     height: 60px;
     padding-left: 30px;
-    margin-top: 5px;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
 }
 
 #top-nav .top-nav-container {
+    width: 100%;
+    max-width: 1920px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -440,6 +446,10 @@ input[data-autocompleted] {
 
 
 @media all and (max-width: 1000px) {
+    #top-nav .top-nav-container {
+        justify-content: space-between;
+    }
+
     #top-nav .top-nav-container .searchbar-container {
         margin-right: 20px;
         flex-grow: 1;
@@ -478,12 +488,21 @@ input[data-autocompleted] {
 
 .base-sidebar {
     margin: 0;
+    margin-top: 10px;
+    margin-left: 10px;
     padding: 0;
     width: 235px;
     background-color: white;
     position: fixed;
-    height: 100%;
+    height: 460px;
+    border-color: rgba(167, 144, 144, 0.664);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     overflow: auto;
+    border-top: 3px solid #1DA1F2;
+
 }
 
 .base-sidebar-nav {
@@ -553,24 +572,14 @@ input[data-autocompleted] {
 
 
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
-div.content {   
-    margin-left: 0;
+main.content {
+    margin-left: 235px;
     position: relative;
     width: calc(100% - 235px);
-    height: 645px;
-    left: 235px;
-    overflow-x: hidden;
-    overflow-y: scroll;
     padding-bottom: 50px;
-
-    background: rgba(193, 193, 193, 0.37);
+    height: 100vh;
 }
 
-
-div.content::-webkit-scrollbar {
-    display: none;
-    width: 0;
-}
 
 /* On screens that are less than 700px wide, make the sidebar into a topbar */
 @media screen and (max-width: 700px) {
@@ -584,7 +593,7 @@ div.content::-webkit-scrollbar {
         float: left;
     }
 
-    div.content {
+    main.content {
         margin-left: 0;
     }
 }
@@ -627,13 +636,182 @@ div.content::-webkit-scrollbar {
         transform: translate3d(0, 0, 0);
     }
 }
+
 .main-feed {
-    margin-left: 20px;
-    display: flex;
-    flex-direction: column;
+    margin-left: 100px;
+    display: grid;
+    padding-top: 15px;
+    grid-template-columns: 540px auto;
+    grid-template-rows: 115px auto;
+    row-gap: 15px;
     position: relative;
     align-items: center;
+    height: 100%;
 }
+
+#main-feed .search-result { 
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(167, 144, 144, 0.664);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 540px;
+}
+
+.main-feed-right {
+    grid-row: 1/3;
+    display: flex;
+    height: 100%;
+    padding-left: 30px;
+}
+
+#people-suggestion {
+    width: 315px;
+    height: 300px;
+    border-color: rgba(167, 144, 144, 0.664);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    overflow: auto;
+    border-top: 3px solid #1DA1F2;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    position: sticky;
+    top: 70px;
+}
+
+.user_sugg{
+    display: flex;
+    justify-content: start;
+    padding: 15px 0px 15px 15px ;
+    column-gap: 10px;
+    width: 100%;
+}
+
+.user_sugg img {
+    border-radius: 50%;
+    height: 55px;
+    width: 55px;
+    overflow: hidden;
+    background-size:contain;
+    background-position:center;
+}
+
+.user_sugg a {
+    display: block;
+    text-decoration: none;
+}
+
+.user_sugg a:hover {
+    text-decoration: underline;
+    text-decoration-color: #000000;
+}
+
+
+.user_sugg:hover{
+    background-color:#c2c5c7b7;
+}
+
+@media screen and (max-width:1000px) {
+    .main-feed {
+        display: flex;
+        flex-direction: column;
+        margin-left: 0px;
+    }
+
+    .main-feed-right {
+        display: none;
+    }
+
+    #create-post-layout {
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .main-feed-right{
+        display: none;
+    }    
+}
+
+.main-feed-posts {
+    grid-row: 2 /3 ;
+    grid-column: 1 / 2;
+}
+
+.add-post {
+    width: 100%;
+    max-width: 540px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    grid-column: 1/2;
+    grid-row: 1/2;
+    border-color: rgba(167, 144, 144, 0.664);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-top: solid 3px #1DA1F2
+}
+
+.add-post label {
+    height: 20px;
+    font-size: 12px;
+}
+
+.add-post label img {
+    height: 20px;
+    width: 20px;
+}
+
+
+#create-post-layout {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 600px;
+    height: 100%;
+    background-color: white;
+}
+
+.share-something {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    text-align: left;
+    text-indent: 20px;
+    font-family: 'Readex Pro';
+    font-style: normal;
+    font-weight: 400;
+    -webkit-text-fill-color: #555050;
+    font-size: 11px;
+    line-height: 28px;
+    background: #EBEBEB;
+    border: none;
+    letter-spacing: 0;
+    border-radius: 50px;
+    transition: opacity 0.3s;
+    z-index: 100;
+}
+
+
+.share-something:focus,
+.share-something:active {
+    border-color: transparent;
+    outline: none;
+}
+
+.share-something:hover {
+    opacity: 65%;
+}
+
 
 .rectangle-3 {
     position: absolute;
@@ -657,8 +835,9 @@ div.content::-webkit-scrollbar {
 }
 
 .rect-4-bot {
-    width: calc(100% - 100px);
+    width: 100%;
     display: flex;
+    height: 10px;
     margin-left: 160px;
     margin-top: 5px;
     flex-direction: row;
@@ -673,9 +852,7 @@ div.content::-webkit-scrollbar {
     height: 170px;
     top: 30px;
     background: #FFFFFF;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
-    
-    
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)    
 }
 
 #upper-left{
@@ -686,36 +863,9 @@ div.content::-webkit-scrollbar {
 
 }
 
-.share-something {
-    position: relative;
-    width: 850px;
-    height: 75px;
-    text-align: left;
-    text-indent: 20px;
-    font-family: 'Readex Pro';
-    font-style: normal;
-    font-weight: 400;
-    -webkit-text-fill-color: #555050;
-    font-size: 18px;
-    line-height: 28px;
-    background: #EBEBEB;
-    border: none;
-    letter-spacing: 0;
-    border-radius: 50px;
-    transition: opacity 0.3s;
-    z-index: 100;
 
-}
 
-.share-something:focus,
-.share-something:active {
-    border-color: transparent;
-    outline: none;
-}
 
-.share-something:hover {
-    opacity: 65%;
-}
 
 .ss-add-post-photo-btns {
     position: relative;
@@ -983,16 +1133,7 @@ div.content::-webkit-scrollbar {
 
 }
 
-.main-feed-posts {  
-    position: relative;
-    display: table;  
-    margin-top: 90px;
-    width: 1060px;
-    height: 458px;
-    overflow-y: scroll;
- 
 
-}
 
 .post-container{
     top: 120px;
@@ -1060,11 +1201,11 @@ div.content::-webkit-scrollbar {
 .post-upper-right{
     position: relative;
     display: table;
-    top: -423px;
-    left: 450px;
     width: 100px;
     height: 20px;
     border-color: 2px solid black;
+    margin-left: auto;
+    font-size: 12px;
 
 }
 
@@ -1160,16 +1301,22 @@ div.content::-webkit-scrollbar {
 }
 
 .post-bottom-part{
-    top: -100px;
-    left: 280px;
-    display: inline-flex;
+    display: flex;
     flex-direction: row;
-    position: relative;
+    width: 100%;
+    justify-content: start;
+    align-items: center;
+    padding-top: 15px;
+    padding-left: 20px;
+    font-size: 13px;
+    column-gap: 30px;
 }
 
-.post-bottom-part h6{
-    padding: 10px 40px 0px 10px
-}
+.post-bottom-part span{
+    display: block;
+    height: 100%;
+    width: 30px !important;
+}   
 
 .post-bottom-part button{
     border-radius: 50%;
@@ -1524,6 +1671,7 @@ div.content::-webkit-scrollbar {
   #carousel-header span {
     color: white;
   }
+  
   #carousel-body{
     padding: 0;
     border: none;
@@ -1597,11 +1745,7 @@ div.content::-webkit-scrollbar {
     transition: 0.3s;
   }
 
-  
-  .carousel-indicators {
-    bottom: -60px;
 
-  }
 
 /* Profile Page */
 .profile-feed{
@@ -1854,11 +1998,11 @@ div.content::-webkit-scrollbar {
 
 .search-results-filter {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     width: 100%;
     align-items: center;
-    padding-left: 27.5%;
     padding-right: 0;
+    margin-left: 0px;
 }
 
 .search-results-filter button {
@@ -1883,7 +2027,11 @@ div.content::-webkit-scrollbar {
 
 #search-results-container {
     width: 100%;
-    margin-left: 50px;
+    height: 100%;
+    margin-left: 0;
+    display: flex;
+    justify-content: center;
+    overflow-y: visible;
 }
 
 @media screen and (max-width:1000px) {
@@ -1900,7 +2048,7 @@ div.content::-webkit-scrollbar {
 
 .search-result-main-container {
     display: grid;
-    grid-template-columns: 200px 540px auto;
+    grid-template-columns: 1fr 1fr 1fr;
     column-gap: 20px;
     width: 100%;
 }
@@ -1909,6 +2057,16 @@ div.content::-webkit-scrollbar {
     grid-column: 2 / 3;
     width: 540px;
     max-width: 540px;
+}
+
+@media screen and (max-width: 1040px) {
+    .search-result-main-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+        
 }
 
 .search-result-main-container .search-result-mid .actual-results-container {
@@ -1923,18 +2081,21 @@ div.content::-webkit-scrollbar {
 }
 
 
-.search-result-main-container .search-result-anchor {
+.search-result-main-container .search-result-anchors {
     grid-column: 1 / 2;
-    height: 100%;
-    padding-left: 100px;
+    display: flex;
+    justify-content: end;
+    min-width: 225px;
 }
 
 .search-result-main-container .search-result-anchors .search-result-side-content {
     display: flex;
     flex-direction: column;
+    height: 150px;
     width: 100%;
+    max-width: 200px;
     position: sticky;
-    top: 20px;
+    top: 70px;
     background-color: white;
     padding-top: 20px;
     border-radius: 5px;
@@ -1983,7 +2144,7 @@ div.content::-webkit-scrollbar {
 
 .search-result-main-container .search-result-ad .search-result-side-content {
     position: sticky;
-    top: 20px;
+    top: 70px;
     background-color: white;
     border-radius: 5px;
     height: 300px;
@@ -2006,7 +2167,7 @@ div.content::-webkit-scrollbar {
     width: 240px;
 }
 
-@media screen and (max-width:1000px) {
+@media screen and (max-width:1040px) {
     .search-result-main-container .search-result-ad {
         display: none;
     }
@@ -2273,7 +2434,7 @@ div.content::-webkit-scrollbar {
     padding-bottom: 130px;
 }
 
-#PE_job_posting_cont {
+#job_home_cont {
     width: 100%;
     height: 100%;
     max-height: 100%;
@@ -2284,7 +2445,7 @@ div.content::-webkit-scrollbar {
     column-gap: 15px;
 }
 
-#PE_job_posting_controls {
+#job_home_controls {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2314,7 +2475,7 @@ div.content::-webkit-scrollbar {
 
 }
 
-#PE_job_posting_feed {
+#job_home_feed {
     display: flex;
     height: 100%;
     width: 100%;
@@ -2335,7 +2496,55 @@ div.content::-webkit-scrollbar {
     box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
 }
 
-#PE-job-posted-cont {
+
+#FL-applications-cont, #FL-ongoing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+.FL-job-apply {
+    width: 100%;
+    display: flex;
+    background-color: white;
+    justify-content: space-evenly;
+    align-items: start;
+    padding: 10px 0px 10px 0px;
+    border-radius: 10px;
+    box-shadow: rgba(100, 100, 111, 0.112) 0px 7px 29px 0px;  
+    border: 1px solid rgba(167, 144, 144, 0.664);
+}
+
+.FL-job-apply img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+
+.FL-job-apply div {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+}
+
+.FL-job-apply div span {
+    text-align: left;
+}
+
+.FL-job-apply div:first-child {
+    margin-top: 3px;
+}
+
+.FL-job-apply div:last-child {
+    margin-top: 10px;
+    flex-direction: row;
+    column-gap: 5px;
+}
+
+
+
+
+#PE-job-posted-cont, #PE-ongoing-cont {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2384,6 +2593,7 @@ div.content::-webkit-scrollbar {
     width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
     row-gap: 10px;
 }
 
@@ -2431,6 +2641,52 @@ div.content::-webkit-scrollbar {
 
 @media all and (max-width: 1300px) {
     
+    #FL-applications-cont, #FL-ongoing {
+        flex-direction: row;
+        column-gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .FL-job-apply {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 300px;
+        row-gap: 5px;
+        padding-bottom: 15px;
+    }
+
+    .FL-job-apply div {
+        width: 100%;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        padding-left: 15%;
+        column-gap: 20px;
+    }
+
+    .FL-job-apply div:first-child {
+        padding: 10px 0px 10px 0px;
+    }
+
+    .FL-job-apply div:first-child, .FL-job-apply div:last-child {
+        padding-left: 0px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .FL-job-apply div span:first-child {
+        width: 88px;
+    }
+
+
+    .FL-job-apply img {
+        height: 75px;
+        width: 75px;
+    }
+
 
     #PE-applicants-cont {
         flex-direction: row;
@@ -2532,7 +2788,7 @@ div.content::-webkit-scrollbar {
         margin-top: 10px;
     }
 
-    #PE-job-posted-cont {
+    #PE-job-posted-cont, #PE-ongoing-cont {
         flex-direction: row;
         column-gap: 10px;
         justify-content: center;
@@ -2547,11 +2803,11 @@ div.content::-webkit-scrollbar {
 @media all and (max-width: 1000px) {
 
 
-    #PE_job_posting_cont {
+    #job_home_cont {
         flex-direction: column;
         row-gap: 10px;
     }
-    #PE_job_posting_controls {
+    #job_home_controls {
         flex-direction: row;
         width: 100%;
         height: 50px;
@@ -2582,6 +2838,7 @@ div.content::-webkit-scrollbar {
     
     .jobs-container3 {
         order: 1;
+        width: 100%;
     }
 
     .jobs-container2 .navbar-nav {
@@ -2593,6 +2850,7 @@ div.content::-webkit-scrollbar {
         justify-content: space-between;
         width: 100% !important;
         border-radius: 0px !important;
+        border-style: none !important;
     }
 
     .jobs-container2 .navbar-nav li {
@@ -2616,13 +2874,17 @@ div.content::-webkit-scrollbar {
     }
 
     .base-sidebar {
-        top:0;
-        position: relative;
+        position: fixed;
+        margin: 0px;
+        top:60px;
+        border-style: none;
+        border-radius: 0px;
         height: 40px;
         width: 100%;
         overflow-y: hidden;
-        border-bottom: 1px solid rgba(167, 144, 144, 0.664);
+        /* border-bottom: 1px solid rgba(167, 144, 144, 0.664); */
         box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        z-index: 100;
 
     }
     .base-sidebar .base-sidebar-nav {
@@ -2653,10 +2915,9 @@ div.content::-webkit-scrollbar {
         cursor: pointer;
     }
     
-    div.content {
-        position: sticky;
-        top: 0px;
-        left:0;
+    main.content {
+        margin-top: 40px;
+        margin-left: 0px;
         width: 100%;
     }
 

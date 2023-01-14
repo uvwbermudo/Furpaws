@@ -596,6 +596,7 @@ class Jobs:
         cursor.execute(sql)
         sql = f"UPDATE applies_jobs SET job_status ='{new_status}' where job_id = '{job_id}';"
         cursor.execute(sql)
+
     @classmethod
     def update_accept(cls, accepted_datetime=None, job_id=None):
         cursor = mysql.connection.cursor()
@@ -654,7 +655,7 @@ class CreateJobs:
     
     #ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
     @classmethod
-    def query_filter(cls, pet_owner=None, all=False, job_id=None,order_by='date_posted', order='ASC'):
+    def query_filter(cls, ongoing=False, pet_owner=None, all=False, job_id=None,order_by='date_posted', order='ASC'):
         cursor = mysql.connection.cursor()
         sql=''
         if pet_owner:
@@ -663,6 +664,7 @@ class CreateJobs:
             sql= f"SELECT * FROM posts_jobs where job_id='{job_id}'"
         if all:
             sql= f"SELECT * FROM posts_jobs"
+
             
         order = f" ORDER BY {order_by} {order};"
         sql = sql+order
@@ -763,6 +765,11 @@ class WorksOn:
             object_results.append(new_obj)
         return object_results
 
+    @property
+    def job_details(self):
+        job = Jobs.query_get(self.job_id)
+        return job
+
 
 class ApplyJobs:
 
@@ -796,8 +803,8 @@ class ApplyJobs:
             sql= f"SELECT * FROM applies_jobs where job_id ='{job_id}'"
 
         if application_status:
-            if job_id:
-                sql= f"SELECT * FROM applies_jobs where job_id ='{job_id}' and application_status ='{application_status}'"
+            if freelancer:
+                sql= f"SELECT * FROM applies_jobs where freelancer_tag ='{freelancer}' and application_status ='{application_status}'"
 
         order = f" ORDER BY {order_by} {order};"
         sql = sql+order
@@ -819,9 +826,6 @@ class ApplyJobs:
             freelancer_tag != '{freelancer_tag}'
             """
         cursor.execute(sql)
-        
-
-
 
     @classmethod
     def query_get(cls, id):
@@ -844,6 +848,7 @@ class ApplyJobs:
                 job_id=row['job_id'],
                 date_applied=row['date_applied'],
                 job_status=row['job_status'],
+                application_status=row['application_status']
                 )
             object_results.append(new_obj)
         return object_results

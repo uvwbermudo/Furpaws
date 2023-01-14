@@ -19,6 +19,19 @@ def job_index():
         available_jobs = Jobs.query_filter(job_status='Waiting')
         return render_template('jobs/job_index.html', available_jobs=available_jobs)
 
+@jobs.route('/jobs/job-posting', methods=['GET'])
+@login_required
+def job_home():
+    if current_user.account_type == 'pet_owner':
+        jobs_created = CreateJobs.query_filter(pet_owner=current_user.tag)
+        jobs_posted = list(filter(lambda job: job.job_status == 'Waiting', jobs_created))
+        ongoing_jobs = list(filter(lambda job: job.job_status == 'Ongoing', jobs_created))
+        return render_template('jobs/jobs_job_home.html', jobs_posted=jobs_posted, ongoing_jobs=ongoing_jobs)
+    else:
+        applied_to = ApplyJobs.query_filter(freelancer=current_user.tag, application_status='Sent')
+        working_on = WorksOn.query_filter(freelancer=current_user.tag)
+
+        return render_template('jobs/jobs_job_home.html', applied_to=applied_to, working_on=working_on)
 
 @jobs.route('/jobs/pet-owner/hire', methods=['POST'])
 @login_required
@@ -58,18 +71,10 @@ def PE_create_job():
         flash('Succesfully posted job', category='success')
     except:
         flash('An error has occured.', category='error')
-
     return redirect(url_for('jobs.job_index'))
 
-@jobs.route('/jobs/job-posting', methods=['GET'])
-@login_required
-def PE_job_postings():
-    jobs_posted = CreateJobs.query_filter(pet_owner=current_user.tag)
-    return render_template('jobs/jobs_PE_job_posting.html', jobs_posted=jobs_posted)
 
-
-
-@jobs.route('/pet-owner/freelancers')
+@jobs.route('/jobs/pet-owner/freelancers')
 @login_required
 def PE_freelancers():
     return "<h1> TEST2</h1>"

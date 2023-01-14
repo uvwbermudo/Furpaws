@@ -79,7 +79,8 @@ def home_page():
 
         errors = get_error_items(form)
         print(errors)
-    return render_template('home/home.html', edit_form=edit_form, form=form, main_feed=main_feed)
+    user_sugg = Users.query_all()[:3]
+    return render_template('home/home.html', edit_form=edit_form, form=form, main_feed=main_feed, user_sugg=user_sugg)
 
 
 @home.route('/home/<int:post_id>', methods=['GET', 'POST'])

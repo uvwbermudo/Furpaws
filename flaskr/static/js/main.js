@@ -9,23 +9,23 @@ $('document').ready(function () {
     input.min = today;
 })
 
-$("#username").keyup(function(event) {
+$("#username").keyup(function (event) {
     if (event.keyCode === 13) {
         $("#login_button").click();
     }
 });
 
-$("#user_password").keyup(function(event) {
+$("#user_password").keyup(function (event) {
     if (event.keyCode === 13) {
         $("#login_button").click();
     }
 });
 
-$('#add_photos').on('change', function() {
+$('#add_photos').on('change', function () {
     source = this.files
     $("#add-post-preview-container").empty()
-    
-    for(let i=0; i<source.length; i++) {
+
+    for (let i = 0; i < source.length; i++) {
         let new_html = $(`<div id=prev${i} class="img-wrapper"></div>`)
         let new_elem = $(`<img>`)
         let new_elem_x = $(`<span id="close${i}" class="close" onclick="imgListPop(${i});">&times</span>`)
@@ -33,37 +33,37 @@ $('#add_photos').on('change', function() {
         new_html.append(new_elem)
         new_url = URL.createObjectURL($(source[i])[0])
         new_elem.attr('src', new_url)
-        new_elem.css("height","300px")
-        new_elem_x.css("background-color","#fa6b6b")
-        new_elem_x.css("color","white")
+        new_elem.css("height", "300px")
+        new_elem_x.css("background-color", "#fa6b6b")
+        new_elem_x.css("color", "white")
         $("#add-post-preview-container").append(new_html)
     }
 })
 
-function imgListPop(index){
+function imgListPop(index) {
     actual_index = index
     index = $(`#prev${index}`).index()
     const input = document.getElementById('add_photos')
-    console.log(input.files,1)
+    console.log(input.files, 1)
     const dt = new DataTransfer()
     const { files } = input
     for (let i = 0; i < files.length; i++) {
-      const file = files[i]
-      if (index !== i)
-        dt.items.add(file) // here you exclude the file. thus removing it.
+        const file = files[i]
+        if (index !== i)
+            dt.items.add(file) // here you exclude the file. thus removing it.
     }
-    
+
     input.files = dt.files // Assign the updates list
-    console.log(input.files,2)
+    console.log(input.files, 2)
     $(`div#prev${actual_index}`).remove();
 
 }
 
-$('#add_videos').on('change', function() {
+$('#add_videos').on('change', function () {
     source = this.files
     $("#add-post-preview-container2").empty()
-    
-    for(let i=0; i<source.length; i++) {
+
+    for (let i = 0; i < source.length; i++) {
         let new_html = $(`<div id=prev${i}2 class="img-wrapper"></div>`)
         let new_elem = $(`<video>`)
         let new_elem_x = $(`<span id="close${i}2" class="close" onclick="vidListPop(${i});">&times</span>`)
@@ -71,29 +71,29 @@ $('#add_videos').on('change', function() {
         new_html.append(new_elem)
         new_url = URL.createObjectURL($(source[i])[0])
         new_elem.attr('src', new_url)
-        new_elem.css("height","150px")
-        new_elem_x.css("background-color","#fa6b6b")
-        new_elem_x.css("color","white")
+        new_elem.css("height", "150px")
+        new_elem_x.css("background-color", "#fa6b6b")
+        new_elem_x.css("color", "white")
 
         $("#add-post-preview-container2").append(new_html)
     }
 })
 
-function vidListPop(index){
+function vidListPop(index) {
     actual_index = index
     index = $(`#prev${index}2`).index()
     const input = document.getElementById('add_videos')
-    console.log(input.files,1)
+    console.log(input.files, 1)
     const dt = new DataTransfer()
     const { files } = input
     for (let i = 0; i < files.length; i++) {
-      const file = files[i]
-      if (index !== i)
-        dt.items.add(file) // here you exclude the file. thus removing it.
+        const file = files[i]
+        if (index !== i)
+            dt.items.add(file) // here you exclude the file. thus removing it.
     }
-    
+
     input.files = dt.files // Assign the updates list
-    console.log(input.files,2)
+    console.log(input.files, 2)
     $(`div#prev${actual_index}2`).remove();
 
 }
@@ -327,32 +327,32 @@ function updateButton(post_id) {
 
     let sizeCounter = 0;
     let overflowCount = 0;
-  
+
     if (container[0].scrollWidth > container.width()) {
         console.log(postId, 1)
 
-      for (let i = 0; i < childrenImages.length; i++) {
-        sizeCounter += $(childrenImages[i]).width();
+        for (let i = 0; i < childrenImages.length; i++) {
+            sizeCounter += $(childrenImages[i]).width();
 
-        if (sizeCounter > container.width()) {
-          overflowCount += 1;
-          button.css('display', 'block')
-          container.css('justify-content', 'left')
-          button.addClass('slider-button-visible')    
-        }       
-      }
+            if (sizeCounter > container.width()) {
+                overflowCount += 1;
+                button.css('display', 'block')
+                container.css('justify-content', 'left')
+                button.addClass('slider-button-visible')
+            }
+        }
     } else {
         console.log(postId, 2)
         button.css('display', 'none')
     }
 
 
-    
+
 
     button.text('+' + overflowCount)
-  }  
+}
 
-  
+
 function openPage(pageUrl) {
     window.open(pageUrl);
 }
@@ -360,11 +360,457 @@ function openPage(pageUrl) {
 function validate_search() {
     var query = $('#searchbar').val();
 
-    if (query == ""){
+    if (query == "") {
         return false;
     }
     return true;
 }
+
+// START OF LIKES
+function likeVisitedPost(postId) {
+    var likeCount = document.getElementById(`likes-count-${postId}`);
+    var likeButton = document.getElementById(`like-button-${postId}`);
+
+    fetch(`/posts/like-post/${postId}`, { method: "POST", headers: { 'X-CSRF-TOKEN': csrf } })
+        .then((res) => res.json())
+        .then((data) => {
+            likeCount.innerHTML = data["likes"];
+            if (data["liked"] === true) {
+                likeButton.className.baseVal = "post-wto-hearts-filled";
+            } else {
+                likeButton.className.baseVal = "post-wto-hearts";
+            }
+
+        }
+        );
+}
+
+function likeVisitedPostNorm(postId) {
+    var likeCount = document.getElementById(`likes-count-${postId}`);
+    var likeButton = document.getElementById(`like-button-${postId}`);
+
+    fetch(`/posts/like-post/${postId}`, { method: "POST", headers: { 'X-CSRF-TOKEN': csrf } })
+        .then((res) => res.json())
+        .then((data) => {
+            likeCount.innerHTML = data["likes"];
+            if (data["liked"] === true) {
+                likeButton.className.baseVal = "post-hearts-filled";
+            } else {
+                likeButton.className.baseVal = "post-hearts";
+            }
+
+        }
+        );
+}
+
+function likeMainFeedPost(postId) {
+    var likeCount = document.getElementById(`likes-count-${postId}`);
+    var likeButton = document.getElementById(`like-button-${postId}`);
+
+    fetch(`/home/like-post/${postId}`, { method: "POST", headers: { 'X-CSRF-TOKEN': csrf } })
+        .then((res) => res.json())
+        .then((data) => {
+            likeCount.innerHTML = data["likes"];
+            if (data["liked"] === true) {
+                likeButton.className.baseVal = "post-wto-hearts-filled";
+            } else {
+                likeButton.className.baseVal = "post-wto-hearts";
+            }
+
+        }
+        );
+}
+
+function likeMainFeedPostNorm(postId) {
+    var likeCount = document.getElementById(`likes-count-${postId}`);
+    var likeButton = document.getElementById(`like-button-${postId}`);
+
+    fetch(`/home/like-post/${postId}`, { method: "POST", headers: { 'X-CSRF-TOKEN': csrf } })
+        .then((res) => res.json())
+        .then((data) => {
+            likeCount.innerHTML = data["likes"];
+            if (data["liked"] === true) {
+                likeButton.className.baseVal = "post-hearts-filled";
+            } else {
+                likeButton.className.baseVal = "post-hearts";
+            }
+
+        }
+        );
+}
+// END OF LIKES
+
+
+// START OF COMMENTS
+
+// ADD COMMENTS
+function commentVisitedPost(postId) {
+    document.getElementById(`create-comment-${postId}`).addEventListener('submit',
+        function (event) {
+            event.preventDefault();
+            var commentInput = document.getElementById(`comment_textbox${postId}`);
+            const comment = commentInput.value;
+
+            fetch(`/posts/create-comment/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': `application/json`,
+                    'X-CSRF-TOKEN': csrf
+                },
+                body: JSON.stringify(comment)
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (html) {
+                    if (html['error']) {
+                        console.log(" ")
+                    }
+                    else {
+                        let newCommentContainer = $(`<div class="new-comment row p-3 bg-white border-bottom" id="comment-${html['id']}"></div>`)
+                        let newCommentPfpPlaceholder = $(`<div class="col-1 p-1 text-end">profile picture</div>`)
+                        let newCommentAuthorTag = $(`<div class="col-1 p-1 text-center"><a href="#">${html['author_tag']}</a> :</div>`)
+                        let newCommentContent = $(`<div class="col p-1 text-start" id="comment-content-${html['id']}">${html['comment']}</div>`)
+                        let newCommentDateTimeSettings = $(`<div class="col-2 p-1 text-end">
+                    ${html['date_commented']}
+                    <div class="btn-group">
+                      <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                          <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                          </svg>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentModal${html['id']}">Edit</a></li>
+                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentModal${html['id']}">Delete</a></li>
+                        <li><a class="dropdown-item">Report</a></li>
+                      </ul>
+                    </div>
+                  </div>`)
+                        newCommentContainer.append(newCommentPfpPlaceholder);
+                        newCommentContainer.append(newCommentAuthorTag);
+                        newCommentContainer.append(newCommentContent);
+                        newCommentContainer.append(newCommentDateTimeSettings);
+                        document.getElementById(`comments-${postId}`).appendChild(newCommentContainer[0]);
+
+                        let newDeleteModal = $(`<div class="modal fade" id="deleteCommentModal${html['id']}" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="deleteCommentModalLabel">
+                                Delete Comment
+                              </h1>
+                              <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#viewCommentsModal${html['commented_post']}"></button>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure you want to delete this comment?
+                            </div>
+                            <div class="modal-footer">
+                              <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewCommentsModal${html['commented_post']}">
+                                Cancel
+                              </button>
+                              <form id="delete-comment-${html['id']}" action="/posts/delete-comment/${html['id']}/${html['commented_post']}" method="DELETE">
+                                <input type="hidden" name="csrf_token" value="${csrf}">
+                                <input type="submit"  onclick="deleteCommentVisitedPost(${html['commented_post']}, ${html['id']})" class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#viewCommentsModal${html['commented_post']}" value="Delete">
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>`)
+
+                        document.body.appendChild(newDeleteModal[0]);
+
+                        let newEditModal = $(`<div class="modal fade" id="editCommentModal${html['id']}" tabindex="-1" role="dialog" aria-labelledby="editCommentModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="editCommentModalLabel">
+                                Edit Comment
+                              </h1>
+                              <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#viewCommentsModal${html['commented_post']}"></button>
+                            </div>
+                            <div class="modal-body">
+                              <form id="edit-comment-${html['id']}" action="/posts/update-comment/${html['id']}/${html['commented_post']}" method="PUT">
+                                <textarea class="form-control" name="edit_comment_textbox" id="editCommentTextbox${html['id']}" placeholder="${html['comment']}" required>${html['comment']}</textarea>
+                                <input id="csrf_token" type="hidden" name="csrf_token" value="${csrf}">
+                              <button class="submit-post"  onclick="editCommentVisitedPost(${html['commented_post']}, ${html['id']});" type="submit" data-bs-toggle="modal" data-bs-target="#viewCommentsModal${html['commented_post']}" id="edit_comment_button${html['id']}" name="edit_comment_button">Save changes</button></form>
+                              <button class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#viewCommentsModal${html['commented_post']}" style="width:100%">
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>`)
+
+
+                        document.body.appendChild(newEditModal[0]);
+
+                        var commentCount = document.getElementById(`comments-length-${postId}`);
+                        commentCount.innerHTML = html["comments"];
+                        var commentButton = document.getElementById(`comment-button-${postId}`);
+                        if (commentButton.className['baseVal'] == 'post-wto-comments') {
+                            commentButton.className.baseVal = 'post-wto-comments-filled'
+                        } else if (commentButton.className['baseVal'] == 'post-comments') {
+                            commentButton.className.baseVal = 'post-comments-filled'
+                        }
+                    }
+
+
+                });
+            commentInput.value = '';
+        });
+}
+
+function commentMainFeedPost(postId) {
+
+    document.getElementById(`create-main-feed-comment-${postId}`).addEventListener('submit',
+        function (event) {
+            event.preventDefault();
+            var commentInput = document.getElementById(`comment_textbox${postId}`);
+            const commentMainFeed = commentInput.value;
+
+            fetch(`/home/create-comment/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': `application/json`,
+                    'X-CSRF-TOKEN': csrf
+                },
+                body: JSON.stringify(commentMainFeed)
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (html) {
+                    if (html['error']) {
+                        console.log(" ")
+                    }
+                    else {
+                        let newCommentContainer = $(`<div class="new-comment row p-3 bg-white border-bottom" id="main-feed-comment-${html['id']}"></div>`)
+                        let newCommentPfpPlaceholder = $(`<div class="col-1 p-1 text-end">profile picture</div>`)
+                        let newCommentAuthorTag = $(`<div class="col-1 p-1 text-center"><a href="#">${html['author_tag']}</a> :</div>`)
+                        let newCommentContent = $(`<div class="col p-1 text-start" id="comment-content-${html['id']}">${html['comment']}</div>`)
+                        let newCommentDateTimeSettings = $(`<div class="col-2 p-1 text-end">
+                    ${html['date_commented']}
+                    <div class="btn-group">
+                      <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                          <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                          </svg>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentsModal${html['id']}">Edit</a></li>
+                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal${html['id']}">Delete</a></li>
+                        <li><a class="dropdown-item">Report</a></li>
+                      </ul>
+                    </div>
+                  </div>`)
+                        newCommentContainer.append(newCommentPfpPlaceholder);
+                        newCommentContainer.append(newCommentAuthorTag);
+                        newCommentContainer.append(newCommentContent);
+                        newCommentContainer.append(newCommentDateTimeSettings);
+                        document.getElementById(`main-feed-comments-${postId}`).appendChild(newCommentContainer[0]);
+
+                        let newDeleteModal = $(`<div class="modal fade" id="deleteCommentsModal${html['id']}" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="deleteCommentModalLabel">
+                                Delete Comment
+                              </h1>
+                              <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#viewCommentsModal${html['commented_post']}"></button>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure you want to delete this comment?
+                            </div>
+                            <div class="modal-footer">
+                              <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewCommentsModal${html['commented_post']}">
+                                Cancel
+                              </button>
+                              <form id="delete-comments-${html['id']}"action="/home/delete-comment/${html['id']}/${html['commented_post']}" method="DELETE">
+                                <input type="hidden" name="csrf_token" value="${csrf}">
+                                <input type="submit" onclick="deleteCommentMainFeedPost(${html['commented_post']}, ${html['id']})" data-bs-toggle="modal" data-bs-target="#viewCommentsModal${html['commented_post']}" class="btn btn-danger" value="Delete">
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>`)
+
+                        document.body.appendChild(newDeleteModal[0]);
+
+
+                        let newEditModal = $(`<div class="modal fade" id="editCommentsModal${html['id']}" tabindex="-1" role="dialog" aria-labelledby="editCommentModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="editCommentModalLabel">
+                                    Edit Comment
+                                  </h1>
+                                  <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#viewCommentsModal${html['commented_post']}"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <form id="edit-comments-${html['id']}">
+                                    <textarea class="form-control" name="edit_comment_textbox" id="editCommentTextbox-${html['id']}" placeholder="${html['comment']}" required>${html['comment']}</textarea>
+                                    <input type="hidden" name="csrf_token" value="${csrf}">
+                                  <button class="submit-post" type="submit" data-bs-toggle="modal" data-bs-target="#viewCommentsModal${html['commented_post']}" id="edit_comment_button${html['id']}" name="edit_comment_button" onclick="editCommentMainFeedPost(${html['commented_post']}, ${html['id']});">Save changes</button></form>
+                                  <button class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#viewCommentsModal${html['commented_post']}" style="width:100%">
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>`)
+
+                        document.body.appendChild(newEditModal[0]);
+
+                        var commentCount = document.getElementById(`mainfeed-comments-length-${postId}`);
+                        commentCount.innerHTML = html["comments"];
+                        var commentButton = document.getElementById(`mainfeed-comment-button-${postId}`);
+                        if (commentButton.className['baseVal'] == 'post-wto-comments') {
+                            commentButton.className.baseVal = 'post-wto-comments-filled'
+                        } else if (commentButton.className['baseVal'] == 'post-comments') {
+                            commentButton.className.baseVal = 'post-comments-filled'
+                        }
+                    }
+
+
+                });
+            commentInput.value = '';
+        });
+}
+
+// END OF ADD COMMENTS
+
+
+// START OF DELETE COMMENTS
+function deleteCommentVisitedPost(postId, commentId) {
+
+    document.getElementById(`delete-comment-${commentId}`).addEventListener('submit',
+        function (event) {
+            event.preventDefault();
+            fetch(`/posts/delete-comment/${commentId}/${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                }
+            }).then(response => {
+                if (response.ok) {
+                    let commentElement = document.getElementById(`comment-${commentId}`);
+                    commentElement.parentNode.removeChild(commentElement);
+                    let commentModalElement = document.getElementById(`deleteCommentModal${commentId}`)
+                    commentModalElement.parentNode.removeChild(commentModalElement)
+                    return response.json()
+                } else {
+                    console.log('Error');
+                }
+            }).then((data) => {
+                var commentCount = document.getElementById(`comments-length-${postId}`);
+                var commentButton = document.getElementById(`comment-button-${postId}`);
+                commentCount.innerHTML = data["comments"];
+                if (data['commented'] == false) {
+                    if (commentButton.className['baseVal'] == 'post-wto-comments-filled') {
+                        commentButton.className.baseVal = 'post-wto-comments'
+                    } else if (commentButton.className['baseVal'] == 'post-comments-filled') {
+                        commentButton.className.baseVal = 'post-comments'
+                    }
+                }
+            });
+        });
+}
+
+function deleteCommentMainFeedPost(postId, commentId) {
+
+    document.getElementById(`delete-comments-${commentId}`).addEventListener('submit',
+        function (event) {
+            event.preventDefault();
+            fetch(`/home/delete-comment/${commentId}/${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                }
+            }).then(response => {
+                console.log(response);
+                if (response.ok) {
+                    let commentElement = document.getElementById(`main-feed-comment-${commentId}`);
+                    commentElement.parentNode.removeChild(commentElement);
+                    let commentModalElement = document.getElementById(`deleteCommentsModal${commentId}`)
+                    commentModalElement.parentNode.removeChild(commentModalElement)
+                    return response.json()
+                } else {
+                    console.log('Error');
+                }
+            })
+                .then((data) => {
+                    var commentCount = document.getElementById(`mainfeed-comments-length-${postId}`);
+                    var commentButton = document.getElementById(`mainfeed-comment-button-${postId}`);
+                    commentCount.innerHTML = data["comments"];
+                    if (data['commented'] == false) {
+                        if (commentButton.className['baseVal'] == 'post-wto-comments-filled') {
+                            commentButton.className.baseVal = 'post-wto-comments'
+                        } else if (commentButton.className['baseVal'] == 'post-comments-filled') {
+                            commentButton.className.baseVal = 'post-comments'
+                        }
+                    }
+                });
+        });
+}
+
+// END OF DELETE COMMENTS
+
+// START OF EDIT COMMENTS
+
+
+function editCommentVisitedPost(postId, commentId) {
+    var form = document.getElementById(`edit-comment-${commentId}`);
+    form.addEventListener('submit', event => {
+        event.preventDefault();
+        var editCommentInputVisited = document.getElementById(`editCommentTextbox${commentId}`).value
+        fetch(`/posts/update-comment/${commentId}/${postId}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                text: editCommentInputVisited
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrf
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                var visitedPostCommentElement = document.getElementById(`comment-content-${commentId}`);
+                visitedPostCommentElement.innerText = data['newComment'];
+                editCommentInputVisited.value = data['newComment'];
+            });
+    });
+}
+
+function editCommentMainFeedPost(postId, commentId) {
+    var form = document.getElementById(`edit-comments-${commentId}`);
+    form.addEventListener('submit', event => {
+        event.preventDefault();
+        var editCommentInputMainFeed = document.getElementById(`editCommentTextbox-${commentId}`).value
+        fetch(`/home/update-comment/${commentId}/${postId}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                text: editCommentInputMainFeed
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrf
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                var visitedPostCommentElement = document.getElementById(`comment-content-${commentId}`);
+                visitedPostCommentElement.innerText = data['newComment'];
+                editCommentInputMainFeed.value = data['newComment'];
+            });
+    });
+}
+
+
+
+
+// END OF EDIT COMMENTS
+// END OF COMMENTS
 
 
 
@@ -375,6 +821,7 @@ function toggle_complete_job(id) {
     $(`#job-${id} .modal-footer .confirm-complete`).toggleClass("hide");
     $(`#job-${id} .modal-footer .cancel-complete`).toggleClass("hide");
 }
+
 
 function toggle_cancel_job(id) {
     $(`#job-${id} .modal-footer .complete-job`).toggleClass("hide");

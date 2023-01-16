@@ -19,3 +19,9 @@ class EditPostForm(FlaskForm):
     add_photos = FileField("Add Photos")
     add_videos = FileField("Add Videos")
     edit_post_button = SubmitField("Save changes")
+
+
+class EditCommentForm(FlaskForm):
+    edit_comment_textbox = TextAreaField(validators=[
+        Length(max=150), Optional()])
+    edit_comment_button = SubmitField("Edit Comment")

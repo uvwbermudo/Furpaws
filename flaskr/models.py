@@ -113,7 +113,7 @@ class Users(UserMixin):
         if username:
             print(result, 'HI?')
         if result:
-            return result[0]
+            return result
         else:
             return []
 
@@ -215,6 +215,8 @@ class Posts:
         else:
             return False
 
+    def get_creation_date(self):
+        return self.date_posted
     @classmethod
     def update_post(cls, target_post, post_content):
         cursor = mysql.connection.cursor()
@@ -241,8 +243,8 @@ class Posts:
         object_results = []
         for row in rows:
             new_obj = Posts(
-                author_tag=row['author_tag'],
                 post_id=row['post_id'],
+                author_tag=row['author_tag'],
                 post_content=row['post_content'],
                 date_posted=row['date_posted']
             )
@@ -296,6 +298,7 @@ class Posts:
         if result:
             return result[0]
         return result
+
 
     @property
     def author(self):
@@ -399,8 +402,9 @@ class SharePost:
     def add(self):
         cursor = mysql.connection.cursor()
         sql = f"INSERT INTO share_post(reference_id, sharer_tag, shared_post_id, date_created)\
-                VALUES('{self.reference_id}','{self.sharer_tag}', '{self.shared_post_id}','{self.date_created}')"
-        cursor.execute(sql)
+                VALUES(%s,%s,%s,%s)"
+        values = (self.reference_id, self.sharer_tag, self.shared_post_id, self.date_created)
+        cursor.execute(sql,values)
 
     # ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
     @classmethod
@@ -446,6 +450,9 @@ class SharePost:
             object_results.append(new_obj)
         return object_results
 
+    def get_creation_date(self):
+        return self.date_created
+
     @property
     def sharer(self):
         author = Users.query_get(self.sharer_tag)
@@ -455,6 +462,12 @@ class SharePost:
     def post(self):
         post = Posts.query_get(self.shared_post_id)
         return post
+
+    @classmethod
+    def delete(cls, share_id):
+        cursor = mysql.connection.cursor()
+        sql = f"DELETE FROM share_post WHERE reference_id = '{share_id}'"
+        cursor.execute(sql)
 
 
 class Photos:

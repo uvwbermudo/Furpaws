@@ -1344,9 +1344,9 @@ h5 {
     justify-content: start;
     align-items: center;
     padding-top: 15px;
-    padding-left: 20px;
+    padding-left: 25px;
     font-size: 13px;
-    column-gap: 30px;
+    column-gap: 12px;
 }
 
 .post-bottom-part span{
@@ -2650,6 +2650,10 @@ h5 {
     border-radius: 10px;
     box-shadow: rgba(100, 100, 111, 0.112) 0px 7px 29px 0px;  
     border: 1px solid rgba(167, 144, 144, 0.664);
+}
+
+.hover-underline:hover {
+    text-decoration: underline !important;
 }
 
 .circle-pfp {

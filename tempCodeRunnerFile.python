@@ -1,4 +1,7 @@
-s = "INSERT INTO jobs(job_id,date_accepted,date_posted,date_finished,job_status,job_type \
-sexy sex"
 
-print(s)
+
+a = [1,2,3]
+b = [4,5,6]
+c = a + b
+
+print(a, b, c)

@@ -8,7 +8,7 @@ body {
     min-height: 100vh;
     max-width: 1920px;
     padding-top: 60px;
-    font-family: 'Readex Pro', sans-serif;
+    font-family: 'Poppins', sans-serif;
     margin-right: auto;
     margin-left: auto;
     overflow-y: scroll;
@@ -487,6 +487,7 @@ input[data-autocompleted] {
 
 
 .base-sidebar {
+    z-index: 300;
     margin: 0;
     margin-top: 10px;
     margin-left: 10px;
@@ -557,6 +558,10 @@ input[data-autocompleted] {
 
 .base-sidebar > pre > a > img {
     height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    object-fit: cover;
 }
 
 /* Active/current link */
@@ -641,7 +646,7 @@ main.content {
     margin-left: 100px;
     display: grid;
     padding-top: 15px;
-    grid-template-columns: 540px auto;
+    grid-template-columns: minmax(auto,540px) auto;
     grid-template-rows: 115px auto;
     row-gap: 15px;
     position: relative;
@@ -654,7 +659,7 @@ main.content {
     border-width: 1px;
     border-color: rgba(167, 144, 144, 0.664);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    width: 100%;
+    width: 100% !important;
     max-width: 540px;
 }
 
@@ -695,9 +700,11 @@ main.content {
     border-radius: 50%;
     height: 55px;
     width: 55px;
+    object-fit: cover;
     overflow: hidden;
     background-size:contain;
     background-position:center;
+    
 }
 
 .user_sugg a {
@@ -719,7 +726,22 @@ main.content {
     .main-feed {
         display: flex;
         flex-direction: column;
-        margin-left: 0px;
+        align-items: center;
+        margin: 0px;
+        padding: 0px;
+    }
+
+    #main-feed .search-result {
+        width: 100% !important;
+        min-width: 300px;
+    }
+
+    .post-bottom-part {
+        padding-left: 0px;
+    }
+    .add-post {
+        margin-top: 15px;
+        width: 100%;
     }
 
     .main-feed-right {
@@ -729,7 +751,15 @@ main.content {
     #create-post-layout {
         padding-top: 15px;
         padding-bottom: 15px;
+        padding-right: 0px !important;
     }
+
+    #create-post-layout button {
+        width: 80% !important;
+    }
+
+
+    
 }
 
 @media screen and (max-width: 1200px) {
@@ -767,6 +797,9 @@ main.content {
 .add-post label img {
     height: 20px;
     width: 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    object-fit: cover;
 }
 
 
@@ -798,7 +831,6 @@ main.content {
     letter-spacing: 0;
     border-radius: 50px;
     transition: opacity 0.3s;
-    z-index: 100;
 }
 
 
@@ -1201,7 +1233,6 @@ main.content {
 .post-upper-right{
     position: relative;
     display: table;
-    width: 100px;
     height: 20px;
     border-color: 2px solid black;
     margin-left: auto;
@@ -1346,6 +1377,14 @@ main.content {
     top: 120px;
     position: relative;
 
+}
+
+.hide {
+    display: none;
+}
+
+.modal-content {
+    border-radius: 0px;
 }
 
 .post-wto-profile-pic { 
@@ -2142,6 +2181,13 @@ main.content {
 
 }
 
+
+@media screen and (max-width:1300px) {
+    .search-result-main-container .search-result-ad {
+        display: none;
+    }
+}
+
 .search-result-main-container .search-result-ad .search-result-side-content {
     position: sticky;
     top: 70px;
@@ -2205,7 +2251,8 @@ main.content {
 } 
 
 .search-result-inner-carousel {
-    width: 540px;
+    width: 100%;
+    max-width: 540px;
     max-height: 600px;
     overflow-y:hidden;
     display: flex;
@@ -2422,9 +2469,14 @@ main.content {
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin-top: 0;
+    margin-top: 0;  
     transform: scale(1);
 }
+
+.jobs-main-container .jobs-container3 .modal-content {
+    text-align: left;
+}
+
 
 
 .jobs-main-container .jobs-container3 {
@@ -2515,10 +2567,20 @@ main.content {
     border: 1px solid rgba(167, 144, 144, 0.664);
 }
 
+.circle-pfp {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    object-fit: cover;
+}
+
 .FL-job-apply img {
     height: 50px;
     width: 50px;
     border-radius: 50%;
+    overflow: hidden;
+    object-fit: cover;
 }
 
 .FL-job-apply div {
@@ -2579,6 +2641,8 @@ main.content {
     height: 50px;
     width: 50px;
     border-radius: 50%;
+    overflow: hidden;
+    object-fit: cover;
 }
 
 .PE-jobs-posted div:first-child {
@@ -2613,6 +2677,8 @@ main.content {
     height: 50px;
     width: 50px;
     border-radius: 50%;
+    overflow: hidden;
+    object-fit: cover;
 }
 
 .PE-applicant div {
@@ -2685,6 +2751,9 @@ main.content {
     .FL-job-apply img {
         height: 75px;
         width: 75px;
+        border-radius: 50%;
+        overflow: hidden;
+        object-fit: cover;
     }
 
 
@@ -2700,6 +2769,9 @@ main.content {
         width: 75px;
         margin-bottom: 10px;
         margin-top: 10px;
+        border-radius: 50%;
+        overflow: hidden;
+        object-fit: cover;
     }
 
     .PE-applicant {
@@ -2786,6 +2858,9 @@ main.content {
         width: 75px;
         margin-bottom: 10px;
         margin-top: 10px;
+        border-radius: 50%;
+        overflow: hidden;
+        object-fit: cover;
     }
 
     #PE-job-posted-cont, #PE-ongoing-cont {
@@ -2899,12 +2974,16 @@ main.content {
     }
 
     .base-sidebar .base-sidebar-nav li {
+        flex-shrink: 1;
         height: 100%;
         justify-content: center;
     }
     .base-sidebar .base-sidebar-nav li img {
         padding: 0px 0px 0px 0px;
         height: 20px;
+        width: 20px;
+        overflow: hidden;
+        object-fit: cover;
     }
 
     .base-sidebar .base-sidebar-nav .base-sidebar-pfp {
@@ -2928,8 +3007,18 @@ main.content {
 
 }
 
-
-
-
+.btn {
+    font-weight: 500;
+    /* border: none; */
+    border-radius: 2px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    }
+    
+  .btn:hover {
+    box-shadow: 0px 15px 20px rgba(11, 113, 243, 0.4);
+    transform: translateY(-7px);
+  }
 
 

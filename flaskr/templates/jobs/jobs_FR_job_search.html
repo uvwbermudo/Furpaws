@@ -18,8 +18,12 @@
                         <img src="../../static/img/test_profilepic.png" alt=""  style="border-radius: 50%; overflow:hidden;">
                     </div>
                     <div>
-                        <span  class="text-muted fs-10">Freelancer</span>
-                        <span class="fs-14 fw-bolder" style="max-width: 120px; white-space:wrap;">Pet Owner Name</span>
+                        {% set pet_owner = job.poster_details %}
+                        {% set first_name = pet_owner.first_name.split(' ')[0] %}
+                        <span  class="text-muted fs-10">Pet Owner</span>
+                        <span class="fs-14 fw-bolder" style="max-width: 120px; white-space:wrap;">
+                            {{first_name}} {{pet_owner.last_name}}
+                        </span>
                     </div>
                     <div class> 
                         <span class="text-muted fs-10">Job type</span>
@@ -48,5 +52,29 @@
 
     </div>
 </div> 
-
+{% for job in available_jobs %}
+<div class="modal fade" id="job-{{job.job_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h1 class="modal-title fs-5" id="staticBackdropLabel2">Job Details</h1>
+		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	  </div>
+	  <div class="modal-body" style="background-color:rgba(167, 144, 144, 0.212);">
+		  <p style="font-size: 14px;">{{job.poster_details}}</p>
+	  </div>
+	  <div class="modal-footer">
+		  <form action="/jobs/freelancer/apply-job" method="post">
+			  <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+			  <input type="hidden" value="{{job.job_id}}" name="job_id">
+		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+		<button type="submit" class="btn btn-primary" >
+		  <span >Apply</span>
+		</button>
+		  </form>
+	  </div>
+	</div>
+  </div>
+</div>
+{% endfor%}
 

@@ -3,27 +3,28 @@
 <a href="/logout">PRESS TO LOGOUT</a>
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 
   
 
 {% block body_content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <div class="main-feed" id="main-feed">
   <div class="add-post">
     <div id="create-post-layout">
       <div class="w-100">
-        <div class="d-flex  justfy-content-start align-items-center w-100" style="column-gap: 10px;">
+        <div class="d-flex  justfy-content-start align-items-center" style="column-gap: 10px;">
           <img src="../../static/img/test_profilepic.png" style="border-radius:50%; height:50px; width:50px;" alt="">
-          <button class="share-something" data-bs-toggle="modal" data-bs-target="#addPostModal" data-bs-whatever="@getbootstrap" type="button" style="font-size: 16px;">
+          <button class="share-something w-100" data-bs-toggle="modal" data-bs-target="#addPostModal" data-bs-whatever="@getbootstrap" type="button" style="font-size: 16px;">
             Share something...
           </button>
         </div>
-        <div class="d-flex justify-content-start align-items-center w-100" style="margin-top:10px; margin-left: 55px;">
-            <label data-bs-toggle="modal" data-bs-target="#addPostModal" class="ss-add-post-photo-btns" name="add_photos">
+        <div class="d-flex justify-content-start align-items-center" style="margin-top:10px; margin-left: 55px;">
+            <label style="z-index: 1;" data-bs-toggle="modal" data-bs-target="#addPostModal" class="ss-add-post-photo-btns" name="add_photos">
               <img src="../../static/img/image-line.png"/>
               <span class="ms-1">Add Photos</span>
             </label>
-            <label data-bs-toggle="modal" data-bs-target="#addPostModal" name="add_videos" class="ss-add-post-video-btns">
+            <label data-bs-toggle="modal" data-bs-target="#addPostModal" name="add_videos" class="ss-add-post-video-btns" style="z-index: 1;">
               <img src="../../static/img/movie-line.png">
                   <span class="ms-1">Add Videos</span>
             </label>
@@ -33,78 +34,80 @@
   </div>
     
 
-    <div class="modal fade" id="addPostModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="cpost-modal-title">Create Post</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true"></span>
+  <form method="post" enctype="multipart/form-data">
+  <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+  <div class="modal fade" id="addPostModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cpost-modal-title">Create Post</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label float-start">
+                <div class="cpost-upper">
+                  <img class="cpost-profile-pic" img src="../../static/img/postprofile.jpg"/>
+                  <h5 class="post-username">{{current_user.tag}}</h5>
+                </div>
+              </label>
+              {{form.post_description(class="form-control")}}
+            </div>
+        </div>
+
+
+        <div class="modal-footer" style="justify-content: flex-start;"> 
+          <label for="add_photos" class="add-post-btns" name="add_photos"><img src="../../static/img/image-line.png"/>
+                Add Photos
+          </label>
+          <label for="add_videos" name="add_videos" class="add-post-btns">
+          <img src="../../static/img/movie-line.png">
+              Add Videos
+          </label>
+
+          <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+          <input type="file" name="files[]" multiple="true" id="add_photos" accept="image/png, image/jpg, image/jpeg" onclick="imageTooLargeAlert();" hidden>
+          <input type="file" name="add_videos" multiple="true" id="add_videos" accept="video/mp4" onclick="videoTooLargeAlert();" hidden>
+          <div class="add-post-preview-container" id="add-post-preview-container">
+          </div>
+          <div class="add-post-preview-container2" id="add-post-preview-container2">
+          </div>
+
+          {{form.add_post_button(class="submit-post")}}
+          <div id="videoAlertBox">
+            <div class="videoAlertMessage">
+              <br>
+              File is too large!
+              <br>
+              Video files cannot exceed 100 MB!
+            </div>
+            <br>
+            
+            <button class="videoAlertButton" onclick="hide">
+              OK
+            </button>
+         </div>
+          <div id="imageAlertBox">
+            <div class="imageAlertMessage">
+              <br>
+              File is too large!
+              <br>
+              Image files cannot exceed 10 MB!
+            </div>
+            <br>
+
+            <button class="imageAlertButton">
+              OK
             </button>
           </div>
-          <div class="modal-body">
-            <form method="post" enctype="multipart/form-data">
-              <div class="form-group">
-                <label for="message-text" class="col-form-label float-start">
-                  <div class="cpost-upper">
-                    <img class="cpost-profile-pic" img src="../../static/img/postprofile.jpg"/>
-                    <h5 class="post-username">{{current_user.tag}}</h5>
-                  </div>
-                </label>
-              <div>
-                {{form.post_description(class="form-control")}}
-              </div>
-            </div>
-          <div class="modal-footer" style="justify-content: flex-start;"> 
-            <label for="add_photos" class="add-post-btns" name="add_photos"><img src="../../static/img/image-line.png"/>
-                  Add Photos
-            </label>
-            <label for="add_videos" name="add_videos" class="add-post-btns">
-            <img src="../../static/img/movie-line.png">
-                Add Videos
-            </label>
-          </div>
-            
-            <input type="file" name="files[]" multiple="true" id="add_photos" accept="image/png, image/jpg, image/jpeg" onclick="imageTooLargeAlert();" hidden>
-            <input type="file" name="add_videos" multiple="true" id="add_videos" accept="video/mp4" onclick="videoTooLargeAlert();" hidden>
-            <div class="add-post-preview-container" id="add-post-preview-container">
-            </div>
-            <div class="add-post-preview-container2" id="add-post-preview-container2">
-            </div>
-
-            {{form.csrf_token}}{{form.add_post_button(class="submit-post")}}
-            </form>
-            <div id="videoAlertBox">
-              <div class="videoAlertMessage">
-                <br>
-                File is too large!
-                <br>
-                Video files cannot exceed 100 MB!
-              </div>
-              <br>
-              
-              <button class="videoAlertButton" onclick="hide">
-                OK
-              </button>
-           </div>
-            <div id="imageAlertBox">
-              <div class="imageAlertMessage">
-                <br>
-                File is too large!
-                <br>
-                Image files cannot exceed 10 MB!
-              </div>
-              <br>
-
-              <button class="imageAlertButton">
-                OK
-              </button>
-            </div>
-
-          </div>
+          
         </div>
       </div>
     </div>
+  </div>
+</form>
 
   <div class="main-feed-posts">
     {% for post in main_feed %}
@@ -187,7 +190,7 @@
       </div>
      
       <!-- post containers -->
-    <div class="search-result-post search-result">
+    <div class="search-result-post search-result" style="width: 100%;">
       <div class="search-result-post-upper">
         {% set first_name = post.author.first_name.split(' ') %}
           <a href="/profiles/{{post.author_tag}}"> 

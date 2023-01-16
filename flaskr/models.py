@@ -802,8 +802,7 @@ class ApplyJobs:
         if job_id:
             sql= f"SELECT * FROM applies_jobs where job_id ='{job_id}'"
 
-        if application_status:
-            if freelancer:
+        if application_status and freelancer:
                 sql= f"SELECT * FROM applies_jobs where freelancer_tag ='{freelancer}' and application_status ='{application_status}'"
 
         order = f" ORDER BY {order_by} {order};"
@@ -827,6 +826,14 @@ class ApplyJobs:
             """
         cursor.execute(sql)
 
+    @classmethod
+    def update_application_status(cls, job_id=None, freelancer_tag=None, status=None):
+        cursor= mysql.connection.cursor()
+        sql = f"""
+            UPDATE applies_jobs SET application_status='{status}' where job_id = '{job_id}' AND 
+            freelancer_tag = '{freelancer_tag}'
+            """
+        cursor.execute(sql)
     @classmethod
     def query_get(cls, id):
         cursor = mysql.connection.cursor()

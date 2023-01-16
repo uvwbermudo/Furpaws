@@ -17,7 +17,14 @@ def job_index():
         return render_template('jobs/job_index.html', jobs_posted=jobs_posted)
     else:
         available_jobs = Jobs.query_filter(job_status='Waiting')
-        return render_template('jobs/job_index.html', available_jobs=available_jobs)
+        working_on = WorksOn.query_filter(freelancer=current_user.tag)
+        applied_to = ApplyJobs.query_filter(freelancer=current_user.tag, application_status='Sent')
+        return render_template('jobs/job_index.html', available_jobs=available_jobs, working_on=working_on, applied_to=applied_to)
+
+@jobs.route('/jobs/rating/<job_id>')
+@login_required
+def get_stars(job_id):
+    return render_template('jobs/macros/stars.html', job_id=job_id)
 
 @jobs.route('/jobs/job-posting', methods=['GET'])
 @login_required
@@ -29,8 +36,8 @@ def job_home():
         return render_template('jobs/jobs_job_home.html', jobs_posted=jobs_posted, ongoing_jobs=ongoing_jobs)
     else:
         applied_to = ApplyJobs.query_filter(freelancer=current_user.tag, application_status='Sent')
-        working_on = WorksOn.query_filter(freelancer=current_user.tag)
-
+        working_on = WorksOn.query_filter(freelancer=current_user.tag) 
+        working_on = list(filter(lambda job: job.job_details.job_status == 'Ongoing', working_on)) 
         return render_template('jobs/jobs_job_home.html', applied_to=applied_to, working_on=working_on)
 
 @jobs.route('/jobs/pet-owner/hire', methods=['POST'])
@@ -39,6 +46,7 @@ def PE_hire_freelancer():
     cursor = mysql.connection.cursor()
     today = datetime.datetime.now()
     form = request.form
+    print(form)
     applicant = Users.query_get(form['applicant_tag'])
     job_id = form['job_id']
     Jobs.update_status(job_id=job_id, new_status='Ongoing')
@@ -53,7 +61,6 @@ def PE_hire_freelancer():
 
 @jobs.route('/jobs/pet-owner/create-jobs', methods=['POST'])
 @login_required
-
 def PE_create_job():
     form = request.form
     today = datetime.datetime.now()
@@ -73,6 +80,34 @@ def PE_create_job():
         flash('An error has occured.', category='error')
     return redirect(url_for('jobs.job_index'))
 
+@jobs.route('/jobs/pet-owner/cancel-job', methods=['POST'])
+@login_required
+def PE_cancel_job():
+    job_id=request.form['job_id']
+    try:
+        Jobs.update_status(job_id=job_id, new_status='Cancelled')
+        mysql.connection.commit()
+        flash("Job cancelled successfully", category='success')
+    except:
+        flash("An error has occured", category='error')
+    return redirect('/jobs')
+
+@jobs.route('/jobs/pet-owner/complete-job', methods=['POST'])
+@login_required
+def PE_complete_job():
+    job_id = request.form['job_id']
+    review = request.form['review']
+    if 'rating' in request.form.keys():
+        rating = request.form['rating']
+    else:
+        rating=0
+    try:
+        Jobs.update_status(job_id=job_id, new_status='Complete')
+        mysql.connection.commit()
+        flash("Job completed successfully", category='success')
+    except:
+        flash("An error has occured", category='error')
+    return redirect('/jobs')
 
 @jobs.route('/jobs/pet-owner/freelancers')
 @login_required
@@ -96,10 +131,9 @@ def PE_history():
 @login_required
 def FL_job_search():
     available_jobs = Jobs.query_filter(job_status='Waiting')
-    applied_jobs = ApplyJobs.query_filter(freelancer=current_user.tag)
+    applied_jobs = ApplyJobs.query_filter(freelancer=current_user.tag, application_status='Sent')
     applied_jobs = [job.job_id for job in applied_jobs]
     filtered_available_jobs = list(filter(lambda job: job.job_id not in applied_jobs, available_jobs))
-
     return render_template('jobs/jobs_FR_job_search.html', available_jobs=filtered_available_jobs)
 
 
@@ -111,7 +145,6 @@ def FL_apply_job():
     cursor = mysql.connection.cursor()
     job = Jobs.query_get(job_id)
     freelancer_tag = current_user.tag
-    job_id = job_id
     job_status = job.job_status
     application_status = 'Sent'
     new_application = ApplyJobs(freelancer_tag=freelancer_tag, job_id=job_id, job_status=job_status, application_status=application_status, date_applied=today)

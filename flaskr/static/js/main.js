@@ -366,3 +366,21 @@ function validate_search() {
     return true;
 }
 
+
+
+function toggle_complete_job(id) {
+    $(`#job-${id} .modal-footer .cancel-job`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .complete-span`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .complete-job`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .confirm-complete`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .cancel-complete`).toggleClass("hide");
+}
+
+function toggle_cancel_job(id) {
+    $(`#job-${id} .modal-footer .complete-job`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .close`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .cancel-job`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .cancel-span`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .confirm-cancel`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .cancel-cancel`).toggleClass("hide");
+}

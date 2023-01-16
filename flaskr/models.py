@@ -4,13 +4,13 @@ from flask_login import UserMixin
 import datetime
 
 
-#ZIPS CURSOR.FETCHALL() SO WE CAN INDEX IT LIKE A DICTIONARY
+# ZIPS CURSOR.FETCHALL() SO WE CAN INDEX IT LIKE A DICTIONARY
 def result_zip(cursor):
     columns = [desc[0] for desc in cursor.description]
     rows = cursor.fetchall()
     result = []
     for row in rows:
-        row = dict(zip(columns,row))
+        row = dict(zip(columns, row))
         result.append(row)
     if result:
         return result
@@ -18,9 +18,11 @@ def result_zip(cursor):
 
 # FOR ALL TRANSACTIONS, COMMIT MUST NOT BE CALLED IN HERE TO ALLOW THE USE OF ROLLBACK
 # IN THE BACKEND DURING ERRORS
+
+
 class Users(UserMixin):
     def __init__(self, tag=None, email=None, password=None, account_type=None, first_name=None,
-                last_name=None, city=None, state=None, zipcode=None, country=None):
+                 last_name=None, city=None, state=None, zipcode=None, country=None):
         self.tag = tag
         self.email = email
         self.password = password
@@ -31,26 +33,26 @@ class Users(UserMixin):
         self.state = state
         self.zipcode = zipcode
         self.country = country
-    
+
     def __repr__(self):
         return f'User: {self.tag}, {self.email}'
 
     def __hash__(self):
         return hash(self.tag)
 
-    def __eq__(self,other):
+    def __eq__(self, other):
         if isinstance(other, Users):
             return self.tag == other.tag
         return False
 
-    @classmethod 
-    def convert_to_object(cls,rows):
+    @classmethod
+    def convert_to_object(cls, rows):
         if not rows:
             return []
         object_results = []
         for row in rows:
             new_obj = Users(
-                tag=row['tag'], 
+                tag=row['tag'],
                 email=row['email'],
                 password=row['user_password'],
                 account_type=row['account_type'],
@@ -60,20 +62,20 @@ class Users(UserMixin):
                 state=row['state'],
                 zipcode=row['zipcode'],
                 country=row['country'],
-                )
+            )
             object_results.append(new_obj)
         return object_results
 
-    def add(self):                                  #must first create a user object then use add
+    def add(self):  # must first create a user object then use add
         cursor = mysql.connection.cursor()
         sql = f"INSERT INTO users(email, tag, user_password, account_type, first_name,\
                 last_name, city, state, zipcode, country) VALUES('{self.email}', '{self.tag}',\
                 '{self.password}', '{self.account_type}','{ self.first_name}', '{self.last_name}', '{self.city}',\
-                '{self.state}', '{self.zipcode}', '{self.country}')" 
+                '{self.state}', '{self.zipcode}', '{self.country}')"
         cursor.execute(sql)
 
     @classmethod
-    def query_get(cls, tag):                   #takes a tag, returns a user object
+    def query_get(cls, tag):  # takes a tag, returns a user object
         cursor = mysql.connection.cursor()
         sql = f"SELECT * FROM users where tag = '{tag}'"
         cursor.execute(sql)
@@ -83,10 +85,10 @@ class Users(UserMixin):
             return result[0]
         return []
 
-    # query with filter, use True exact match for exact match duh 
+    # query with filter, use True exact match for exact match duh
     # RETURNS A LIST OF ROWS SO IT NEEDS TO BE INDEXED
     @classmethod
-    def query_filter(cls, email=None, name=None, exact_match=False, username=None, tag=None, account_type=None): 
+    def query_filter(cls, email=None, name=None, exact_match=False, username=None, tag=None, account_type=None):
         cursor = mysql.connection.cursor()
         sql = ''
         if exact_match:
@@ -109,13 +111,12 @@ class Users(UserMixin):
         result = result_zip(cursor)
         result = Users.convert_to_object(result)
         if username:
-            print(result,'HI?')
-            if result:
-                return result[0]
-            else:
-                return []
-        return result
-    
+            print(result, 'HI?')
+        if result:
+            return result[0]
+        else:
+            return []
+
     @classmethod
     def query_all(cls, account_type=None):
         cursor = mysql.connection.cursor()
@@ -127,50 +128,50 @@ class Users(UserMixin):
         result = Users.convert_to_object(result)
         return result
 
-    #to update user, just call Users.update_user(<params here>)
+    # to update user, just call Users.update_user(<params here>)
     @classmethod
-    def update_user(cls, target_tag, new_tag=None, new_email=None, new_password=None, new_account_type=None, 
-                    new_first_name=None, new_last_name=None, new_city=None, new_state=None, new_zipcode=None, 
+    def update_user(cls, target_tag, new_tag=None, new_email=None, new_password=None, new_account_type=None,
+                    new_first_name=None, new_last_name=None, new_city=None, new_state=None, new_zipcode=None,
                     new_country=None):
-        cursor=mysql.connection.cursor()
+        cursor = mysql.connection.cursor()
         if new_tag:
-            sql=f"UPDATE users SET tag = '{new_tag}' WHERE tag ='{target_tag}'"
+            sql = f"UPDATE users SET tag = '{new_tag}' WHERE tag ='{target_tag}'"
             cursor.execute(sql)
         if new_email:
-            sql=f"UPDATE users SET email = '{new_email}' WHERE tag ='{target_tag}'"
+            sql = f"UPDATE users SET email = '{new_email}' WHERE tag ='{target_tag}'"
             cursor.execute(sql)
         if new_password:
-            sql=f"UPDATE users SET user_password = '{new_password}' WHERE tag ='{target_tag}'"
+            sql = f"UPDATE users SET user_password = '{new_password}' WHERE tag ='{target_tag}'"
             cursor.execute(sql)
         if new_account_type:
-            sql=f"UPDATE users SET account_type = '{new_account_type}' WHERE tag ='{target_tag}'"
+            sql = f"UPDATE users SET account_type = '{new_account_type}' WHERE tag ='{target_tag}'"
             cursor.execute(sql)
         if new_first_name:
-            sql=f"UPDATE users SET first_name = '{new_first_name}' WHERE tag ='{target_tag}'"
+            sql = f"UPDATE users SET first_name = '{new_first_name}' WHERE tag ='{target_tag}'"
             cursor.execute(sql)
         if new_last_name:
-            sql=f"UPDATE users SET last_name = '{new_last_name}' WHERE tag ='{target_tag}'"
+            sql = f"UPDATE users SET last_name = '{new_last_name}' WHERE tag ='{target_tag}'"
             cursor.execute(sql)
         if new_city:
-            sql=f"UPDATE users SET city = '{new_city}' WHERE tag ='{target_tag}'"
+            sql = f"UPDATE users SET city = '{new_city}' WHERE tag ='{target_tag}'"
             cursor.execute(sql)
         if new_state:
-            sql=f"UPDATE users SET state = '{new_state}' WHERE tag ='{target_tag}'"
+            sql = f"UPDATE users SET state = '{new_state}' WHERE tag ='{target_tag}'"
             cursor.execute(sql)
         if new_zipcode:
-            sql=f"UPDATE users SET zipcode = '{new_zipcode}' WHERE tag ='{target_tag}'"
+            sql = f"UPDATE users SET zipcode = '{new_zipcode}' WHERE tag ='{target_tag}'"
             cursor.execute(sql)
         if new_country:
-            sql=f"UPDATE users SET country = '{new_country}' WHERE tag ='{target_tag}'"
+            sql = f"UPDATE users SET country = '{new_country}' WHERE tag ='{target_tag}'"
             cursor.execute(sql)
-    
-    #pass only the target_tag
+
+    # pass only the target_tag
     @classmethod
     def delete(cls, target_tag):
         cursor = mysql.connection.cursor()
         sql = f"DELETE FROM users WHERE TAG = '{target_tag}';"
         cursor.execute(sql)
-    
+
     # for user mixin, DON'T TOUCH!
     def get_id(self):
         return self.tag
@@ -179,7 +180,17 @@ class Users(UserMixin):
     def posts(self):
         posts = Posts.query_filter(author_tag=self.tag)
         return posts
-    
+
+    @property
+    def comments(self):
+        comments = Comments.query_filter(author_tag=self.tag)
+        return comments
+
+    @property
+    def likes(self):
+        likes = Likes.query_filter(author_tag=self.tag)
+        return likes
+
 
 class Posts:
 
@@ -191,14 +202,14 @@ class Posts:
             self.date_posted = datetime.datetime.now()
         else:
             self.date_posted = date_posted
-    
+
     def __repr__(self):
         return f'Post {self.post_id}, {self.author_tag}'
 
     def __hash__(self):
         return int(self.post_id)
 
-    def __eq__(self,other):
+    def __eq__(self, other):
         if isinstance(other, Posts):
             return self.post_id == other.post_id
         else:
@@ -207,20 +218,24 @@ class Posts:
     @classmethod
     def update_post(cls, target_post, post_content):
         cursor = mysql.connection.cursor()
-        sql = f"UPDATE posts SET post_content ='{post_content}' WHERE post_id='{target_post}'"
+        sql = f'UPDATE posts SET post_content ="{post_content}" WHERE post_id="{target_post}"'
         cursor.execute(sql)
-
 
     def add(self):
         cursor = mysql.connection.cursor()
         if not self.post_content:
             self.post_content = ''
-        sql = f"INSERT INTO posts(author_tag, post_content, date_posted)\
-                VALUES('{self.author_tag}', '{self.post_content}','{self.date_posted}')" 
+        sql = None
+        if self.post_content:
+            sql = f'INSERT INTO posts(author_tag, post_content, date_posted)\
+                    VALUES("{self.author_tag}", "{self.post_content}", "{self.date_posted}")'
+        else:
+            sql = f'INSERT INTO posts(author_tag, date_posted)\
+                    VALUES("{self.author_tag}", "{self.date_posted}")'
         cursor.execute(sql)
 
-    @classmethod 
-    def convert_to_object(cls,rows):
+    @classmethod
+    def convert_to_object(cls, rows):
         if not rows:
             return []
         object_results = []
@@ -230,14 +245,14 @@ class Posts:
                 post_id=row['post_id'],
                 post_content=row['post_content'],
                 date_posted=row['date_posted']
-                )
+            )
             object_results.append(new_obj)
         return object_results
 
     @classmethod
     def delete(cls, post_id):
         cursor = mysql.connection.cursor()
-        sql = f"DELETE FROM posts WHERE post_id='{post_id}';" 
+        sql = f"DELETE FROM posts WHERE post_id='{post_id}';"
         cursor.execute(sql)
 
     @classmethod
@@ -251,15 +266,17 @@ class Posts:
             return result[0]
         return []
 
-    #ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
+    # ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
     @classmethod
-    def query_filter(cls, all=False,post_content=None, author_tag=None, order_by='date_posted', order='DESC'):
+    def query_filter(cls, all=False, post_id=None, post_content=None, author_tag=None, order_by='date_posted', order='DESC'):
         cursor = mysql.connection.cursor()
-        sql=''
+        sql = ''
         if post_content:
             sql = f"SELECT * FROM posts WHERE MATCH(post_content) AGAINST ('{post_content}')"
         if author_tag:
             sql = f"SELECT * FROM posts where author_tag LIKE '%{author_tag}%'"
+        if post_id:
+            sql = f"SELECT * FROM posts where post_id LIKE '%{post_id}%'"
         order = f" ORDER BY {order_by} {order};"
         if all:
             sql = f"SELECT * FROM posts"
@@ -284,21 +301,33 @@ class Posts:
     def author(self):
         author = Users.query_get(self.author_tag)
         return author
-    
+
     @property
     def photos(self):
         photos = Photos.query_filter(parent_post=self.post_id)
         return photos
-    
+
     @property
     def videos(self):
         videos = Videos.query_filter(parent_post=self.post_id)
         return videos
 
+    @property
+    def comments(self):
+        comments = Comments.query_filter(post_commented=self.post_id)
+        return comments
 
-        
+    @property
+    def likes(self):
+        likes = Likes.query_filter(post_liked=self.post_id)
+        return likes
 
-        
+    @property
+    def shares(self):
+        shares = SharePost.query_filter(shared_post_id=self.post_id)
+        return shares
+
+
 class CreatePost:
 
     def __init__(self, id=None, author_tag=None, post_id=None, date_created=None):
@@ -313,18 +342,18 @@ class CreatePost:
     def add(self):
         cursor = mysql.connection.cursor()
         sql = f"INSERT INTO create_post(author_tag, post_id, date_created)\
-                VALUES('{self.author_tag}', '{self.post_id}','{self.date_created}')" 
+                VALUES('{self.author_tag}', '{self.post_id}','{self.date_created}')"
         cursor.execute(sql)
-    
-    #ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
+
+    # ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
     @classmethod
     def query_filter(cls, author_tag=None, post_id=None, order_by='date_created', order='DESC'):
         cursor = mysql.connection.cursor()
-        sql=''
+        sql = ''
         if author_tag:
-            sql=f"SELECT * FROM create_post where author_tag='{author_tag}'"
+            sql = f"SELECT * FROM create_post where author_tag='{author_tag}'"
         if post_id:
-            sql=f"SELECT * FROM create_post where post_id='{post_id}'"
+            sql = f"SELECT * FROM create_post where post_id='{post_id}'"
         order = f" ORDER BY {order_by} {order};"
         sql = sql+order
         cursor.execute(sql)
@@ -332,16 +361,16 @@ class CreatePost:
         result = CreatePost.convert_to_object(result)
         return result
 
-    @classmethod 
-    def convert_to_object(cls,rows):
+    @classmethod
+    def convert_to_object(cls, rows):
         object_results = []
         for row in rows:
             new_obj = CreatePost(
-                id=row['id'], 
+                id=row['id'],
                 post_id=row['post_id'],
                 author_tag=row['author_tag'],
                 date_created=row['date_created'],
-                )
+            )
             object_results.append(new_obj)
         return object_results
 
@@ -356,28 +385,100 @@ class CreatePost:
         return post
 
 
+class SharePost:
+
+    def __init__(self, reference_id=None, sharer_tag=None, shared_post_id=None, date_created=None):
+        self.reference_id = reference_id
+        self.sharer_tag = sharer_tag
+        self.shared_post_id = shared_post_id
+        if date_created is None:
+            self.date_created = datetime.datetime.now()
+        else:
+            self.date_created = date_created
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f"INSERT INTO share_post(reference_id, sharer_tag, shared_post_id, date_created)\
+                VALUES('{self.reference_id}','{self.sharer_tag}', '{self.shared_post_id}','{self.date_created}')"
+        cursor.execute(sql)
+
+    # ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
+    @classmethod
+    def query_filter(cls, all=False, reference_id=None, sharer_tag=None, shared_post_id=None, order_by='date_created', order='DESC'):
+        cursor = mysql.connection.cursor()
+        sql = ''
+        if sharer_tag:
+            sql = f"SELECT * FROM share_post where sharer_tag='{sharer_tag}'"
+        if shared_post_id:
+            sql = f"SELECT * FROM share_post where shared_post_id='{shared_post_id}'"
+        if reference_id:
+            sql = f"SELECT * FROM share_post where reference_id='{reference_id}'"
+        order = f" ORDER BY {order_by} {order};"
+        if all:
+            sql = f"SELECT * FROM share_post"
+        sql = sql+order
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = SharePost.convert_to_object(result)
+        return result
+
+    @classmethod
+    def query_get(cls, shared_post_id):
+        cursor = mysql.connection.cursor()
+        sql = f"SELECT * FROM share_post WHERE shared_post_id = '{shared_post_id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = SharePost.convert_to_object(result)
+        if result:
+            return result[0]
+        return result
+
+    @classmethod
+    def convert_to_object(cls, rows):
+        object_results = []
+        for row in rows:
+            new_obj = SharePost(
+                reference_id=row['reference_id'],
+                shared_post_id=row['shared_post_id'],
+                sharer_tag=row['sharer_tag'],
+                date_created=row['date_created']
+            )
+            object_results.append(new_obj)
+        return object_results
+
+    @property
+    def sharer(self):
+        author = Users.query_get(self.sharer_tag)
+        return author
+
+    @property
+    def post(self):
+        post = Posts.query_get(self.shared_post_id)
+        return post
+
+
 class Photos:
 
     def __init__(self, photo_id=None, parent_post=None, photo_url=None):
         self.photo_id = photo_id
         self.parent_post = parent_post
         self.photo_url = photo_url
-    
+
     def add(self):
         cursor = mysql.connection.cursor()
         sql = f"INSERT INTO photos(parent_post, photo_url)\
-                VALUES('{self.parent_post}','{self.photo_url}')" 
+                VALUES('{self.parent_post}','{self.photo_url}')"
         cursor.execute(sql)
 
-    @classmethod 
-    def convert_to_object(cls,rows):
+    @classmethod
+    def convert_to_object(cls, rows):
         object_results = []
         for row in rows:
             new_obj = Photos(
-                photo_id=row['photo_id'], 
+                photo_id=row['photo_id'],
                 parent_post=row['parent_post'],
                 photo_url=row['photo_url'],
-                )
+            )
             object_results.append(new_obj)
         return object_results
 
@@ -386,12 +487,11 @@ class Photos:
         cursor = mysql.connection.cursor()
         sql = f"DELETE FROM photos WHERE photo_id = '{id}'"
         cursor.execute(sql)
-        
 
     @classmethod
     def query_get(cls, id):
         cursor = mysql.connection.cursor()
-        sql = f"SELECT * FROM photos WHERE photo_id = '{id}'" 
+        sql = f"SELECT * FROM photos WHERE photo_id = '{id}'"
         cursor.execute(sql)
         result = result_zip(cursor)
         result = Photos.convert_to_object(result)
@@ -402,21 +502,21 @@ class Photos:
     @classmethod
     def query_filter(cls, photo_id=None, parent_post=None):
         cursor = mysql.connection.cursor()
-        sql=''
+        sql = ''
         if photo_id:
-            sql=f"SELECT * FROM photos WHERE photo_id='{photo_id}'"
+            sql = f"SELECT * FROM photos WHERE photo_id='{photo_id}'"
         if parent_post:
-            sql=f"SELECT * FROM photos WHERE parent_post='{parent_post}'"
+            sql = f"SELECT * FROM photos WHERE parent_post='{parent_post}'"
         cursor.execute(sql)
         result = result_zip(cursor)
         result = Photos.convert_to_object(result)
         return result
-    
+
     @property
     def post(self):
         post = Posts.query_get(self.parent_post)
         return post
-    
+
 
 class Videos:
 
@@ -424,30 +524,29 @@ class Videos:
         self.video_id = video_id
         self.parent_post = parent_post
         self.video_url = video_url
-    
+
     def add(self):
         cursor = mysql.connection.cursor()
         sql = f"INSERT INTO videos(parent_post, video_url)\
-                VALUES('{self.parent_post}','{self.video_url}')" 
+                VALUES('{self.parent_post}','{self.video_url}')"
         cursor.execute(sql)
 
-    @classmethod 
-    def convert_to_object(cls,rows):
+    @classmethod
+    def convert_to_object(cls, rows):
         object_results = []
         for row in rows:
             new_obj = Videos(
-                video_id=row['video_id'], 
+                video_id=row['video_id'],
                 parent_post=row['parent_post'],
                 video_url=row['video_url'],
-                )
+            )
             object_results.append(new_obj)
         return object_results
-
 
     @classmethod
     def query_get(cls, id):
         cursor = mysql.connection.cursor()
-        sql = f"SELECT * FROM videos WHERE video_id = '{id}'" 
+        sql = f"SELECT * FROM videos WHERE video_id = '{id}'"
         cursor.execute(sql)
         result = result_zip(cursor)
         result = Videos.convert_to_object(result)
@@ -458,16 +557,15 @@ class Videos:
     @classmethod
     def query_filter(cls, video_id=None, parent_post=None):
         cursor = mysql.connection.cursor()
-        sql=''
+        sql = ''
         if video_id:
-            sql=f"SELECT * FROM videos WHERE video_id='{video_id}'"
+            sql = f"SELECT * FROM videos WHERE video_id='{video_id}'"
         if parent_post:
-            sql=f"SELECT * FROM videos WHERE parent_post='{parent_post}'"
+            sql = f"SELECT * FROM videos WHERE parent_post='{parent_post}'"
         cursor.execute(sql)
         result = result_zip(cursor)
         result = Videos.convert_to_object(result)
         return result
-
 
     @property
     def post(self):
@@ -479,8 +577,154 @@ class Videos:
         cursor = mysql.connection.cursor()
         sql = f"DELETE FROM videos WHERE video_id = '{id}'"
         cursor.execute(sql)
-    
 
 
+class Comments:
+
+    def __init__(self, comment_id=None, comment_content=None, post_commented=None, author_tag=None, date_commented=None):
+        self.comment_id = comment_id
+        self.post_commented = post_commented
+        self.comment_content = comment_content
+        self.author_tag = author_tag
+        if date_commented is None:
+            self.date_commented = datetime.datetime.now()
+        else:
+            self.date_commented = date_commented
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f'INSERT INTO comments(post_commented, author_tag, date_commented, comment_content)\
+                VALUES("{self.post_commented}","{self.author_tag}", "{self.date_commented}", "{self.comment_content}")'
+        cursor.execute(sql)
+
+    @classmethod
+    def convert_to_object(cls, rows):
+        object_results = []
+        for row in rows:
+            new_obj = Comments(
+                comment_id=row['comment_id'],
+                post_commented=row['post_commented'],
+                comment_content=row['comment_content'],
+                author_tag=row['author_tag'],
+                date_commented=row['date_commented']
+            )
+            object_results.append(new_obj)
+        return object_results
+
+    @classmethod
+    def update_comment(cls, target_comment, comment_content):
+        cursor = mysql.connection.cursor()
+        sql = f'UPDATE comments SET comment_content ="{comment_content}" WHERE comment_id="{target_comment}"'
+        cursor.execute(sql)
+
+    @classmethod
+    def query_get(cls, comment_id):
+        cursor = mysql.connection.cursor()
+        sql = f"SELECT * FROM comments WHERE comment_id = '{comment_id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Comments.convert_to_object(result)
+        if result:
+            return result[0]
+        return result
+
+    @classmethod
+    def delete(cls, comment_id):
+        cursor = mysql.connection.cursor()
+        sql = f"DELETE FROM comments WHERE comment_id='{comment_id}';"
+        cursor.execute(sql)
+
+    @classmethod
+    def query_filter(cls, comment_id=None, post_commented=None, author_tag=None, comment_content=None):
+        cursor = mysql.connection.cursor()
+        sql = ''
+        if comment_id:
+            sql = f'SELECT * FROM comments WHERE comment_id="{comment_id}"'
+        if post_commented:
+            sql = f'SELECT * FROM comments WHERE post_commented="{post_commented}"'
+        if author_tag:
+            sql = f'SELECT * FROM comments WHERE author_tag="{author_tag}"'
+        if comment_content:
+            sql = f'SELECT * FROM comments WHERE comment_content="{comment_content}"'
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Comments.convert_to_object(result)
+        return result
+
+    @property
+    def post(self):
+        post = Posts.query_get(self.post_commented)
+        return post
 
 
+class Likes:
+    def __init__(self, id=None, post_liked=None, author_tag=None, date_liked=None):
+        self.id = id
+        self.post_liked = post_liked
+        self.author_tag = author_tag
+        if date_liked is None:
+            self.date_liked = datetime.datetime.now()
+        else:
+            self.date_liked = date_liked
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f'INSERT INTO likes(post_liked, author_tag, date_liked)\
+                VALUES("{self.post_liked}","{self.author_tag}", "{self.date_liked}")'
+        cursor.execute(sql)
+
+    @classmethod
+    def convert_to_object(cls, rows):
+        object_results = []
+        for row in rows:
+            new_obj = Likes(
+                id=row['id'],
+                post_liked=row['post_liked'],
+                author_tag=row['author_tag'],
+                date_liked=row['date_liked']
+            )
+            object_results.append(new_obj)
+        return object_results
+
+    @classmethod
+    def query_get(cls, id=None, post_liked=None):
+        cursor = mysql.connection.cursor()
+        sql = ''
+        if id:
+            sql = f"SELECT * FROM likes WHERE id = '{id}'"
+        if post_liked:
+            sql = F"SELECT * FROM likes where post_liked = '{post_liked}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Likes.convert_to_object(result)
+        if result:
+            return result[0]
+        return result
+
+    @classmethod
+    def delete(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"DELETE FROM likes WHERE id ='{id}';"
+        cursor.execute(sql)
+
+    @classmethod
+    def query_filter(cls, all=False, post_liked=None, author_tag=None, order_by='date_liked', order='DESC'):
+        cursor = mysql.connection.cursor()
+        sql = ''
+        if post_liked:
+            sql = f"SELECT * FROM likes where post_liked LIKE '%{post_liked}%'"
+        if author_tag:
+            sql = f"SELECT * FROM likes where author_tag LIKE '%{author_tag}%'"
+        order = f" ORDER BY {order_by} {order};"
+        if all:
+            sql = f"SELECT * FROM likes"
+        sql = sql+order
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Likes.convert_to_object(result)
+        return result
+
+    @property
+    def post(self):
+        post = Likes.query_get(self.post_liked)
+        return post

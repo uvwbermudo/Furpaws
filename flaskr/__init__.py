@@ -7,15 +7,13 @@ from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
 from flask_mysql_connector import MySQL
 
-
-
 db_url = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 mysql = MySQL()
 
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = SECRET_KEY
-    app.config['SECRET_KEY']=SECRET_KEY
+    app.config['SECRET_KEY'] = SECRET_KEY
     app.config['MYSQL_HOST'] = DB_HOST
     app.config['MYSQL_USER'] = DB_USERNAME
     app.config['MYSQL_PASSWORD'] = DB_PASSWORD
@@ -33,7 +31,6 @@ def create_app():
     app.register_blueprint(profile, url_prefix='/')
 
     from .models import Users
-
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'

@@ -1,0 +1,39 @@
+
+<div class="d-flex flex-row w-100 align-items-center" style="column-gap: 5px;">
+	<span class="d-inline-block text-muted" style="font-size: 12px;">Your Reviews</span>
+	<hr class="d-inline-block d-inline" style="flex:1; margin-right:25px">
+</div>
+<div id="FL_reviews_container">
+	{% for review in reviews %}
+	{% set reviewer = review.reviewer%}
+	{% set reviewee = review.reviewee%}
+    <div class="review-card myshadow float-hover">
+			<img src="../../static/img/postprofile.jpg" alt="" class="circle-pfp myshadow" style="height: 80px;width:80px; margin-bottom:15px;">
+			<a href="/profiles/{{reviewer.tag}}" class="fw-bold fs-14 text-decoration-none hover-underline text-dark">{{reviewer.first_name.split(' ')[0]}} {{reviewer.last_name}}</a>
+			<a href="/profiles/{{reviewer.tag}}" class="text-muted fs-12 text-decoration-none hover-underline ">@{{reviewer.tag}}</a>
+			{% if review.stars != 'None' %}
+			<span class="fs-12">{{review.stars|float}}<i class="fa-solid fa-star text-warning"></i></span>
+			{%else%}
+			<span>None<i class="fa-solid fa-star text-warning"></i></span>
+			{%endif%}
+        <button type="button" class="btn btn-primary rounded-5 fs-12" data-bs-toggle="modal" data-bs-target="#show-review-modal" hx-trigger="click" hx-get="/jobs/freelancer/reviews/{{review.id}}" hx-swap="append" hx-target="#review-content" style="margin-top: auto; margin-bottom:5px;">
+            Details
+        </button>
+    </div>
+		{% endfor %}
+</div>
+
+<!-- Button trigger modal -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="show-review-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-scrollable">
+      <div class="modal-content">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="align-self: flex-end; margin:5px 5px 0px 0px;"></button>
+        <div class="modal-body w-100 justify-content-center">
+					<div id="review-content" class="d-flex flex-column justify-content-start align-items-center">
+					</div>
+        </div>
+      </div>
+    </div>
+  </div>

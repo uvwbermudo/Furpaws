@@ -1,0 +1,92 @@
+
+<div class="d-flex flex-row w-100 align-items-center" style="column-gap: 5px;">
+    <span class="d-inline-block text-muted" style="font-size: 12px;">Your Job History</span>
+    <hr class="d-inline-block" style="flex:1; margin-right:25px">
+  </div>
+    <hr class="d-inline w-100">
+  </div>
+    
+  <div id="PE-history-cont" class="myshadow">
+      <table class="table table-striped table-active PE_table row-striped hover">
+          <thead class="fw-lighter fs-12" style="text-align: center;">
+            <tr>
+              <th scope="col">Pet Owner</th>
+              <th scope="col">Date Started</th>
+              <th scope="col">Date Finished</th>
+              <th scope="col">Job Type</th>
+              <th scope="col">Job Rate</th>
+              <th scope="col">Review</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody class="fs-12">
+          {% for job in jobs_applied %}
+          {% set poster = job.job_details.poster_details %}
+            <tr style="text-align:center;">
+                <th scope="row">
+  
+                  <div class="d-flex ps-3" style="column-gap: 15px;">
+                    {% if poster %}
+                      <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp " style="height: 40px; width:40px; min-height: 40px; min-width:40px">
+                      <a href="/profiles/{{poster.tag}}" class="d-flex flex-column text-decoration-none hover-underline text-dark" style="text-align:left;">
+                          <span class="fw-semibold">{{poster.first_name.split(' ')[0]}} {{poster.last_name}}</span>
+                          <span class="text-muted fw-normal">{{poster.tag}}</span>
+                      </a>
+                      {%else%}
+                      <img src="../../static/img/FurpawsImgLogo.png" alt="" class="circle-pfp " style="height: 40px; width:40px;">
+                      <a class="d-flex flex-column text-decoration-none hover-underline text-dark" style="text-align:left;">
+                        <span class="fw-semibold">N/A</span>
+                        <span class="text-muted fw-normal">N/A</span>
+                    </a>
+                      {%endif%}
+                  </div>
+                  
+                </th>
+  
+              {% if job.job_details.date_accepted %}
+              <td><span class="hide">Date Started</span>{{job.job_details.date_accepted}}</td>
+              {% else %}
+              <td><span class="hide">Date Started</span> N/A</td>
+              {% endif %}
+  
+              {% if job.job_details.date_finished %}
+              <td><span class="hide">Date Finished</span>{{job.job_details.date_finished}}</td>
+              {% else %}
+              <td><span class="hide">Date Finished</span> N/A</td>
+              {% endif %}
+  
+              <td><span class="hide">Job Type</span>{{job.job_details.job_type}}</td>
+              <td><span class="hide">Job Rate</span>{{job.job_details.job_rate}}</td>
+              <td>
+                <span class="hide">Review</span>
+                {% if job.job_details.rating %}
+                <span>{{job.job_details.rating}}<i class="fa-solid fa-star text-warning"></i></span>
+                {%else%}
+                None
+                {%endif%}
+              </td>
+  
+              {% if job.application_status == 'Sent' %}
+              {% set b_color = 'text-bg-secondary' %}
+              {% elif job.application_status == 'Hired' %}
+              {% set b_color = 'text-bg-warning' %}
+              {% elif job.application_status == 'Finished' %}
+              {% set b_color = 'text-bg-success' %}
+              {%else%}
+              {% set b_color = 'text-bg-danger' %}
+              {% endif %}
+              <td><span class="hide">Job Status</span><span class="{{b_color}} badge rounded-5" >{{job.application_status}}</span></td>
+          </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+  
+  </div>
+  
+  <script>
+    $(document).ready( function () {
+      $('#PE-history-cont table').DataTable( {
+      });
+  } );
+  </script>
+  

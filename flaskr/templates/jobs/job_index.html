@@ -45,18 +45,29 @@
 				</span>
 			</li>
 			{%endif%}
-			<li hx-trigger="click" hx-get="/jobs/reviews" hx-target="#job-container-feed" hx-swap="innerHTML">
+			{% if current_user.account_type == 'freelancer' %}
+			<li hx-trigger="click" hx-get="/jobs/freelancer/reviews" hx-target="#job-container-feed" hx-swap="innerHTML">
 				<span href="#" class="text-decoration-none fp-text-blue" >
 					<i class="fa-solid fa-star"></i>
 					<span>Reviews</span>
 				</span>
 			</li>
-			<li hx-trigger="click" hx-get="/jobs/history" hx-target="#job-container-feed" hx-swap="innerHTML">
+			{% endif %}
+			{% if current_user.account_type == 'pet_owner'%}
+			<li hx-trigger="click" hx-get="/jobs/pet-owner/history" hx-target="#job-container-feed" hx-swap="innerHTML">
 				<span href="#" class="text-decoration-none fp-text-blue" >
 					<i class="fa-solid fa-clock-rotate-left"></i>
 					<span>History</span>
 				</span>
 			</li>
+			{% else %}
+			<li hx-trigger="click" hx-get="/jobs/freelancer/history" hx-target="#job-container-feed" hx-swap="innerHTML">
+				<span href="#" class="text-decoration-none fp-text-blue" >
+					<i class="fa-solid fa-clock-rotate-left"></i>
+					<span>History</span>
+				</span>
+			</li>
+			{% endif %}
 		</ul>
 		
 	</nav>	

@@ -441,12 +441,12 @@
             <img src="../../static/img/postprofile.jpg" alt="" style="height: 58px; width:58px; overflow:hidden; border-radius:50%">
           </a>
           <div style="padding-bottom:0px; padding-left: 10px;">
-              <a href="/profiles/{{author.tag}}" class="post-upper text-dark pb-1 fs-5 fw-bold">
-              <p class="d-inline fw-medium" style="font-size:14px;">
-                {{first_name[0]}} {{author.last_name}}
+              <a href="/profiles/{{author.tag}}" class="post-upper text-dark pb-1 fs-5">
+              <p class="d-inline fw-bold" style="font-size:14px;">
+                {{author.tag}}
               </p>
               <p class="d-inline text-muted fw-normal" style="font-size:14px;">
-                &middot; {{author.tag}}
+                &middot; {{first_name[0]}} {{author.last_name}}
               </p>
             </a>
             {% if is_shared %}
@@ -593,6 +593,7 @@
       {% endif %}
       <div class="post-bottom-part">
         {% if is_shared %}
+        {% set author = post.author %}
         {% set first_name = author.first_name.split(' ')%}
         <div class="d-flex justify-content-start align-items-center h-100 w-100" style="column-gap:10px;">
           <a href="/profiles/{{author.tag}}" class="text-decoration-none">
@@ -600,10 +601,10 @@
           </a>
           <a href="/profiles/{{author.tag}}" class="text-decoration-none hover-underline text-dark">
             <p class="d-inline fw-medium" style="font-size:14px;">
-              {{first_name[0]}} {{author.last_name}}
+              {{author.tag}}
             </p>
             <p class="d-inline text-muted fw-normal" style="font-size:14px;">
-              &middot; {{author.tag}}
+              &middot; {{first_name[0]}} {{author.last_name}}
             </p>
           </a>
           <a href="/posts/{{post.post_id}}" class="text-decoration-none text-muted hover-underline ms-auto me-4"> View Original Post</a>
@@ -657,7 +658,7 @@
         {% endif %}
       </div>
       {% if is_shared %}
-      <div class="container w-100 fs-14 " style="padding: 10px 25px 0px 25px; font-weight:300; ">
+      <div class="container w-100 fs-14 " style="padding: 10px 25px 0px 25px; font-weight:300; text-align:left;">
         {% if post.post_content %}
         {{post.post_content}}
         {% endif %}
@@ -670,15 +671,15 @@
 <!-- RIGHT SIDE -->
 <div class="main-feed-right">
   <div id="people-suggestion">
-    <h6 class="fw-medium" style="padding-top: 10px; padding-left:10px;">Meet new people</h6>
+    <h6 class="fw-medium" style="padding-top: 10px; padding-left:10px; text-align:left;">Meet new people</h6>
     {% for user in user_sugg%}
     <div class="user_sugg">
       <img src="../../static/img/test_profilepic.png" alt="">
       <div class="d-flex flex-column" style="row-gap: 0px;">
         {% set first_name = user.first_name.split(' ')[0] %}
-        <a href="/profiles/{{user.tag}}">
-          <span class="text-dark fw-semibold fs-14">{{first_name}} {{user.last_name}}</span>
-          <span class="text-muted fs-14">&middot; {{user.tag}}</span>
+        <a href="/profiles/{{user.tag}}" class="d-flex flex-column" style="row-gap:3px; text-align:left;">
+          <span class="text-dark fw-semibold fs-12">{{first_name}} {{user.last_name}}</span>
+          <span class="text-muted fs-12">@{{user.tag}}</span>
         </a>
         <span class="fs-12 w-100" style="text-align:left ;">{{user.city}}, {{user.state}}</span>
       </div>

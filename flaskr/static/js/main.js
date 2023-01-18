@@ -831,3 +831,44 @@ function toggle_cancel_job(id) {
     $(`#job-${id} .modal-footer .confirm-cancel`).toggleClass("hide");
     $(`#job-${id} .modal-footer .cancel-cancel`).toggleClass("hide");
 }
+
+function toggle_cancel_application(id) {
+    $(`#applied-${id} .modal-footer .cancel-span`).toggleClass("hide");
+    $(`#applied-${id} .modal-footer .close`).toggleClass("hide");
+    $(`#applied-${id} .modal-footer .cancel-cancel`).toggleClass("hide");
+    $(`#applied-${id} .modal-footer .confirm-cancel`).toggleClass("hide");
+    $(`#applied-${id} .modal-footer .cancel`).toggleClass("hide");
+
+}
+
+
+function toggle_cancel_ongoing(id) {
+    $(`#ongoing-${id} .modal-footer .cancel-span`).toggleClass("hide");
+    $(`#ongoing-${id} .modal-footer .close`).toggleClass("hide");
+    $(`#ongoing-${id} .modal-footer .cancel-cancel`).toggleClass("hide");
+    $(`#ongoing-${id} .modal-footer .confirm-cancel`).toggleClass("hide");
+    $(`#ongoing-${id} .modal-footer .cancel`).toggleClass("hide");
+}
+
+function editBio(id) {
+    $(`#edit-detail-form .bio-form`).toggleClass("readonly");
+    var isReadOnly = $(`#edit-detail-form .bio-form`).prop("readonly");
+    $(`#edit-detail-form .bio-form`).prop("readonly", !isReadOnly);
+    $(`#edit-detail-form .save-bio`).toggleClass("hide");
+    $(`#edit-detail-form .cancel-edit-bio`).toggleClass("hide");
+    $(`#edit-detail-form .edit-bio`).toggleClass("hide");
+}
+
+function toggleSiblings(elem){
+    $(elem).parents().siblings("form").toggleClass('hide')
+    $(elem).toggleClass('hide')
+    $(elem).siblings("button").toggleClass('hide');
+    $(elem).siblings("span").toggleClass('hide');
+}
+
+function toggleButtonSiblings(elem){
+    $(elem).toggleClass('hide')
+    $(elem).siblings("button").toggleClass('hide');
+    $(elem).siblings("span").toggleClass('hide');
+
+}

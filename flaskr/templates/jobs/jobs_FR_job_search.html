@@ -1,6 +1,5 @@
 <div id="job_home_cont" class="">
     <div id="job_home_controls" >
-        <button type="button" style="z-index: 20;" class="button-17 add-job-btn border-0" data-bs-toggle="modal" data-bs-target="#create-job-form" >&plus; Post Job</button>
     </div>
     <div id="job_home_feed" class="">
         <div class="d-flex flex-row w-100 align-items-center" style="column-gap: 5px;">
@@ -53,28 +52,77 @@
     </div>
 </div> 
 {% for job in available_jobs %}
+{% set poster = job.poster_details%}
 <div class="modal fade" id="job-{{job.job_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
 	<div class="modal-content">
-	  <div class="modal-header">
-		<h1 class="modal-title fs-5" id="staticBackdropLabel2">Job Details</h1>
-		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-body w-100 d-flex flex-column" style="padding:0px;">
+    <button type="button" class="btn-close ms-auto bg-fp-blue" data-bs-dismiss="modal" aria-label="Close" style="z-index: 1000;"></button>
 	  </div>
-	  <div class="modal-body" style="background-color:rgba(167, 144, 144, 0.212);">
-		  <p style="font-size: 14px;">{{job.poster_details}}</p>
-	  </div>
+    <div class="fs-14 w-100">
+      <div class="w-100 d-flex flex-column justify-content-center align-items-center" style="font-size: 24px; text-align:center; padding: 24px 40px 12px 0px; background-color:#1da1f2; margin-top:-24px;">	
+        <div class="w-100 text-white fw-semibold d-flex justify-content-center align-items-center">
+          <img src="../../static/img/fp-logo-round-white.png" alt="" class="circle-pfp" style="height: 80px; width: 80px;">
+          <span>JOB DETAILS</span>
+        </div>
+        <div class="w-100 container ps-4 pe-4 d-flex flex-column justify-content-center align-items-center" style="margin-left: 20px;">
+    
+            <img src="../../static/img/test_profilepicwdiffsize.png" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
+            <a href="/profiles/{{poster.tag}}" class="d-flex flex-column pt-2 text-decoration-none hover-underline text-dark" style="text-align: center;">
+              <span class="fs-16 fw-semibold">{{poster.first_name.split(' ')[0]}} {{poster.last_name}}</span>
+              <span class="fs-14 fw-normal">Pet Owner</span>
+            </a>
+
+        </div>
+      </div>
+      <div class="w-100 d-flex justify-content-evenly align-items-center pb-2" style="background: linear-gradient(to bottom, #1da1f2 50%, white 50%);
+      ">
+        {% if job.job_status == 'Ongoing' %}
+        {% set b_color = 'text-bg-warning' %}	
+        {%else %}
+        {% set b_color = 'text-bg-secondary' %}
+        {% endif %}
+        <img src="../../static/img/job_detail_jobtype.png" class="circle-pfp flex-shrink-1 bg-white " alt="" style="height: 65px; width:65px;">
+        <img src="../../static/img/job_detail_rate.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;" >
+        <img src="../../static/img/job_detail_status.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;">
+        <img src="../../static/img/job_detail_schedule.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;">
+      </div>
+      <div class="w-100 d-flex justify-content-evenly fs-12" style="text-align: center;">
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px;">Status</span> <span class=" {{b_color}} badge fs-12 rounded-5">{{job.job_status}}</span>
+        </div>
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px;">Job Rate</span> <span class="fw-semibold">{{job.job_rate}}</span>
+        </div>
+
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px; ">Job type</span> <span class="fw-semibold">{{job.job_type}}</span>
+        </div>
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px;">Schedule</span> <span class="fw-semibold" style="white-space:wrap; width:65px;">{{job.job_schedule}}</span>
+        </div>
+      </div>
+      <div class="d-flex gx-5 w-100 pt-3">
+        <span class="fw-bold d-block" style="width:120px; margin-left:20px;">Job Description</span>
+      </div>
+      <p style="font-size: 14px; padding:15px; margin:10px 15px 15px 10px; text-align:center;" class="fst-italic job-description">
+        "{{job.job_description}}"
+      </p>
 	  <div class="modal-footer">
 		  <form action="/jobs/freelancer/apply-job" method="post">
 			  <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
 			  <input type="hidden" value="{{job.job_id}}" name="job_id">
+      <span class="hide">Confirm Application? </span>
+      <button type="submit" class="btn btn-outline-success hide">Confirm</button>
+      <button type="button" class="btn btn-secondary hide" onclick="toggleButtonSiblings(this)">No</button>
 		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-		<button type="submit" class="btn btn-primary" >
-		  <span >Apply</span>
-		</button>
+		  <button type="button" class="btn btn-primary" onclick="toggleButtonSiblings(this)" >Apply</button>
 		  </form>
 	  </div>
 	</div>
   </div>
 </div>
+</div>
+
 {% endfor%}
 

@@ -1,10 +1,12 @@
 <div id="job_home_cont" class="">
     <div id="job_home_controls" >
+		{% if current_user.account_type == 'pet_owner' %}
         <button type="button" style="z-index: 20;" class="button-17 add-job-btn border-0" data-bs-toggle="modal" data-bs-target="#create-job-form" >&plus; Post Job</button>
+		{%else%}
+		<button type="button" style="z-index: 20;" class="button-17 add-job-btn border-0" data-bs-toggle="modal" data-bs-target="#edit-detail-form" >Your Details</button>
+		{% endif %}
     </div>
-    <div id="job_home_feed" class="">
-	{% set all_jobs_PE = jobs_posted + ongoing_jobs %}
-	
+    <div id="job_home_feed" class="">	
 		<!-- FREELANCER LAYOUT -->
 		{% if current_user.account_type=='freelancer' %}
 		<div class="d-flex flex-row w-100 align-items-center" style="column-gap: 5px;">
@@ -20,11 +22,11 @@
 			{% set job = application.job_details %}
 			<div class="FL-job-apply" style="margin-top: 10px;" >
                     <div>
-                        <img src="../../static/img/freelancer_sample.jpg" class="rounded-pfp">
+                        <img src="../../static/img/test_profilepic.png" class="circle-pfp">
                     </div>
                     <div>
                         <span  class="text-muted fs-10">Pet Owner</span>
-                        <span class="fs-12 fw-bolder" style="max-width: 120px; white-space:wrap;">
+                        <span class="fs-12 fw-bold" style="max-width: 120px; white-space:wrap;">
 							{{job.poster_details.first_name.split(' ')[0]}} {{job.poster_details.last_name}}
 						</span>
                     </div>
@@ -66,7 +68,7 @@
 				</div>
 				<div>
 					<span  class="text-muted fs-10">Pet Owner</span>
-					<span class="fs-12 fw-bolder" style="max-width: 120px; white-space:wrap;">
+					<span class="fs-12 fw-bold" style="max-width: 120px; white-space:wrap;">
 						{% set poster = job.job_details.poster_details%}
 						<span>{{poster.first_name.split(' ')[0]}} {{poster.last_name}}</span>
 
@@ -99,6 +101,48 @@
 			{% endif %}
 		</div>
 
+		<div class="d-flex flex-row w-100 align-items-center" style="column-gap: 5px;">
+			<span class="d-inline-block text-muted" style="font-size: 12px;">Your Job Requests</span>
+			<hr class="d-inline-block d-inline" style="flex:1; margin-right:25px">
+		</div>
+
+			<div id="FL-request-cont">
+				{% if job_requests|length == 0 %}
+				<h5 style="margin-top: 10px; margin-left:25px;" class="text-muted d-block">No requests.</h5>
+				{% else %}
+				{% for request in job_requests %}
+				{% set pet_owner = request.poster_details%}
+						<div class="FL-request">
+							<div>
+								<img src="../../static/img/postprofile.jpg" alt="">
+							</div>
+							<div>
+								{% set first_name = pet_owner.first_name.split(' ')[0] %}
+								<span class="fs-10 text-muted fw-bold">Freelancer</span>
+								<span class="fs-12 fw-semibold">{{first_name}} {{pet_owner.last_name}} </span>
+							</div>
+							<div>
+								<span class="fs-10 text-muted">Job Type</span>
+								<span class="fs-12 fw-semibold">{{request.job_details.job_type}}</span>
+							</div>
+							<div>
+								<span class="fs-10 text-muted">Job Rate</span>
+								<span class="fs-12 fw-semibold">{{request.job_details.job_rate}}</span>
+							</div>
+							<div>
+								<span class="fs-10 text-muted">Scheduled On</span>
+								<span class="fs-12 fw-semibold" style="max-width: 80px; white-space:wrap;">{{request.job_details.job_schedule}}</span>
+							</div>
+							<div>
+								<button type="button" class="btn btn-outline-primary rounded-5 fs-12" data-bs-toggle="modal" data-bs-target="#accept-pet_owner-{{request.id}}">
+									Open 
+								</button>
+							</div>
+						</div>
+				{% endfor %}
+				{% endif %}
+			</div>
+
 
 		{% else %}
 
@@ -117,16 +161,21 @@
             {% for job in jobs_posted %}
                 <div class="PE-jobs-posted" style="margin-top: 10px;" >
                     <div>
-                        <img src="../../static/img/test_profilepic.png" alt=""  style="border-radius: 50%; overflow:hidden;">
+												{% if job.job_details.job_status == 'Requested' %}
+												<img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp">
+												{% else %}
+                        <img src="../../static/img/FurpawsImgLogo.png" alt=""  style="border-radius: 50%; overflow:hidden;">
+												{% endif %}
+
                     </div>
                     <div>
                         <span  class="text-muted fs-10">Freelancer</span>
-                        <span class="fs-12 fw-bolder" style="max-width: 120px; white-space:wrap;">
-													{% if job.job_details.worker_details %}
-													{% set worker = job.job_details.worker_details%}
-														<span>{{worker.first_name.split(' ')[0]}} {{worker.last_name}}</span>
+                        <span class="fs-12 fw-bold" style="max-width: 120px; white-space:wrap;">
+													{% if job.job_details.job_status != 'Requested' %}
+													<span>N/A</span>
 													{% else %}
-													 <span>N/A</span>
+													{% set worker = job.worker_details %}
+														<span>{{worker.first_name.split(' ')[0]}} {{worker.last_name}}</span>
 													{% endif %}
 												</span>
                     </div>
@@ -145,14 +194,16 @@
                     <div>
                         {% if job.job_status == 'Ongoing' %}
                         {% set badge_class = "text-bg-warning" %}
-						{% elif job.job_status =='Waiting' %}
+												{% elif job.job_status =='Waiting' %}
                         {% set badge_class = "text-bg-secondary" %}
-						{% endif %}
+												{% elif job.job_details.job_status =='Requested' %}
+                        {% set badge_class = "text-bg-secondary" %}
+												{% endif %}
                         <span class="text-muted fs-10">Status</span>
-                        <span class="fs-10 badge {{badge_class}} fw-normal rounded-5" style="max-width: 60px ;">{{job.job_details.job_status}}</span>
+                        <span class="fs-10 badge {{badge_class}} fw-normal rounded-5" style="max-width: 70px ;">{{job.job_details.job_status}}</span>
                     </div>
                     <div>
-                        <button type="button" class="btn btn-primary fs-12 rounded-5" data-bs-toggle="modal" data-bs-target="#job-{{job.job_details.job_id}}" style="max-width: 120px;">
+											<button type="button" class="btn btn-primary fs-12 rounded-5" data-bs-toggle="modal" data-bs-target="#job-{{job.job_details.job_id}}" style="max-width: 120px;">
                         Job Details
                       </button>
                     </div>
@@ -160,7 +211,7 @@
                 </div>
             
 						
-			{% set applicants = applicants.extend(job.job_details.applicants) %}
+						{% set applicants = applicants.extend(job.job_details.applicants) %}
             {%endfor%}
             {% endif %}
         </div>
@@ -177,11 +228,11 @@
             {% for job in ongoing_jobs %}
                 <div class="PE-jobs-posted" style="margin-top: 10px;" >
                     <div>
-                        <img src="../../static/img/test_profilepic.png" alt=""  style="border-radius: 50%; overflow:hidden;">
+                        <img src="../../static/img/freelancer_sample.jpg" alt=""  style="border-radius: 50%; overflow:hidden;">
                     </div>
                     <div>
                         <span  class="text-muted fs-10">Freelancer</span>
-                        <span class="fs-12 fw-bolder" style="max-width: 120px; white-space:wrap;">
+                        <span class="fs-12 fw-bold" style="max-width: 120px; white-space:wrap;">
 													{% if job.job_details.worker_details %}
 													{% set worker = job.job_details.worker_details%}
 														<span>{{worker.first_name.split(' ')[0]}} {{worker.last_name}}</span>
@@ -238,11 +289,11 @@
 						<div class="PE-applicant">
 
 							<div>
-								<img src="../../static/img/test_profilepic.png" alt="">
+								<img src="../../static/img/freelancer_sample.jpg" alt="">
 							</div>
 							<div>
 								{% set first_name = applicant.first_name.split(' ')[0] %}
-								<span class="fs-10 text-muted">Freelancer</span>
+								<span class="fs-10 text-muted fw-bold">Freelancer</span>
 								<span class="fs-12 fw-semibold">{{first_name}} {{applicant.last_name}} </span>
 							</div>
 							<div>
@@ -261,7 +312,6 @@
 									Hire 
 								</button>
 							</div>
-
 						</div>
 						
 					{% endfor %}
@@ -300,23 +350,26 @@
 
 		  <div class="mb-3">
             <label for="job-schedule" class="form-label">Schedule</label>
-			<input type="datetime-local" id="job-schedule" name="job_schedule" class="form-control" min="">
+			<input type="datetime-local" id="job-schedule" name="job_schedule" class="form-control" min="" required>
           </div>
 
 		  <div class="mb-3">
             <label for="job-rate" class="form-label">Job rate</label>
 			<input type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" id="job-rate" name="job_rate" min="1.00" 
-			step=".01" class="form-control" placeholder="$">
+			step=".01" class="form-control" placeholder="$" required>
           </div>
 		
           <div class="mb-3">
             <label for="message-text" class="form-label">Job Details</label>
-            <textarea class="form-control" name="job_description" id="message-text" style="max-height:100px;"></textarea>
+            <textarea class="form-control" name="job_description" id="message-text" style="max-height:100px;" required></textarea>
           </div>
       </div>
       <div class="modal-footer">
+				<span class="hide">Confirm your details.</span>
+        <button type="button" class="btn btn-secondary hide" onclick="toggleButtonSiblings(this)">Back</button>
+        <button type="submit" class="btn btn-outline-success hide">Continue</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Confirm</button>
+        <button type="button" class="btn btn-primary" onclick="toggleButtonSiblings(this)">Post</button>
       </div>
     </form>
     </div>
@@ -325,7 +378,11 @@
 
 <!-- Job details Modal PET OWNER -->
 {% for job in all_jobs_PE %}
-{% set current_job= job.job_id%}
+{% if job.job_details.job_status == 'Requested' %}
+{% set current_job = job.job_details.job_id%}
+{%else%}
+{% set current_job = job.job_id %}
+{%endif%}
 	<!-- GET APPLICANTS -->
 	{% if job.job_details.applicants %}
 	{% for applicant in job.job_details.applicants %}
@@ -333,19 +390,30 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h1 class="modal-title fs-5">Modal title</h1>
+					<h1 class="modal-title fs-5">Applicant Details</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body">
-					{{job.job_id}}
+				<div class="modal-body d-flex flex-column justify-content-center align-items-center">
+					<img src="../../static/img/freelancer_sample.jpg" alt="" style="height: 200px; width:200px;" class="circle-pfp myshadow">
+          <a href="/profiles/{{applicant.tag}}" class="text-decoration-none hover-underline text-dark pt-3 d-flex flex-column justify-content-center align-items-center">
+            <span class="fw-semibold d-block" style="font-size: 18px;">{{applicant.first_name.split(' ')[0]}} {{applicant.last_name}}</span>
+            <span class="text-muted fs-12">{{applicant.tag}}</span>
+          </a>
+					<span class="fs-14">{{applicant.freelancing_details.average_rating}}<i class="fa-solid fa-star text-warning"></i>
+						<span class="fst-italic">({{applicant.freelancing_details.review_count}})</span>
+					</span>
+          <p class="fs-14 fw-light" style="margin:10px 25px 10px 25px; text-align:left;">" {{applicant.freelancing_details.bio}} " </p>
 				</div>
 				<div class="modal-footer">
 					<form action="/jobs/pet-owner/hire" method="post">
 						<input type="hidden" value="{{csrf_token()}}" name="csrf_token">
 						<input type="hidden" value="{{applicant.tag}}" name="applicant_tag">
 						<input type="hidden" value="{{current_job}}" name="job_id">
+						<span class="hide">Hire Freelancer? </span>
+						<button type="submit" class="btn btn-outline-success hide">Confirm</button>
+						<button type="button" class="btn btn-secondary hide" onclick="toggleButtonSiblings(this)">Cancel</button>
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Hire</button>
+						<button type="button" class="btn btn-primary" onclick="toggleButtonSiblings(this)">Hire</button>
 					</form>
 
 				</div>
@@ -355,39 +423,72 @@
 	{% endfor %}
 	{% endif %}
 
+	<!-- JOB DETAILS -->
   <div class="modal fade" id="job-{{job.job_details.job_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
 	  <div class="modal-content">
-		<div class="modal-body w-100 d-flex flex-column">
-			<button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
-			{# {% if job.job_details.job_status == 'Waiting' %}
-			<button class="btn btn-warning w-25 ms-auto text-white"><i class="fa-solid fa-pen-to-square"></i>Edit</button>
-			{% endif %}#}
+		<div class="modal-body w-100 d-flex flex-column" style="padding:0px;">
+			<button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close" style="z-index: 1000;"></button>
 			<div class="fs-14 w-100">
-				<div class="w-100 d-flex justify-content-evenly pb-2">
-					<img src="../../static/img/job_detail_jobtype.png" class="circle-pfp flex-shrink-1" alt="" style="height: 80px; width:80px;">
-					<img src="../../static/img/job_detail_rate.png" class="circle-pfp flex-shrink-1" alt="" style="height: 80px; width:80px;" >
-					<img src="../../static/img/job_detail_status.png" class="circle-pfp flex-shrink-1" alt="" style="height: 80px; width:80px;">
-					<img src="../../static/img/job_detail_schedule.png" class="circle-pfp flex-shrink-1" alt="" style="height: 80px; width:80px;">
+				{%if job.job_details.job_status=='Requested'%}
+				{%set worker= job.worker_details%}
+				{%else%}
+				{% set worker = job.job_details.worker_details %}
+				{%endif%}
+				<div class="w-100 d-flex flex-column justify-content-center align-items-center" style="font-size: 24px; text-align:center; padding: 24px 40px 12px 0px; background-color:#1da1f2; margin-top:-24px;">	
+					<div class="w-100 text-white fw-semibold d-flex justify-content-center align-items-center">
+						<img src="../../static/img/fp-logo-round-white.png" alt="" class="circle-pfp" style="height: 80px; width: 80px;">
+						<span>JOB DETAILS</span>
+					</div>
+          {% if job.job_status != 'Waiting'%}
+          <div class="w-100 container ps-4 pe-4 d-flex flex-column justify-content-start align-items-start">
+            <div class="d-flex justify-content-start align-items-center">
+              <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
+              <div class="d-flex flex-column ps-3" style="text-align: left;">
+                <span class="fs-16 fw-semibold">{{worker.first_name.split(' ')[0]}} {{worker.last_name}}</span>
+                <span class="fs-14 fst-italic fw-normal">Freelancer
+									<span class="fs-12">{{worker.freelancing_details.average_rating}}<i class="fa-solid fa-star text-warning"></i>
+										<span class="fst-italic">({{worker.freelancing_details.review_count}})</span>
+									</span>
+								</span>
+              </div>
+            </div>
+          </div>
+          <p class="fs-12 container fst-italic" style="white-space:wrap; margin-left:125px; text-align:left; padding-top:0px; margin-top:-24px; max-width:350px;">" {{worker.freelancing_details.bio}} "</p>
+					
+          {% endif %}
+				</div>
+				<div class="w-100 d-flex justify-content-evenly align-items-center pb-2" style="background: linear-gradient(to bottom, #1da1f2 50%, white 50%);
+				">
+					{% if job.job_details.job_status == 'Ongoing' %}
+					{% set b_color = 'text-bg-warning' %}	
+					{%else %}
+					{% set b_color = 'text-bg-secondary' %}
+					{% endif %}
+					<img src="../../static/img/job_detail_jobtype.png" class="circle-pfp flex-shrink-1 bg-white " alt="" style="height: 65px; width:65px;">
+					<img src="../../static/img/job_detail_rate.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;" >
+					<img src="../../static/img/job_detail_status.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;">
+					<img src="../../static/img/job_detail_schedule.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;">
 				</div>
 				<div class="w-100 d-flex justify-content-evenly fs-12" style="text-align: center;">
-					<div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 80px;">
-						<span class="fw-bold d-block" style="width:80px;">Status</span> <span>{{job.job_status}}</span>
+					<div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+						<span class="fw-bold d-block" style="max-width:70px;">Status</span> <span class=" {{b_color}} badge fs-10 rounded-5">{{job.job_details.job_status}}</span>
 					</div>
-					<div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 80px;">
-						<span class="fw-bold d-block" style="width:80px;">Job Rate</span> <span>{{job.job_details.job_rate}}</span>
+					<div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+						<span class="fw-bold d-block" style="width:65px;">Job Rate</span> <span class="fw-semibold">{{job.job_details.job_rate}}</span>
 					</div>
-					<div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 80px;">
-						<span class="fw-bold d-block" style="width:80px; ">Job type</span> <span>{{job.job_details.job_type}}</span>
+
+					<div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+						<span class="fw-bold d-block" style="width:65px; ">Job type</span> <span class="fw-semibold">{{job.job_details.job_type}}</span>
 					</div>
-					<div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 80px;">
-						<span class="fw-bold d-block" style="width:80px;">Schedule</span> <span style="white-space:wrap; width:80px;">{{job.job_details.job_schedule}}</span>
+					<div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+						<span class="fw-bold d-block" style="width:65px;">Schedule</span> <span class="fw-semibold" style="white-space:wrap; width:65px;">{{job.job_details.job_schedule}}</span>
 					</div>
 				</div>
 				<div class="d-flex gx-5 w-100">
-					<span class="fw-bold d-block" style="width:120px;">Job Description</span>
+					<span class="fw-bold d-block" style="width:120px; margin-left:20px;">Job Description</span>
 				</div>
-				<p style="font-size: 14px; padding:15px; margin-top:10px; text-align:center;" class="fst-italic">
+				<p style="font-size: 14px; padding:15px; margin:10px 15px 15px 10px; text-align:center;" class="fst-italic job-description">
 					"{{job.job_details.job_description}}"
 				</p>
 			</div>
@@ -427,8 +528,8 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body d-flex flex-column align-items-center w-100">
-					<img src="../../static/img/freelancer_sample.jpg" alt="" style="height: 200px; width:200px;" class="circle-pfp">
-					<span class="pt-2 fw-bolder">{{worker.first_name}} {{worker.last_name}}</span>
+					<img src="../../static/img/freelancer_sample.jpg" alt="" style="height: 200px; width:200px;" class="circle-pfp myshadow">
+					<span class="pt-2 fw-bold">{{worker.first_name}} {{worker.last_name}}</span>
 					<span class="pt-3 fw-semibold">Rate your freelancer</span>
 					<div class="rating" id="rating{{job.job_details.job_id}}" hx-get="/jobs/rating/{{job.job_details.job_id}}" hx-target="#rating{{job.job_details.job_id}}" hx-swap="outerHTML" hx-trigger="load">
 					</div>
@@ -454,70 +555,267 @@
 
 <!-- FREELANCER jobs applied to -->
 {% for job in applied_to %}
+{% set poster = job.job_details.poster_details%}
 <div class="modal fade" id="applied-{{job.job_details.job_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
 	<div class="modal-content">
-	  <div class="modal-header">
-		<h1 class="modal-title fs-5" id="staticBackdropLabel3">Job Details</h1>
-		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-body w-100 d-flex flex-column" style="padding:0px;">
+    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close" style="z-index: 1000;"></button>
 	  </div>
-	  <div class="modal-body" style="background-color:rgba(167, 144, 144, 0.212);">
-		  <p style="font-size: 14px;">{{job.job_details.poster_details}}</p>
-	  </div>
+    <div class="fs-14 w-100" style="padding-bottom: 25px;">
+      <div class="w-100 d-flex flex-column justify-content-center align-items-center" style="font-size: 24px; text-align:center; padding: 24px 40px 12px 0px; background-color:#1da1f2; margin-top:-24px;">	
+        <div class="w-100 text-white fw-semibold d-flex justify-content-center align-items-center">
+          <img src="../../static/img/fp-logo-round-white.png" alt="" class="circle-pfp" style="height: 80px; width: 80px;">
+          <span>JOB DETAILS</span>
+        </div>
+          <div class="w-100 container ps-4 pe-4 d-flex flex-column justify-content-center align-items-center" style="margin-left: 20px;">
+    
+            <img src="../../static/img/test_profilepicwdiffsize.png" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
+            <a href="/profiles/{{poster.tag}}" class="d-flex flex-column pt-2 text-decoration-none hover-underline text-dark" style="text-align: center;">
+              <span class="fs-16 fw-semibold">{{poster.first_name.split(' ')[0]}} {{poster.last_name}}</span>
+              <span class="fs-14 fw-normal">Pet Owner</span>
+            </a>
+
+        </div>
+      </div>
+      <div class="w-100 d-flex justify-content-evenly align-items-center pb-2" style="background: linear-gradient(to bottom, #1da1f2 50%, white 50%);
+      ">
+        {% if job.application_status == 'Sent' %}
+        {% set b_color = 'text-bg-secondary' %}	
+        {%else %}
+        {% set b_color = 'text-bg-warning' %}
+        {% endif %}
+        <img src="../../static/img/job_detail_jobtype.png" class="circle-pfp flex-shrink-1 bg-white " alt="" style="height: 65px; width:65px;">
+        <img src="../../static/img/job_detail_rate.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;" >
+        <img src="../../static/img/job_detail_status.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;">
+        <img src="../../static/img/job_detail_schedule.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;">
+      </div>
+      <div class="w-100 d-flex justify-content-evenly fs-12" style="text-align: center;">
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px;">Application Status</span> <span class=" {{b_color}} badge fs-12 rounded-5">{{job.application_status}}</span>
+        </div>
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px;">Job Rate</span> <span class="fw-semibold">{{job.job_details.job_rate}}</span>
+        </div>
+
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px; ">Job type</span> <span class="fw-semibold">{{job.job_details.job_type}}</span>
+        </div>
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px;">Schedule</span> <span class="fw-semibold" style="white-space:wrap; width:65px;">{{job.job_details.job_schedule}}</span>
+        </div>
+      </div>
+      <div class="d-flex gx-5 w-100 pt-3">
+        <span class="fw-bold d-block" style="width:120px; margin-left:20px;">Job Description</span>
+      </div>
+      <p style="font-size: 14px; padding:15px; margin:10px 15px 15px 10px; text-align:center;" class="fst-italic job-description">
+        "{{job.job_details.job_description}}"
+      </p>
 	  <div class="modal-footer">
-		  <!-- !! SHOULD BE CANCEL -->
-		  <form action="/jobs/freelancer/cancel-job" method="post">
+		  <form action="/jobs/freelancer/cancel-application" method="post">
 			  <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
-			  <input type="hidden" value="{{job.id}}" name="job_id">
-		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-		<button type="submit" class="btn btn-danger" >
-		  <span >Cancel</span>
-		</button>
+			  <input type="hidden" value="{{job.job_details.job_id}}" name="job_id">
+				<span class="hide cancel-span">Confirm Cancel?</span>
+				<button type="submit" class="btn btn-outline-danger hide confirm-cancel">Confirm</button>
+				<button type="button" class="btn btn-secondary hide cancel-cancel" onclick="toggle_cancel_application({{job.job_details.job_id}})">No</button>
+			  <button type="button" class="btn btn-danger cancel" onclick="toggle_cancel_application({{job.job_details.job_id}})" >Cancel</button>
+		  	<button type="button" class="btn btn-secondary close" data-bs-dismiss="modal">Close</button>
 		  </form>
 	  </div>
 	</div>
+  </div>
   </div>
 </div>
 {% endfor%}
 
 <!-- FREELANCER ONGOING JOBS -->
 {% for job in working_on  %}
- <div class="modal fade" id="ongoing-{{job.job_details.job_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+{% set poster = job.job_details.poster_details%}
+<div class="modal fade" id="ongoing-{{job.job_details.job_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
 	<div class="modal-content">
-	  <div class="modal-header">
-		<h1 class="modal-title fs-5" id="staticBackdropLabel1">Job Details</h1>
-		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-body w-100 d-flex flex-column" style="padding:0px;">
+    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close" style="z-index: 1000;"></button>
 	  </div>
-	  <div class="modal-body w-100 d-flex flex-column">
-		  <div class="fs-14 container">
-			  <div class="d-flex gx-5 w-100">
-				  <span class="fw-bold d-block" style="width:150px;">Status:</span> <span>{{job.job_details.job_status}}</span>
-			  </div>
-			  <div class="d-flex gx-5 w-100">
-				  <span class="fw-bold d-block" style="width:150px;">Job Rate:</span> <span>{{job.job_details.job_rate}}</span>
-			  </div>
-			  <div class="d-flex gx-5 w-100">
-				  <span class="fw-bold d-block" style="width:150px;">Job type:</span> <span>{{job.job_details.job_type}}</span>
-			  </div>
-			  <div class="d-flex gx-5 w-100">
-				  <span class="fw-bold d-block" style="width:150px;">Job Schedule:</span> <span>{{job.job_details.job_schedule}}</span>
-			  </div>
-			  <div class="d-flex gx-5 w-100">
-				  <span class="fw-bold d-block" style="width:150px;">Job Description:</span>
-			  </div>
-			  <p style="font-size: 14px; background-color:antiquewhite; padding:15px; margin-top:10px;">
-				  {{job.job_details.job_description}}
-			  </p>
-		  </div>
-	  </div>
+    <div class="fs-14 w-100" style="padding-bottom: 25px;">
+      <div class="w-100 d-flex flex-column justify-content-center align-items-center" style="font-size: 24px; text-align:center; padding: 24px 40px 12px 0px; background-color:#1da1f2; margin-top:-24px;">	
+        <div class="w-100 text-white fw-semibold d-flex justify-content-center align-items-center">
+          <img src="../../static/img/fp-logo-round-white.png" alt="" class="circle-pfp" style="height: 80px; width: 80px;">
+          <span>JOB DETAILS</span>
+        </div>
+        <div class="w-100 container ps-4 pe-4 d-flex flex-column justify-content-center align-items-center" style="margin-left: 20px;">
+    
+            <img src="../../static/img/test_profilepicwdiffsize.png" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
+            <a href="/profiles/{{poster.tag}}" class="d-flex flex-column pt-2 text-decoration-none hover-underline text-dark" style="text-align: center;">
+              <span class="fs-16 fw-semibold">{{poster.first_name.split(' ')[0]}} {{poster.last_name}}</span>
+              <span class="fs-14 fw-normal">Pet Owner</span>
+            </a>
+
+        </div>
+      </div>
+      <div class="w-100 d-flex justify-content-evenly align-items-center pb-2" style="background: linear-gradient(to bottom, #1da1f2 50%, white 50%);
+      ">
+        {% if job.job_details.job_status == 'Ongoing' %}
+        {% set b_color = 'text-bg-warning' %}	
+        {%else %}
+        {% set b_color = 'text-bg-secondary' %}
+        {% endif %}
+        <img src="../../static/img/job_detail_jobtype.png" class="circle-pfp flex-shrink-1 bg-white " alt="" style="height: 65px; width:65px;">
+        <img src="../../static/img/job_detail_rate.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;" >
+        <img src="../../static/img/job_detail_status.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;">
+        <img src="../../static/img/job_detail_schedule.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;">
+      </div>
+      <div class="w-100 d-flex justify-content-evenly fs-12" style="text-align: center;">
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px;">Status</span> <span class=" {{b_color}} badge fs-12 rounded-5">{{job.job_details.job_status}}</span>
+        </div>
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px;">Job Rate</span> <span class="fw-semibold">{{job.job_details.job_rate}}</span>
+        </div>
+
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px; ">Job type</span> <span class="fw-semibold">{{job.job_details.job_type}}</span>
+        </div>
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px;">Schedule</span> <span class="fw-semibold" style="white-space:wrap; width:65px;">{{job.job_details.job_schedule}}</span>
+        </div>
+      </div>
+      <div class="d-flex gx-5 w-100 pt-3">
+        <span class="fw-bold d-block" style="width:120px; margin-left:20px;">Job Description</span>
+      </div>
+      <p style="font-size: 14px; padding:15px; margin:10px 15px 15px 10px; text-align:center;" class="fst-italic job-description">
+        "{{job.job_details.job_description}}"
+      </p>
 	  <div class="modal-footer">
-		<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			<form action="/jobs/freelancer/cancel-ongoing" method="post">
+			  <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+			  <input type="hidden" value="{{job.id}}" name="job_id">
+				<span class="hide cancel-span">Confirm Cancel?</span>
+				<button type="submit" class="btn btn-outline-danger hide confirm-cancel">Confirm</button>
+				<button type="button" class="btn btn-secondary hide cancel-cancel" onclick="toggle_cancel_ongoing({{job.job_details.job_id}})">No</button>
+			  <button type="button" class="btn btn-danger cancel" onclick="toggle_cancel_ongoing({{job.job_details.job_id}})" >Cancel</button>
+		  	<button type="button" class="btn btn-secondary close" data-bs-dismiss="modal">Close</button>
+		  </form>
 	  </div>
 	</div>
   </div>
 </div>
+</div>
 {%endfor%}
 
-
+<div class="modal fade" id="edit-detail-form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content">
+			<form action="/jobs/freelancer/update-bio" method="post" style="font-family: Poppins, sans-serif;">
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+		<div class="modal-header">
+			<h1 class="modal-title fs-6 fw-semibold">Your Freelancer details </h1>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body d-flex flex-column justify-content-start align-items-center w-100">
+			<img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp myshadow" style="height:120px;width:120px;">
+			<span class="pt-3 fw-semibold">{{current_user.first_name.split(' ')[0]}} {{current_user.last_name}}</span>
+			<span class="fw-normal">@{{current_user.tag}}</span>
+		<div class="mb-3 w-100 d-flex justify-content-center pt-3 align-items-center">
+			{% set average_rating = current_user.freelancing_details.average_rating%}
+			<span>Average Rating: {{average_rating}}<i class="fa-solid fa-star text-warning"></i></span>
+			<span class="fs-14 fst-italic">({{current_user.freelancing_details.review_count}})</span>
+		</div>
+			<div class="mb-3 w-100 bio-section">
+				<label for="message-text" class="form-label">Freelancing Bio</label>
+				<a class="text-decoration-none fw-semibold text-black float-end pe-3 edit-bio" style="cursor:pointer;" onclick="editBio()">Edit Bio <i class="fa-solid fa-pen-to-square"></i></a>
+				<textarea class="form-control readonly bio-form" name="FL_bio" style="max-height:100px;" readonly maxlength="120">{{current_user.freelancing_details.bio}}</textarea>
+			</div>
+			<div class="d-flex w-100 justify-content-end" style="column-gap: 3px;">
+				<button class="btn btn-success save-bio hide" type="submit">Save</button>
+				<button class="btn btn-outline-secondary cancel-edit-bio hide" onclick="editBio()" type="button">Cancel</button>
+			</div>
+		<div class="w-100">
+		</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+		</div>
+	</form>
+	</div>
 </div>
+</div>	
+
+{% for request in job_requests  %}
+{% set poster = request.poster_details%}
+<div class="modal fade" id="accept-pet_owner-{{request.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+	<div class="modal-content">
+  <div class="modal-body w-100 d-flex flex-column" style="padding:0px;">
+    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close" style="z-index: 1000;"></button>
+	  </div>
+    <div class="fs-14 w-100" style="padding-bottom: 25px;">
+      <div class="w-100 d-flex flex-column justify-content-center align-items-center" style="font-size: 24px; text-align:center; padding: 24px 40px 12px 0px; background-color:#1da1f2; margin-top:-24px;">	
+        <div class="w-100 text-white fw-semibold d-flex justify-content-center align-items-center">
+          <img src="../../static/img/fp-logo-round-white.png" alt="" class="circle-pfp" style="height: 80px; width: 80px;">
+          <span>JOB DETAILS</span>
+        </div>
+        <div class="w-100 container ps-4 pe-4 d-flex flex-column justify-content-center align-items-center" style="margin-left: 20px;">
+    
+            <img src="../../static/img/postprofile.jpg" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
+            <a href="/profiles/{{poster.tag}}" class="d-flex flex-column pt-2 text-decoration-none hover-underline text-dark" style="text-align: center;">
+              <span class="fs-16 fw-semibold">{{poster.first_name.split(' ')[0]}} {{poster.last_name}}</span>
+              <span class="fs-14 fw-normal">Pet Owner</span>
+            </a>
+
+        </div>
+      </div>
+      <div class="w-100 d-flex justify-content-evenly align-items-center pb-2" style="background: linear-gradient(to bottom, #1da1f2 50%, white 50%);
+      ">
+        <img src="../../static/img/job_detail_jobtype.png" class="circle-pfp flex-shrink-1 bg-white " alt="" style="height: 65px; width:65px;">
+        <img src="../../static/img/job_detail_rate.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;" >
+        <img src="../../static/img/job_detail_status.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;">
+        <img src="../../static/img/job_detail_schedule.png" class="bg-white circle-pfp flex-shrink-1 " alt="" style="height: 65px; width:65px;">
+      </div>
+      <div class="w-100 d-flex justify-content-evenly fs-12" style="text-align: center;">
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="max-width:70px;">Status</span> <span class="fw-normal text-bg-secondary badge fs-10 rounded-5">{{request.job_details.job_status}}</span>
+        </div>
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px;">Job Rate</span> <span class="fw-semibold">{{request.job_details.job_rate}}</span>
+        </div>
+
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px; ">Job type</span> <span class="fw-semibold">{{request.job_details.job_type}}</span>
+        </div>
+        <div class="d-flex flex-column gy-5 flex-shrink-1" style="width: 65px;">
+          <span class="fw-bold d-block" style="width:65px;">Schedule</span> <span class="fw-semibold" style="white-space:wrap; width:65px;">{{request.job_details.job_schedule}}</span>
+        </div>
+      </div>
+      <div class="d-flex gx-5 w-100 pt-3">
+        <span class="fw-bold d-block" style="width:120px; margin-left:20px;">Job Description</span>
+      </div>
+      <p style="font-size: 14px; padding:15px; margin:10px 15px 15px 10px; text-align:center;" class="fst-italic job-description">
+        "{{request.job_details.job_description}}"
+      </p>
+	  <div class="modal-footer">
+			<!-- REJECT -->
+			<form action="/jobs/freelancer/reject-request" method="post">
+				<input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+				<input type="hidden" value="{{request.id}}" name="req_id">
+				<span class="hide cancel-span">Reject this Job? </span>
+				<button type="submit" class="btn btn-outline-danger hide confirm-cancel">Confirm</button>
+				<button type="button" class="btn btn-secondary hide cancel-cancel" onclick="toggleSiblings(this)">No</button>
+			  <button type="button" class="btn btn-danger cancel" onclick="toggleSiblings(this)" >Reject</button>
+			</form>
+			<!-- ACCEPT -->
+			<form action="/jobs/freelancer/accept-request" method="post">
+				<input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+				<input type="hidden" value="{{request.id}}" name="req_id">
+				<span class="hide">Accept this Job? </span>
+				<button type="button" class="btn btn-secondary hide cancel-cancel" onclick="toggleSiblings(this)">Back</button>
+				<button type="submit" class="btn btn-outline-success hide confirm-cancel">Confirm</button>
+		  	<button type="button" class="btn btn-success close" onclick="toggleSiblings(this)">Accept</button>
+			</form>
+	  </div>
+	</div>
+  </div>
+</div>
+</div> 
+{%endfor%}
+

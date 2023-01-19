@@ -13,7 +13,7 @@
   
   <link rel="stylesheet" href="../../static/css/styles.css">
 </head>
-<body class="{% block bg %}landing-bg{% endblock %} position-relative">
+<body>
     {% include 'toast.html' %}
     <input class="p-0 m-0" type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token() }}">
     {% block body_content %}{% endblock %}

@@ -1,0 +1,44 @@
+<div class="rating">
+    <input type="radio" name="rating" value="5" id="5{{job_id}}"><label for="5{{job_id}}">☆</label>
+    <input type="radio" name="rating" value="4" id="4{{job_id}}"><label for="4{{job_id}}">☆</label>
+    <input type="radio" name="rating" value="3" id="3{{job_id}}"><label for="3{{job_id}}">☆</label>
+    <input type="radio" name="rating" value="2" id="2{{job_id}}"><label for="2{{job_id}}">☆</label>
+    <input type="radio" name="rating" value="1" id="1{{job_id}}"><label for="1{{job_id}}">☆</label>
+</div>
+<style>
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    z-index: 100;
+    }
+    
+    .rating > input{ 
+        display: none;
+    }
+    
+    .rating > label {
+    position: relative;
+    width: 1.1em;
+    font-size: 30px;
+    color: #FFD700;
+    cursor: pointer;
+    }
+    
+    .rating > label::before{
+    content: "\2605";
+    position: absolute;
+    opacity: 0;
+    }
+    
+    .rating > label:hover:before,
+    .rating > label:hover ~ label:before {
+    opacity: 1 !important;
+    }
+    
+    .rating > input:checked ~ label:before{
+    opacity:1;
+    }
+    
+    .rating:hover > input:checked ~ label:before{ opacity: 0.4; }
+</style>

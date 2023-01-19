@@ -1,0 +1,11 @@
+{%set reviewer=review.reviewer%}
+<img src="../../static/img/postprofile.jpg" alt="" class="circle-pfp myshadow" style="height: 120px;width:120px; margin-bottom:12px;">
+<a href="/profiles/{{reviewer.tag}}" class="fw-bold fs-14 text-decoration-none hover-underline text-dark">{{reviewer.first_name.split(' ')[0]}} {{reviewer.last_name}}</a>
+<a href="/profiles/{{reviewer.tag}}" class="text-muted fs-12 text-decoration-none hover-underline ">@{{reviewer.tag}}</a>
+{% if review.stars != 'None' %}
+<span class="fs-16">{{review.stars|float}}<i class="fa-solid fa-star text-warning"></i></span>
+{%else%}
+<span>None<i class="fa-solid fa-star text-warning"></i></span>
+{%endif%}
+<span class="fw-bold fs-14 pt-2 pb-2">Message</span>
+<p class="w-100 fst-italic fw-normal fs-16" style="text-align: center;background-color: #9494942a; border-radius:4px; padding:10px 10px 5px 10px;">{{review.message}}</p>

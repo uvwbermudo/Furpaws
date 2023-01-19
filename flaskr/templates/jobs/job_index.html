@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block body_content%}
+<style>
+	div.content {
+		height: calc(100vh + 100px);
+	}
+</style>
+
+<div class="jobs-main-container">
+	<div class="jobs-container3" id="job-container-feed">
+	</div>
+
+	<nav class="jobs-container2">
+		<ul class="navbar-nav">
+			<li class="jobs-sidebar-logo" >
+				<span href="" class="text-decoration-none">
+					<i class="fa-solid fa-paw text-white"></i>	
+					<span class="text-white">PET CARE</span>
+				</span>
+			</li>
+
+			<li hx-trigger="click, load" hx-get="/jobs/job-posting" hx-target="#job-container-feed" hx-swap="innerHTML">
+				<span class="text-decoration-none fp-text-blue" >
+					<i class="fa-solid fa-briefcase"></i>
+					{% if current_user.account_type == "pet_owner"%}
+					<span>Job Posting</span>
+					{% else %}
+					<span>Current Jobs</span>
+					{% endif %}
+				</span>
+			</li>
+			{% if current_user.account_type == "pet_owner"%}
+			<li hx-trigger="click" hx-get="/jobs/pet-owner/freelancers" hx-target="#job-container-feed" hx-swap="innerHTML">
+				<span href="#" class="text-decoration-none fp-text-blue" >
+					<i class="fa-solid fa-shield-dog"></i>
+					<span>Freelancers</span>
+				</span>
+			</li>
+			{% else %}
+			<li hx-trigger="click" hx-get="/jobs/freelancer/job-search" hx-target="#job-container-feed" hx-swap="innerHTML">
+				<span href="#" class="text-decoration-none fp-text-blue" >
+					<i class="fa-solid fa-shield-dog"></i>
+					<span>Job Search</span>
+				</span>
+			</li>
+			{%endif%}
+			{% if current_user.account_type == 'freelancer' %}
+			<li hx-trigger="click" hx-get="/jobs/freelancer/reviews" hx-target="#job-container-feed" hx-swap="innerHTML">
+				<span href="#" class="text-decoration-none fp-text-blue" >
+					<i class="fa-solid fa-star"></i>
+					<span>Reviews</span>
+				</span>
+			</li>
+			{% endif %}
+			{% if current_user.account_type == 'pet_owner'%}
+			<li hx-trigger="click" hx-get="/jobs/pet-owner/history" hx-target="#job-container-feed" hx-swap="innerHTML">
+				<span href="#" class="text-decoration-none fp-text-blue" >
+					<i class="fa-solid fa-clock-rotate-left"></i>
+					<span>History</span>
+				</span>
+			</li>
+			{% else %}
+			<li hx-trigger="click" hx-get="/jobs/freelancer/history" hx-target="#job-container-feed" hx-swap="innerHTML">
+				<span href="#" class="text-decoration-none fp-text-blue" >
+					<i class="fa-solid fa-clock-rotate-left"></i>
+					<span>History</span>
+				</span>
+			</li>
+			{% endif %}
+		</ul>
+		
+	</nav>	
+		
+</div>
+{%endblock%}
+
+{% block special_modals %}
+
+{% endblock %}

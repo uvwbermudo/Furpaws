@@ -7,64 +7,113 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Readex+Pro&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <script src="https://kit.fontawesome.com/dcda163272.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../../static/css/styles.css">
   <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
     {% include 'toast.html'%}
-    <nav class="navbar navbar-expand-lg sticky-top" style="box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); background-color: white" id="top-nav">
-      <pre>     
-    <a class="navbar-brand ms-3" href="/home"><img src="../../static/img/FurpawsImgLogo.png" alt="logo" style="height: 35px;"><img src="../../static/img/FurpawsTextLogo.png" alt="logo" style="height:24px;"></a></pre>
-    <form action="/home/search" method="GET" onsubmit="return validate_search()">
-    <input class="search-container" id="searchbar" name="searchbar" placeholder="Search">
-    </form>
-    <div class="collapse navbar-collapse justify-content-end" id="navbar">
-      <div class="navbar-nav me-4">
-        <li class="nav-item dropstart">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            id="navbarDropdown"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-          <img src="../../static/img/test_profilepic.png" alt="test_profilepic" style="height:40px; ">
-          </a>
-    
-          <div class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" id="add_colleges" href="/logout"
-              >Logout</a
-            >
-            <a class="dropdown-item" id="update_colleges" href="">Settings</a>
-          </div>
-        </li>
-      </div>
-    </div>
-  </nav>
-  <div class="sidebar">
-      <br/>
-      <p align="center"><img src="../../static/img/test_profilepicwdiffsize.png" alt="test_profilepicwdiffsize" style="width: 160px;"></p>
-      <img class="indicator" src="../../static/img/indicator.png" alt="indicator">
-      <pre><a class="active" href="/home">       <img src="../../static/img/mainfeed_logo.png" alt="mainfeed_logo"><span>Main Feed</span></a><a href="messages.html">      <img src="../../static/img/messages_logo.png" alt="messages_logo" style="height: 26px;"><span>Messages</span></a><a href="/profile">       <img src="../../static/img/pawfile_logo.png" alt="pawfile_logo"><span>Pawfile</span></a><a href="friends.html">       <img src="../../static/img/furiends_logo.png" alt="furiends_logo"><span>Furiends</span></a><a href="jobs.html">        <img src="../../static/img/jobs_logo.png" alt="jobs_logo"><span>Jobs</span></a> </pre>
-
-    </div>
+    <nav class="fixed-top" style="background-color: white" id="top-nav">
+      <div class="top-nav-container">
+        <div class="navbar-brand-container">
+          <a class="navbar-brand ms-3" href="/home">
+            <img src="../../static/img/FurpawsImgLogo.png" alt="logo" style="height: 35px;">
+            <img src="../../static/img/FurpawsTextLogo.png" alt="logo" style="height:24px;"></a>
+        </div>
   
-  <div class="content" align="center" id="main-content">  
+        <div class="searchbar-container">
+          <form action="/home/search" method="GET" onsubmit="return validate_search()">
+            <input class="search-container" id="searchbar" name="searchbar" placeholder="&#xF002; Search" style="font-family: Readex Pro, sans-serif, FontAwesome;">
+          </form>
+        </div>
+  
+        <div class="navbar-nav me-4 misc-button">
+          <li class="nav-item ">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+            <img src="../../static/img/test_profilepic.png" alt="test_profilepic" style="height:40px; ">
+            </a>
+      
+            <div class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" id="add_colleges" href="/logout"
+                >Logout</a
+              >
+              <a class="dropdown-item" id="update_colleges" href="">Settings</a>
+            </div>
+          </li>
+        </div>
+      </div>
+      
+  </nav>
+
+
+  <nav class="base-sidebar">
+    <ul class="base-sidebar-nav">
+      <li class="base-sidebar-pfp">
+        <img src="../../static/img/test_profilepicwdiffsize.png" alt="test_profilepicwdiffsize" style="width: 160px;" >
+      </li>
+      <li>
+        <a href="/home" id="sidebar-home">
+          <img src="../../static/img/mainfeed_logo.png" alt="mainfeed_logo" class="base-sidebar-icon">
+          <span>Main Feed</span>
+       </a>
+      </li>
+      <li>
+        <a href="messages.html">
+          <img src="../../static/img/messages_logo.png" alt="messages_logo" class="base-sidebar-icon">
+          <span> Messages</span>
+        </a>
+      </li>
+      <li>
+        <a href="/profile">       
+          <img src="../../static/img/pawfile_logo.png" alt="pawfile_logo" class="base-sidebar-icon">
+          <span>Pawfile</span>
+        </a>
+      </li>
+      <li>
+        <a href="friends.html">       
+          <img src="../../static/img/furiends_logo.png" alt="furiends_logo" class="base-sidebar-icon furiends">
+          <span>Furiends</span>
+        </a>
+      </li>
+      <li>
+        <a href="/jobs" id="sidebar-jobs">        
+          <img src="../../static/img/jobs_logo.png" alt="jobs_logo" class="base-sidebar-icon">
+          <span>Jobs</span>
+        </a>
+      </li>
+    </ul>
+      <br/>
+
+    </nav>
+  
+  <main class="content" align="center" id="main-content">  
     {% block body_content %}{% endblock %}
-  </div>
+  </main>
 
 
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.8.4" integrity="sha384-wg5Y/JwF7VxGk4zLsJEcAojRtlVp1FKKdGy1qN+OMtdq72WRvX/EdRdqg/LOhYeV" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.js"
     integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
     crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/htmx.org@1.8.4" integrity="sha384-wg5Y/JwF7VxGk4zLsJEcAojRtlVp1FKKdGy1qN+OMtdq72WRvX/EdRdqg/LOhYeV" crossorigin="anonymous"></script>
-    <script src="../../static/js/main.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="../../static/js/main.js"></script>
+
 
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -92,5 +141,6 @@
   {% endfor %}
   {% endif %}
   {% endwith %}
+  {% block special_modals %}{% endblock %}
 </body>
 </html>

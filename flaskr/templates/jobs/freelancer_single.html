@@ -1,0 +1,23 @@
+<img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp myshadow" style="height:120px;width:120px; margin-bottom:12px;">
+<a href="/profiles/{{freelancer.tag}}" class="fw-bold fs-14 text-decoration-none hover-underline text-dark">{{freelancer.first_name.split(' ')[0]}} {{freelancer.last_name}}</a>
+<a href="/profiles/{{freelancer.tag}}" class="text-muted fs-12 text-decoration-none hover-underline ">@{{freelancer.tag}}</a>
+{% set FL_deets = freelancer.freelancing_details %}
+{% if FL_deets and FL_deets.average_rating %}
+<span class="fs-16">{{FL_deets.average_rating}}<i class="fa-solid fa-star text-warning"></i>
+<span class="fst-italic">({{FL_deets.review_count}})</span>
+</span>
+{%else%}
+<span>None<i class="fa-solid fa-star text-warning"></i></span>
+{%endif%}
+<p class="w-100 fst-italic fw-normal fs-16 mt-3" style="text-align: center;background-color: #9494942a; border-radius:4px; padding:10px 10px 5px 10px;">
+    {{FL_deets.bio}}
+</p>
+<div class="d-flex justify-content-end w-100" style="column-gap: 3px;">
+	<button type="button" class="btn btn-primary" data-bs-target="#request-job-modal" data-bs-toggle="modal" hx-get="/jobs/pet-owner/request-job/{{freelancer.tag}}" hx-trigger="click" hx-target="#request-job-content" hx-swap="innerHTML">Request a Job</button>
+</div>
+
+
+<!-- REQUEST JOB MODAL -->
+
+
+

@@ -1,0 +1,38 @@
+<form action="/jobs/pet-owner/request-job/{{freelancer.tag}}" method="POST" style="font-family: Poppins, sans-serif;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <div class="modal-header">
+        <h1 class="modal-title fs-6 fw-semibold" id="exampleModalLabel">Create Job </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body" >
+            <div class="mb-3" style="font-size: 14px;">
+                <label for="job-type" class="form-label">Job type</label>		
+                <select name="job_type" class="form-select" aria-label="Default select example">
+                <option value="Pet Walk">Walking</option>
+                <option value="Vet Escort">Vet Escort</option>
+                <option value="Pet Sitting">Pet Sitting</option>
+                <option value="Feeding">Feeding</option>
+                <option value="Others">Others</option>
+                </select>
+            </div>
+    <div class="mb-3">
+                <label for="job-schedule" class="form-label">Schedule</label>
+    <input type="datetime-local" id="job-schedule" name="job_schedule" class="form-control" min="" required>
+            </div>
+
+    <div class="mb-3">
+                <label for="job-rate" class="form-label">Job rate</label>
+    <input type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" id="job-rate" name="job_rate" min="1.00" 
+    step=".01" class="form-control" placeholder="$" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="message-text" class="form-label">Job Details</label>
+                <textarea class="form-control" name="job_description" id="message-text" style="max-height:100px;" required></textarea>
+            </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-target="#freelancer-solo">Back</button>
+        <button type="submit" class="btn btn-primary">Send</button>
+    </div>
+</form>

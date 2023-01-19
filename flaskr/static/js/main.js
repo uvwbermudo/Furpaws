@@ -1,8 +1,12 @@
 const csrf = $('#csrf_token').val();
 
-
 $('document').ready(function () {
     console.log('Ready')
+    const input = document.querySelector('input[type="date"]');
+    // Get today's date in the format YYYY-MM-DD
+    const today = new Date().toISOString();
+    // Set the minimum allowed date to be today's date
+    input.min = today;
 })
 
 $("#username").keyup(function (event) {
@@ -144,8 +148,8 @@ function register_user() {
                 form_span.html('');
                 if (field in response[0]) {
                     if (!scrolled) {
-                        $('.register-section').animate({
-                            scrollTop: $("#" + field).offset().top
+                        $('.left-side').animate({
+                            scrollTop: $("#" + field).offset().top - 100
                         });
                         scrolled = true;
                     }
@@ -170,6 +174,10 @@ function register_user() {
                     })
                 }
 
+            })
+        }).catch( err => {
+                $('.left-side').animate({
+                    scrollTop: $("#email").offset().top - 100   
             })
         })
 }
@@ -808,3 +816,63 @@ function editCommentMainFeedPost(postId, commentId) {
 // END OF EDIT COMMENTS
 // END OF COMMENTS
 
+
+
+function toggle_complete_job(id) {
+    $(`#job-${id} .modal-footer .cancel-job`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .complete-span`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .complete-job`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .confirm-complete`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .cancel-complete`).toggleClass("hide");
+}
+
+
+function toggle_cancel_job(id) {
+    $(`#job-${id} .modal-footer .complete-job`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .close`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .cancel-job`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .cancel-span`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .confirm-cancel`).toggleClass("hide");
+    $(`#job-${id} .modal-footer .cancel-cancel`).toggleClass("hide");
+}
+
+function toggle_cancel_application(id) {
+    $(`#applied-${id} .modal-footer .cancel-span`).toggleClass("hide");
+    $(`#applied-${id} .modal-footer .close`).toggleClass("hide");
+    $(`#applied-${id} .modal-footer .cancel-cancel`).toggleClass("hide");
+    $(`#applied-${id} .modal-footer .confirm-cancel`).toggleClass("hide");
+    $(`#applied-${id} .modal-footer .cancel`).toggleClass("hide");
+
+}
+
+
+function toggle_cancel_ongoing(id) {
+    $(`#ongoing-${id} .modal-footer .cancel-span`).toggleClass("hide");
+    $(`#ongoing-${id} .modal-footer .close`).toggleClass("hide");
+    $(`#ongoing-${id} .modal-footer .cancel-cancel`).toggleClass("hide");
+    $(`#ongoing-${id} .modal-footer .confirm-cancel`).toggleClass("hide");
+    $(`#ongoing-${id} .modal-footer .cancel`).toggleClass("hide");
+}
+
+function editBio(id) {
+    $(`#edit-detail-form .bio-form`).toggleClass("readonly");
+    var isReadOnly = $(`#edit-detail-form .bio-form`).prop("readonly");
+    $(`#edit-detail-form .bio-form`).prop("readonly", !isReadOnly);
+    $(`#edit-detail-form .save-bio`).toggleClass("hide");
+    $(`#edit-detail-form .cancel-edit-bio`).toggleClass("hide");
+    $(`#edit-detail-form .edit-bio`).toggleClass("hide");
+}
+
+function toggleSiblings(elem){
+    $(elem).parents().siblings("form").toggleClass('hide')
+    $(elem).toggleClass('hide')
+    $(elem).siblings("button").toggleClass('hide');
+    $(elem).siblings("span").toggleClass('hide');
+}
+
+function toggleButtonSiblings(elem){
+    $(elem).toggleClass('hide')
+    $(elem).siblings("button").toggleClass('hide');
+    $(elem).siblings("span").toggleClass('hide');
+
+}

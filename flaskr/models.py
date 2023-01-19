@@ -1,6 +1,6 @@
 import datetime
 from flaskr import mysql
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 import datetime
 
 
@@ -88,7 +88,7 @@ class Users(UserMixin):
     # query with filter, use True exact match for exact match duh
     # RETURNS A LIST OF ROWS SO IT NEEDS TO BE INDEXED
     @classmethod
-    def query_filter(cls, email=None, name=None, exact_match=False, username=None, tag=None, account_type=None):
+    def query_filter(cls, email=None, name=None, exact_match=False, username=None, tag=None, account_type=None, all=False):
         cursor = mysql.connection.cursor()
         sql = ''
         if exact_match:
@@ -107,13 +107,12 @@ class Users(UserMixin):
             sql = f"SELECT * FROM USERS WHERE email='{username}' or tag='{username}'"
         if account_type:
             sql = sql + f" AND account_type = '{account_type}'"
+
         cursor.execute(sql)
         result = result_zip(cursor)
         result = Users.convert_to_object(result)
-        if username:
-            print(result, 'HI?')
         if result:
-            return result[0]
+            return result
         else:
             return []
 
@@ -191,6 +190,15 @@ class Users(UserMixin):
         likes = Likes.query_filter(author_tag=self.tag)
         return likes
 
+    @property
+    def freelancing_details(self):
+        if self.account_type == 'freelancer':
+            details = FreelancerDetails.query_filter(freelancer=self.tag)
+            if details:
+                return details[0]
+            return 'None'
+        return False
+
 
 class Posts:
 
@@ -215,6 +223,8 @@ class Posts:
         else:
             return False
 
+    def get_creation_date(self):
+        return self.date_posted
     @classmethod
     def update_post(cls, target_post, post_content):
         cursor = mysql.connection.cursor()
@@ -241,8 +251,8 @@ class Posts:
         object_results = []
         for row in rows:
             new_obj = Posts(
-                author_tag=row['author_tag'],
                 post_id=row['post_id'],
+                author_tag=row['author_tag'],
                 post_content=row['post_content'],
                 date_posted=row['date_posted']
             )
@@ -296,6 +306,7 @@ class Posts:
         if result:
             return result[0]
         return result
+
 
     @property
     def author(self):
@@ -399,8 +410,9 @@ class SharePost:
     def add(self):
         cursor = mysql.connection.cursor()
         sql = f"INSERT INTO share_post(reference_id, sharer_tag, shared_post_id, date_created)\
-                VALUES('{self.reference_id}','{self.sharer_tag}', '{self.shared_post_id}','{self.date_created}')"
-        cursor.execute(sql)
+                VALUES(%s,%s,%s,%s)"
+        values = (self.reference_id, self.sharer_tag, self.shared_post_id, self.date_created)
+        cursor.execute(sql,values)
 
     # ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
     @classmethod
@@ -446,6 +458,9 @@ class SharePost:
             object_results.append(new_obj)
         return object_results
 
+    def get_creation_date(self):
+        return self.date_created
+
     @property
     def sharer(self):
         author = Users.query_get(self.sharer_tag)
@@ -455,6 +470,12 @@ class SharePost:
     def post(self):
         post = Posts.query_get(self.shared_post_id)
         return post
+
+    @classmethod
+    def delete(cls, share_id):
+        cursor = mysql.connection.cursor()
+        sql = f"DELETE FROM share_post WHERE reference_id = '{share_id}'"
+        cursor.execute(sql)
 
 
 class Photos:
@@ -577,8 +598,6 @@ class Videos:
         cursor = mysql.connection.cursor()
         sql = f"DELETE FROM videos WHERE video_id = '{id}'"
         cursor.execute(sql)
-
-
 class Comments:
 
     def __init__(self, comment_id=None, comment_content=None, post_commented=None, author_tag=None, date_commented=None):
@@ -728,3 +747,631 @@ class Likes:
     def post(self):
         post = Likes.query_get(self.post_liked)
         return post
+
+
+class Jobs:
+
+    def __init__(self, job_id=None, date_accepted=None, date_posted=None, date_finished=None,
+                 job_status=None, job_type=None, job_description=None, job_rate=None, job_schedule=None):
+        self.job_id = job_id
+        self.date_accepted = date_accepted
+        self.date_posted = date_posted
+        self.date_finished = date_finished
+        self.job_status = job_status
+        self.job_type = job_type
+        self.job_description = job_description
+        self.job_rate = job_rate
+        self.job_schedule = job_schedule
+    
+    def __repr__(self):
+        return f'Job: {self.job_id}'
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        cursor.execute("START TRANSACTION")
+        sql = f"""
+                INSERT INTO jobs(job_id, date_accepted ,date_posted,date_finished, job_status, job_type, 
+                job_description, job_schedule, job_rate) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                """
+        values = (self.job_id, self.date_accepted, self.date_posted, self.date_finished, 
+                self.job_status, self.job_type, self.job_description, self.job_schedule, self.job_rate)
+        cursor.execute(sql,values)
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        self.job_id = cursor.fetchone()[0]
+        self.add_creates_jobs()
+    
+    def add_creates_jobs(self):
+        new_create= CreateJobs(pet_owner_tag=current_user.tag,job_id=self.job_id, 
+                            date_posted=self.date_posted, job_status=self.job_status)
+        new_create.add()
+    
+    @classmethod
+    def query_get(cls, job_id):
+        cursor = mysql.connection.cursor()
+        sql = f"SELECT * FROM jobs where job_id = '{job_id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        if result:
+            result = Jobs.convert_to_object(result)
+            return result[0]
+        return []
+
+    @classmethod
+    def query_filter(cls, all=False,  job_status=None, order_by='date_posted', order='DESC'):
+        cursor = mysql.connection.cursor()
+        sql=''
+        if job_status:
+            sql = f"SELECT * FROM jobs WHERE job_status='{job_status}'"
+        if all:
+            sql = f"SELECT * FROM jobs"
+        order = f" ORDER BY {order_by} {order};"
+        sql = sql+order
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Jobs.convert_to_object(result)
+        return result
+
+    @classmethod
+    def get_rating(self, job_id):
+        cursor = mysql.connection.cursor()
+        sql = f"SELECT stars FROM reviews WHERE reference_job='{job_id}';" 
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        if result:
+            return result[0]
+        return result
+
+    @property
+    def rating(self):
+        cursor = mysql.connection.cursor()
+        sql = f"SELECT stars FROM reviews WHERE reference_job='{self.job_id}';" 
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        if result:
+            return result[0]
+        return result
+
+    @classmethod 
+    def convert_to_object(cls,rows):
+        if not rows:
+            return []
+        object_results = []
+        
+        for row in rows:
+            new_obj = Jobs(
+                job_id=row['job_id'],
+                date_posted=row['date_posted'],
+                date_accepted=row['date_accepted'],
+                date_finished=row['date_finished'],
+                job_status=row['job_status'],
+                job_type=row['job_type'],
+                job_description=row['job_description'],
+                job_rate=row['job_rate'],
+                job_schedule=row['job_schedule'],
+                )
+            object_results.append(new_obj)
+        return object_results
+
+    @property
+    def poster_details(self):
+        job = CreateJobs.query_filter(job_id=self.job_id)
+        poster = Users.query_get(job.pet_owner_tag)
+        return poster
+
+    @property
+    def applicants(self):
+        job = ApplyJobs.query_filter(job_id=self.job_id, application_status='Sent')
+        applicant_list = []
+        for applications in job:
+            applicant_list.append(applications.applicant_details)
+        return applicant_list
+
+    @property
+    def worker_details(self):
+        job = WorksOn.query_filter(job_id=self.job_id)
+        if job:
+            worker = Users.query_get(job.freelancer_tag)
+            return worker
+        return False
+    
+    @property
+    def freelancer_requested(self):
+        req = JobRequests.query_filter(reference_job=self.job_id)
+        if req:
+            req = req[0]
+            freelancer = Users.query_get(tag=req.freelancer_tag)
+            return freelancer
+        return False
+
+    @classmethod
+    def update_status(cls, new_status=None, job_id=None):
+        cursor = mysql.connection.cursor()
+        sql = f"UPDATE jobs SET job_status ='{new_status}' where job_id = '{job_id}';"
+        cursor.execute(sql)
+        sql = f"UPDATE posts_jobs SET job_status ='{new_status}' where job_id = '{job_id}';"
+        cursor.execute(sql)
+        sql = f"UPDATE applies_jobs SET job_status ='{new_status}' where job_id = '{job_id}';"
+        cursor.execute(sql)
+        if new_status == 'Complete':
+            today = datetime.datetime.now()
+            sql = f"UPDATE jobs SET date_finished ='{today}' where job_id = '{job_id}';"
+            cursor.execute(sql)
+
+    @classmethod
+    def update_accept(cls, accepted_datetime=None, job_id=None):
+        cursor = mysql.connection.cursor()
+        sql = f"""
+            UPDATE jobs SET date_accepted ='{accepted_datetime}' where job_id = '{job_id}';
+            """
+        cursor.execute(sql)
+
+
+
+class CreateJobs:
+
+    def __init__(self, id=None, pet_owner_tag=None, job_id=None, date_posted=None, job_status=None):
+        self.id = id
+        self.pet_owner_tag = pet_owner_tag
+        self.job_id = job_id
+        self.date_posted = date_posted
+        self.job_status = job_status
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f"""
+                INSERT INTO posts_jobs(id, job_id, pet_owner_tag, date_posted, job_status) 
+                VALUES(%s,%s,%s,%s,%s)
+               """
+        values = (self.id, self.job_id, self.pet_owner_tag, self.date_posted, self.job_status)
+        cursor.execute(sql, values)
+    
+    #ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
+    @classmethod
+    def query_filter(cls, ongoing=False, pet_owner=None, all=False, job_id=None,order_by='date_posted', order='ASC'):
+        cursor = mysql.connection.cursor()
+        sql=''
+        if pet_owner:
+            sql= f"SELECT * FROM posts_jobs where pet_owner_tag='{pet_owner}'"
+        if job_id:
+            sql= f"SELECT * FROM posts_jobs where job_id='{job_id}'"
+        if all:
+            sql= f"SELECT * FROM posts_jobs"
+        order = f" ORDER BY {order_by} {order};"
+        sql = sql+order
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = CreateJobs.convert_to_object(result)
+        if job_id:
+            return result[0]
+        return result
+
+    @classmethod
+    def query_get(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"SELECT * FROM posts_jobs where id = '{id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        if result:
+            result = CreateJobs.convert_to_object(result)
+            return result[0]
+        return []
+
+    @classmethod 
+    def convert_to_object(cls,rows):
+        object_results = []
+        for row in rows:
+            new_obj = CreateJobs(
+                id=row['id'], 
+                pet_owner_tag=row['pet_owner_tag'],
+                job_id=row['job_id'],
+                date_posted=row['date_posted'],
+                job_status=row['job_status'],
+                )
+            object_results.append(new_obj)
+        return object_results
+
+    @property
+    def job_details(self):
+        job = Jobs.query_get(self.job_id)
+        return job
+
+    @property
+    def poster_details(self):
+        poster = Users.query_get(self.pet_owner_tag)
+        return poster
+
+class WorksOn:
+    
+    def __init__(self, id=None, freelancer_tag=None, job_id=None):
+        self.id = id
+        self.freelancer_tag = freelancer_tag
+        self.job_id = job_id 
+    
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f"""
+                INSERT INTO works_on(id, job_id, freelancer_tag) VALUES(%s,%s,%s)
+               """
+        values = (self.id, self.job_id, self.freelancer_tag)
+        cursor.execute(sql, values)
+
+    @classmethod
+    def query_get(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"SELECT * FROM works_on where id = '{id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        if result:
+            result = WorksOn.convert_to_object(result)
+            return result[0]
+        return []
+
+    @classmethod
+    def query_filter(cls, freelancer=None, all=False, job_id=None):
+        cursor = mysql.connection.cursor()
+        sql=''
+        if freelancer:
+            sql= f"SELECT * FROM works_on where freelancer_tag='{freelancer}'"
+        if all:
+            sql= f"SELECT * FROM works_on"
+        if job_id:
+            sql= f"SELECT * FROM works_on where job_id ='{job_id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = WorksOn.convert_to_object(result)
+        if job_id and result:
+            return result[0]
+        return result
+
+    @classmethod 
+    def convert_to_object(cls,rows):
+        object_results = []
+        for row in rows:
+            new_obj = WorksOn(
+                id=row['id'], 
+                freelancer_tag=row['freelancer_tag'],
+                job_id=row['job_id'],
+                )
+            object_results.append(new_obj)
+        return object_results
+
+    @property
+    def job_details(self):
+        job = Jobs.query_get(self.job_id)
+        return job
+
+
+class ApplyJobs:
+
+    def __init__(self, id=None, freelancer_tag=None, job_id=None, date_applied=None, job_status=None, application_status=None):
+        self.id = id
+        self.freelancer_tag = freelancer_tag
+        self.job_id = job_id
+        self.date_applied = date_applied
+        self.job_status = job_status
+        self.application_status = application_status
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f"""
+                INSERT INTO applies_jobs(id, job_id, freelancer_tag, date_applied, job_status, application_status) 
+                VALUES(%s,%s,%s,%s,%s,%s)
+               """
+        values = (self.id, self.job_id, self.freelancer_tag, self.date_applied, self.job_status, self.application_status)
+        cursor.execute(sql, values)
+
+    #ORDER_BY IS THE COLUMN IN THE DATABASE, ORDER SHOULD BE EITHER 'DESC' or 'ASC'
+    @classmethod
+    def query_filter(cls, freelancer=None, all=False, job_id=None, application_status=None, order_by='date_applied', order='ASC'):
+        cursor = mysql.connection.cursor()
+        sql=''
+        if freelancer and not application_status:
+            sql= f"SELECT * FROM applies_jobs where freelancer_tag='{freelancer}'"
+        if all:
+            sql= f"SELECT * FROM applies_jobs"
+        if job_id and not application_status:
+            sql= f"SELECT * FROM applies_jobs where job_id ='{job_id}'"
+
+        if job_id and application_status:
+            sql= f"SELECT * FROM applies_jobs where job_id ='{job_id}' and application_status = '{application_status}'"
+
+        if application_status and freelancer:
+            sql= f"SELECT * FROM applies_jobs where freelancer_tag ='{freelancer}' and application_status ='{application_status}'"
+
+        order = f" ORDER BY {order_by} {order};"
+        sql = sql+order
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = ApplyJobs.convert_to_object(result)
+        return result
+
+    @classmethod
+    def set_hired(cls, job_id=None, freelancer_tag=None):
+        cursor= mysql.connection.cursor()
+        sql = f"""
+            UPDATE applies_jobs SET application_status='Hired' where job_id = '{job_id}' AND 
+            freelancer_tag = '{freelancer_tag}'
+            """
+        cursor.execute(sql)
+        sql = f"""
+            UPDATE applies_jobs SET application_status='Unavailable' where job_id = '{job_id}' AND 
+            freelancer_tag != '{freelancer_tag}'
+            """
+        cursor.execute(sql)
+
+    @classmethod
+    def set_application_status(cls, job_id=None, freelancer_tag=None, new_status=None):
+        cursor= mysql.connection.cursor()
+        sql = f"""
+            UPDATE applies_jobs SET application_status='{new_status}' where job_id = '{job_id}' AND 
+            freelancer_tag = '{freelancer_tag}'
+            """
+        cursor.execute(sql)
+
+    @classmethod
+    def update_application_status(cls, job_id=None, freelancer_tag=None, status=None):
+        cursor= mysql.connection.cursor()
+        sql = f"""
+            UPDATE applies_jobs SET application_status='{status}' where job_id = '{job_id}' AND 
+            freelancer_tag = '{freelancer_tag}'
+            """
+        cursor.execute(sql)
+
+    @classmethod
+    def query_get(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"SELECT * FROM applies_jobs where id = '{id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        if result:
+            result = ApplyJobs.convert_to_object(result)
+            return result[0]
+        return []
+
+    @classmethod 
+    def convert_to_object(cls,rows):
+        object_results = []
+        for row in rows:
+            new_obj = ApplyJobs(
+                id=row['id'], 
+                freelancer_tag=row['freelancer_tag'],
+                job_id=row['job_id'],
+                date_applied=row['date_applied'],
+                job_status=row['job_status'],
+                application_status=row['application_status']
+                )
+            object_results.append(new_obj)
+        return object_results
+
+    @property
+    def job_details(self):
+        job = Jobs.query_get(self.job_id)
+        return job
+
+    @property
+    def applicant_details(self):
+        poster = Users.query_get(self.freelancer_tag)
+        return poster
+
+
+class Reviews:
+
+    def __init__(self, id=None, message=None, reviewer_tag=None, reviewee_tag=None, stars=None, reference_job=None):
+        self.id=id
+        self.message=message
+        self.reviewer_tag=reviewer_tag
+        self.reviewee_tag=reviewee_tag
+        self.stars=stars
+        self.reference_job=reference_job
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f"""
+                INSERT INTO reviews(id, message, reviewee_tag, reviewer_tag, stars, reference_job) 
+                VALUES(%s,%s,%s,%s,%s,%s)
+               """
+        values = (self.id, self.message, self.reviewee_tag, self.reviewer_tag, self.stars, self.reference_job)
+        cursor.execute(sql, values)
+
+    @classmethod
+    def query_get(cls, id):
+        cursor = mysql.connection.cursor()
+        sql= f"SELECT * FROM reviews where id='{id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Reviews.convert_to_object(result)
+        if result:
+            return result[0]
+        return result
+
+    @classmethod
+    def query_filter(cls, freelancer=None, pet_owner=None):
+        cursor = mysql.connection.cursor()
+        sql=''
+        if freelancer:
+            sql= f"SELECT * FROM reviews where reviewee_tag='{freelancer}' ORDER BY id DESC"
+        if pet_owner:
+            sql= f"SELECT * FROM reviews where reviewer_tag='{pet_owner}'"
+
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Reviews.convert_to_object(result)
+        return result
+    
+    @classmethod
+    def get_rating_list(cls, freelancer=None):
+        cursor = mysql.connection.cursor()
+        sql=''
+        sql= f"SELECT stars FROM reviews where reviewee_tag='{freelancer}'"
+        cursor.execute(sql)
+        result= cursor.fetchall()
+        return result
+
+    @classmethod 
+    def convert_to_object(cls,rows):
+        object_results = []
+        for row in rows:
+            new_obj = Reviews(
+                id=row['id'], 
+                message=row['message'],
+                reviewee_tag=row['reviewee_tag'],
+                reviewer_tag=row['reviewer_tag'],
+                stars=row['stars'],
+                reference_job=row['reference_job']
+                )
+            object_results.append(new_obj)
+        return object_results
+
+    @property
+    def reviewer(self):
+        reviewer = Users.query_get(self.reviewer_tag)
+        return reviewer
+
+    @property
+    def reviewee(self):
+        reviewee = Users.query_get(self.reviewee_tag)
+        return reviewee
+
+
+class FreelancerDetails:
+
+    def __init__(self, id=None, bio=None, average_rating=None, freelancer_tag=None):
+        self.id=id
+        self.bio=bio
+        self.average_rating=average_rating
+        self.freelancer_tag=freelancer_tag
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f"""
+                INSERT INTO freelancer_details(id, bio, average_rating, freelancer_tag) 
+                VALUES(%s,%s,%s,%s)
+               """
+        values = (self.id, self.bio, self.average_rating, self.freelancer_tag)
+        cursor.execute(sql, values)
+
+    @classmethod
+    def update_bio(self, freelancer=None, new_bio=None):
+        cursor = mysql.connection.cursor()
+        sql=''
+        sql= f"UPDATE freelancer_details SET bio = '{new_bio}' WHERE freelancer_tag='{freelancer}'"
+        cursor.execute(sql)
+
+
+    @classmethod
+    def query_filter(cls, freelancer=None):
+        cursor = mysql.connection.cursor()
+        sql=''
+        if freelancer:
+            sql= f"SELECT * FROM freelancer_details where freelancer_tag='{freelancer}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = FreelancerDetails.convert_to_object(result)
+        return result
+
+    @classmethod
+    def update_average(cls, freelancer=None, new_average=None):
+        cursor = mysql.connection.cursor()
+        sql=''
+        if freelancer:
+            sql= f"UPDATE freelancer_details SET average_rating = '{new_average}' WHERE freelancer_tag='{freelancer}'"
+        cursor.execute(sql)
+
+    @classmethod 
+    def convert_to_object(cls,rows):
+        object_results = []
+        for row in rows:
+            new_obj = FreelancerDetails(
+                id=row['id'], 
+                bio=row['bio'],
+                average_rating=row['average_rating'],
+                freelancer_tag=row['freelancer_tag'],
+                )
+            object_results.append(new_obj)
+        return object_results
+
+    @property
+    def review_count(self):
+        reviews = Reviews.query_filter(freelancer=self.freelancer_tag)
+        return len(reviews)
+
+class JobRequests:
+
+    def __init__(self, id=None, freelancer_tag=None,pet_owner_tag=None,reference_job=None, request_status=None):
+        self.id = id
+        self.freelancer_tag=freelancer_tag
+        self.pet_owner_tag=pet_owner_tag
+        self.reference_job=reference_job
+        self.request_status=request_status
+
+    def __repr__(self):
+        return f"{self.id}: {self.freelancer_tag} {self.pet_owner_tag}"
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f"""
+                INSERT INTO job_requests(id, freelancer_tag, pet_owner_tag, reference_job, request_status) 
+                VALUES(%s,%s,%s,%s,%s)
+               """
+        values = (self.id, self.freelancer_tag, self.pet_owner_tag, self.reference_job, self.request_status)
+        cursor.execute(sql, values)
+    
+    @property
+    def job_details(self):
+        job = Jobs.query_get(self.reference_job)
+        return job
+
+    @property
+    def poster_details(self):
+        poster = Users.query_get(tag=self.pet_owner_tag)
+        return poster
+    
+    @property
+    def worker_details(self):
+        worker = Users.query_get(tag=self.freelancer_tag)
+        return worker
+    
+    @classmethod
+    def query_get(cls, id):
+        cursor = mysql.connection.cursor()
+        sql= f"SELECT * FROM job_requests where id='{id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = JobRequests.convert_to_object(result)
+        if result:
+            return result[0]
+        return result
+
+    @classmethod
+    def query_filter(cls, reference_job=None, freelancer_tag=None):
+        cursor = mysql.connection.cursor()
+        sql=''
+        if reference_job:
+            sql= f"SELECT * FROM job_requests where reference_job='{reference_job}'"
+        if freelancer_tag:
+            sql= f"SELECT * FROM job_requests where freelancer_tag='{freelancer_tag}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = JobRequests.convert_to_object(result)
+        return result
+
+    @classmethod 
+    def convert_to_object(cls,rows):
+        object_results = []
+        for row in rows:
+            new_obj = JobRequests(
+                id=row['id'], 
+                pet_owner_tag=row['pet_owner_tag'],
+                reference_job=row['reference_job'],
+                freelancer_tag=row['freelancer_tag'],
+                request_status=row['request_status'],
+                )
+            object_results.append(new_obj)
+        return object_results
+
+    @classmethod
+    def update_status(cls, req_id=None, new_status=None):
+        cursor = mysql.connection.cursor()
+        sql= f"UPDATE job_requests SET request_status = '{new_status}' where id='{req_id}'"
+        cursor.execute(sql)
+    

@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import exc
 from flaskr import get_error_items, get_form_fields, mysql
-from flaskr.models import Users
+from flaskr.models import Users, FreelancerDetails
 from flask import Blueprint, render_template, request, flash, redirect, url_for, Response
 from flask_login import current_user, login_user, login_required, logout_user
 from . import auth
@@ -18,8 +18,9 @@ def index():
 
 @auth.route('/login')
 def login():
-    if current_user.is_authenticated:
-        return redirect('/home')
+    if current_user:
+        if current_user.is_authenticated:
+            return redirect('/home')
     return render_template('auth/login.html')
 
 
@@ -46,7 +47,6 @@ def verify_register():
     form_fields = get_form_fields(form)
 
     check = Users.query_get(tag)
-    print
     check_email = Users.query_filter(email=email, exact_match=True)
 
     if request.method == 'POST':
@@ -73,6 +73,9 @@ def verify_register():
                 state=state
             )
             new_user.add()
+            if account_type == 'freelancer':
+                new_user = FreelancerDetails(id=None, freelancer_tag=tag)
+                new_user.add()
             mysql.connection.commit()
             flash(f'Successfully registered! you may log in.', category='success')
             return Response(json.dumps(['SUCCESS']), status=200)
@@ -100,6 +103,8 @@ def verify_login():
     form_fields = get_form_fields(form)
     if '@' in username:
         check = Users.query_filter(username=username)
+        if check:
+            check = check[0]
     else:
         check = Users.query_get(username)
     if request.method == 'POST':

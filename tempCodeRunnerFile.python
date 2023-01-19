@@ -1,0 +1,29 @@
+
+from functools import cmp_to_key
+
+class User1:
+
+    def __init__(self, age, name):
+        self.age=age
+        self.name=name
+    
+    def __repr__(self) -> str:
+        return self.name
+
+class User2:
+
+    def __init__(self, age, name):
+        self.edad=age
+        self.name=name
+    
+    def __repr__(self) -> str:
+        return self.name
+    
+
+user1 = User1(50,'Van')
+user2 = User2(60,'Jason')
+user3 = User2(30,'Same')
+
+users = [user2,user1,user3]
+sorted(users)
+print(users)

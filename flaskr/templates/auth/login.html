@@ -4,41 +4,54 @@ FurPaws - Login
 {% endblock %}
 
 {% block body_content %}
-<div class="mid-section text-white d-flex flex-row load-from-right position-relative">
-  <div class="d-flex flex-column bg-white px-5 pb-5 myshadow rounded-1">
-    <form action="" id="login">
-      <div class="d-flex flex-column">
-        <div class="d-flex justify-content-center p-0" style="width: 250px">
-          <img src="../../static/img/fp-logo-round-white.png" alt="FurPaws Logo" style="height: 150px;">
+<div id="login-page">
+  <div class="mid-section text-white load-from-right position-relative shadow2" id="login-cont">
+    <div class="d-flex flex-column bg-white px-5 pb-5 myshadow rounded-1" id="login-left">
+      <form action="" id="login">
+        <div class="d-flex flex-column">
+          <div class="d-flex justify-content-center p-0">
+            <img src="../../static/img/fp-logo-round-white.png" alt="FurPaws Logo" style="height: 150px;">
+          </div>
+          <div class="d-flex justify-content-center">
+            <img src="../../static/img/fp-logo-text-white.png" alt="FurPaws" style="height: 50px;">
+          </div>
         </div>
-        <div class="d-flex justify-content-center">
-          <img src="../../static/img/fp-logo-text-white.png" alt="FurPaws" style="height: 50px;">
+        <div class="d-flex flex-column justify-content-center pt-5">
+          <div class="input-icon d-flex flex-column align-items-stretch pb-1">
+            <input name="username" id="username" class="form-control auth-input m-0 p-2" type="text" placeholder="E-mail/Tag">
+            <i class="bi-person"></i>
+            <span style="height: 16px;"></span>
+          </div>
+          <div class="input-icon d-flex flex-column align-items-stretch pt-3 pb-1">
+            <input name="user_password" id="user_password" class="form-control auth-input m-0 p-2" type="password" placeholder="Password">
+            <i class="bi-shield-lock"></i>
+            <span style="height: 16px;"></span>
+          </div>
         </div>
+        <div class="d-flex flex-row align-items-center mt-2">
+          <button type="button" onclick="login_user()" class="btn btn-fp-blue btn-small rounded-5 me-2" id="login_button"> Log in </button>
+          <a href="/register" class="btn-link">Don't have an account?</a>
+        </div>
+      </form>
+    </div>
+    <div class="right-side bg-white">
+      <div class="d-flex justify-content-center align-items-center h-100 w-100">
+        <img src="../../static/img/female-model.png" alt="" style="height: 75%;">
       </div>
-      <div class="d-flex flex-column justify-content-center pt-5">
-        <div class="input-icon d-flex flex-column align-items-stretch pb-1">
-          <input name="username" id="username" class="form-control auth-input m-0 p-2" type="text" placeholder="E-mail/Tag">
-          <i class="bi-person"></i>
-          <span style="height: 16px;"></span>
-        </div>
-        <div class="input-icon d-flex flex-column align-items-stretch pt-3 pb-1">
-          <input name="user_password" id="user_password" class="form-control auth-input m-0 p-2" type="password" placeholder="Password">
-          <i class="bi-shield-lock"></i>
-          <span style="height: 16px;"></span>
-        </div>
-      </div>
-      <div class="d-flex flex-row align-items-center mt-2">
-        <button type="button" onclick="login_user()" class="btn btn-fp-blue btn-small rounded-5 me-2" id="login_button"> Log in </button>
-        <a href="/register" class="btn-link">Don't have an account?</a>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
 
+<style>
+  body {
+    background-image: url('../../static/img/bg-paws.jpg');
+    background-size: auto;
+    background-repeat: repeat;
+  }
+</style>
 
 
 {% endblock %}
 
 {% block scripts %}
-
 {% endblock %}

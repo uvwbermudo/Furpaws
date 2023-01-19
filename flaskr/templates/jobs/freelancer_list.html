@@ -1,0 +1,45 @@
+<div class="d-flex flex-row w-100 align-items-center" style="column-gap: 5px;">
+	<span class="d-inline-block text-muted" style="font-size: 12px;">Freelancers</span>
+	<hr class="d-inline-block d-inline" style="flex:1; margin-right:25px">
+</div>
+<div id="PE-freelancer-list">
+    {%for freelancer in freelancers %}
+        <div class="freelancer-card float-hover">
+            <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp myshadow" style="height: 80px;width:80px; margin-bottom:15px;">
+			<a href="/profiles/{{freelancer.tag}}" class="fw-bold fs-14 text-decoration-none hover-underline text-dark">{{freelancer.first_name.split(' ')[0]}} {{freelancer.last_name}}</a>
+			<a href="/profiles/{{freelancer.tag}}" class="text-muted fs-12 text-decoration-none hover-underline ">@{{freelancer.tag}}</a>
+			{% if freelancer.freelancing_details and freelancer.freelancing_details.average_rating %}
+			<span class="fs-12">{{freelancer.freelancing_details.average_rating}}<i class="fa-solid fa-star text-warning"></i>
+				<span class="fst-italic">({{freelancer.freelancing_details.review_count}})</span>
+			</span>
+			{%else%}
+			<span class="fs-12">None<i class="fa-solid fa-star text-warning"></i></span>
+			{%endif%}
+        <button type="button" class="btn btn-primary rounded-5 fs-12" data-bs-toggle="modal" data-bs-target="#freelancer-solo" hx-trigger="click" hx-get="/jobs/pet-owner/freelancers/{{freelancer.tag}}" hx-swap="append" hx-target="#freelancer-content" style="margin-top: auto; margin-bottom:5px;">
+            Details
+        </button>
+        </div>
+    {%endfor%}
+</div>
+
+<div class="modal fade" id="freelancer-solo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-scrollable">
+      <div class="modal-content">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="align-self: flex-end; margin:5px 5px 0px 0px;"></button>
+        <div class="modal-body w-100 justify-content-center">
+					<div id="freelancer-content" class="d-flex flex-column justify-content-start align-items-center">
+					</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+	<!-- REQUEST JOB -->
+	<div class="modal fade" id="request-job-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="position:fixed;">
+		<div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content" id="request-job-content">
+		</div>
+	</div>
+	</div>	

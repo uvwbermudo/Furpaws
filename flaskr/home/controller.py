@@ -85,7 +85,11 @@ def home_page():
 
         errors = get_error_items(form)
         print(errors)
-    return render_template('home/home.html', edit_comment_form=edit_comment_form, edit_form=edit_form, form=form, main_feed=main_feed, share_posts=share_posts)
+    user_sugg = Users.query_all()[:3]
+    all_posts = main_feed + share_posts
+    all_posts = list(set(all_posts))
+    all_posts = list(sorted(all_posts, key=lambda x: x.get_creation_date(), reverse=True))
+    return render_template('home/home.html', edit_comment_form=edit_comment_form, edit_form=edit_form, form=form, main_feed=main_feed, user_sugg=user_sugg, share_posts=share_posts, all_posts=all_posts)
 
 
 @home.route('/home/<int:post_id>', methods=['GET', 'POST'])
@@ -106,31 +110,10 @@ def delete_post(post_id):
 @home.route('/home/share-post/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def share_post(post_id):
-    related_post = Posts.query_get(
-        post_id=post_id)
-    shared_post = Posts(post_content=related_post.post_content,
-                        author_tag=related_post.author_tag)
-    shared_post.add()
-    mysql.connection.commit()
-    inserted_post = Posts.last_inserted()
     storing_variable = SharePost(
-        sharer_tag=current_user.tag, shared_post_id=related_post.post_id, reference_id=inserted_post.post_id)
+        sharer_tag=current_user.tag, shared_post_id=post_id)
     storing_variable.add()
     mysql.connection.commit()
-    parent_photos = Photos.query_filter(parent_post=post_id)
-    parent_videos = Videos.query_filter(parent_post=post_id)
-    if parent_photos:
-        for every_photo in parent_photos:
-            photo_data = Photos(photo_url=every_photo.photo_url,
-                                parent_post=inserted_post.post_id)
-            photo_data.add()
-            mysql.connection.commit()
-    if parent_videos:
-        for every_video in parent_videos:
-            video_data = Videos(video_url=every_video.video_url,
-                                parent_post=inserted_post.post_id)
-            video_data.add()
-            mysql.connection.commit()
     flash(f'Post shared successfully', category='success')
     return redirect(url_for('home.home_page'))
 
@@ -210,45 +193,50 @@ def delete_video(video_id):
 @login_required
 def search(filter):
     query = session['search_query']
+    query_user = []
+    query_post = []
     if filter == 'pet_owners':
-        search_query = Users.query_filter(account_type='pet_owner', name=query)
-        search_query.extend(Users.query_filter(
-            account_type='pet_owner', tag=query))
-        search_query.extend(Users.query_filter(
-            account_type='pet_owner', email=query))
+        query_user.extend(Users.query_filter(account_type='pet_owner', name=query))
+        query_user.extend(Users.query_filter(account_type='pet_owner', tag=query))
+        query_user.extend(Users.query_filter(account_type='pet_owner', email=query))
 
     if filter == 'freelancers':
-        search_query = Users.query_filter(
-            account_type='freelancer', name=query)
-        search_query.extend(Users.query_filter(
-            account_type='freelancer', tag=query))
-        search_query.extend(Users.query_filter(
-            account_type='freelancer', email=query))
+        query_user = Users.query_filter(account_type='freelancer', name=query)
+        query_user.extend(Users.query_filter(account_type='freelancer', tag=query))
+        query_user.extend(Users.query_filter(account_type='freelancer', email=query))
 
     if filter == 'all':
-        search_query = Users.query_filter(name=query)
-        search_query.extend(Users.query_filter(email=query))
-        search_query.extend(Users.query_filter(tag=query))
-        search_query.extend(Posts.query_filter(post_content=query))
-        search_query.extend(Posts.query_filter(author_tag=query))
+        query_user.extend(Users.query_filter(name=query))
+        query_user.extend(Users.query_filter(email=query))
+        query_user.extend(Users.query_filter(tag=query))
+        query_post.extend(Posts.query_filter(post_content=query))
+        query_post.extend(Posts.query_filter(author_tag=query))
         by_name = []
         by_name.extend(Users.query_filter(name=query))
         by_name.extend(Users.query_filter(email=query))
         for user in by_name:
-            search_query.extend(user.posts)
+            query_post.extend(user.posts)
 
     if filter == 'posts':
-        search_query = Posts.query_filter(post_content=query)
-        search_query.extend(Posts.query_filter(author_tag=query))
+        query_post.extend(Posts.query_filter(post_content=query))
+        query_post.extend(Posts.query_filter(author_tag=query))
         by_name = []
         by_name.extend(Users.query_filter(name=query))
         by_name.extend(Users.query_filter(email=query))
         for user in by_name:
-            search_query.extend(user.posts)
+            query_post.extend(user.posts)
+    query_post = list(set(query_post))
+    for idx,post in enumerate(query_post):
+        if not post.post_content or post.post_content.isspace():
+            print(post.date_posted)
+            if not post.videos or not post.photos:
+                query_post.pop(idx)
 
-    search_query = list(set(search_query))
+    query_post = sorted(query_post, key=lambda post: post.date_posted, reverse=True)
+    
+    query_user = list(set(query_user))
 
-    return render_template('home/search_results.html', query=search_query)
+    return render_template('home/search_results.html', query_post=query_post, query_user=query_user)
 
 
 @home.route('/home/create-comment/<post_id>', methods=['POST'])
@@ -276,6 +264,30 @@ def add_comment(post_id):
 
     return jsonify({"id": comment_id, "commented": current_user.tag in map(lambda x: x.author_tag, post.comments),  "comments": len(post.comments), "comment": comment_text, "author_tag": current_user.tag, "commented_post": related_post.post_id, "date_commented": new_comment.date_commented.strftime("%d, %b %Y").lower()})
 
+@home.route('/posts/create-comment/<post_id>', methods=['POST'])
+@login_required
+def add_comment_on_visited_post(post_id):
+    data = request.get_json()
+    comment_text = data
+    post = Posts.query_filter(
+        post_id=post_id)[0]
+    if not comment_text:
+        return jsonify({'error': 'Comment cannot be empty!'})
+    else:
+        related_post = Posts.query_get(
+            post_id=post_id)
+        if related_post:
+            new_comment = Comments(
+                post_commented=related_post.post_id, author_tag=current_user.tag, comment_content=comment_text.replace('"', "''"))
+            new_comment.add()
+            mysql.connection.commit()
+            get_comment_id = Comments.query_filter(
+                post_commented=related_post.post_id, author_tag=current_user.tag, comment_content=comment_text.replace('"', "''"))
+            comment_id = get_comment_id[0].comment_id
+        else:
+            flash(f'Post does not exist!', category='error')
+
+    return jsonify({"id": comment_id, "commented": current_user.tag in map(lambda x: x.author_tag, post.comments),  "comments": len(post.comments), "comment": comment_text, "author_tag": current_user.tag, "commented_post": related_post.post_id, "date_commented": new_comment.date_commented.strftime("%d, %b %Y").lower()})
 
 @home.route('/home/delete-comment/<int:comment_id>/<post_id>', methods=['GET', 'DELETE'])
 @login_required
@@ -287,6 +299,12 @@ def delete_comment(comment_id, post_id):
     element_id = "main-feed-comments-" + post_id
     return jsonify({"id": comment_id, "commented_post": post_id, "element_id": element_id, "comments": len(post.comments), "commented": current_user.tag in map(lambda x: x.author_tag, post.comments)})
 
+@home.route('/home/delete-share/<int:share_id>', methods=['post'])
+@login_required
+def delete_share(share_id):
+    SharePost.delete(share_id=share_id)
+    mysql.connection.commit()
+    return redirect(url_for('home.home_page'))
 
 @home.route('/home/update-comment/<comment_id>/<post_id>', methods=['PUT'])
 @login_required
@@ -349,32 +367,6 @@ def edit_on_visited_post(post_id):
     return render_template('home/posts.html', form=form)
 
 
-@home.route('/posts/create-comment/<post_id>', methods=['POST'])
-@login_required
-def add_comment_on_visited_post(post_id):
-    data = request.get_json()
-    comment_text = data
-    post = Posts.query_filter(
-        post_id=post_id)[0]
-    if not comment_text:
-        return jsonify({'error': 'Comment cannot be empty!'})
-    else:
-        related_post = Posts.query_get(
-            post_id=post_id)
-        if related_post:
-            new_comment = Comments(
-                post_commented=related_post.post_id, author_tag=current_user.tag, comment_content=comment_text.replace('"', "''"))
-            new_comment.add()
-            mysql.connection.commit()
-            get_comment_id = Comments.query_filter(
-                post_commented=related_post.post_id, author_tag=current_user.tag, comment_content=comment_text.replace('"', "''"))
-            comment_id = get_comment_id[0].comment_id
-        else:
-            flash(f'Post does not exist!', category='error')
-
-    return jsonify({"id": comment_id, "commented": current_user.tag in map(lambda x: x.author_tag, post.comments),  "comments": len(post.comments), "comment": comment_text, "author_tag": current_user.tag, "commented_post": related_post.post_id, "date_commented": new_comment.date_commented.strftime("%d, %b %Y").lower()})
-
-
 @home.route('/posts/delete-comment/<int:comment_id>/<post_id>', methods=["GET", "DELETE"])
 @login_required
 def delete_comment_on_visited_post(comment_id, post_id):
@@ -395,7 +387,6 @@ def edit_comment_on_visited_post(comment_id, post_id):
     mysql.connection.commit()
 
     return jsonify({"id": comment_id, "newComment": new_comment_content, "author_tag": current_user.tag, "post_commented": post_id})
-
 
 @home.route('/posts/like-post/<post_id>', methods=['POST'])
 @login_required

@@ -150,8 +150,6 @@ def PE_complete_job():
 @login_required
 def PE_freelancers():
     freelancers = Users.query_all(account_type='freelancer')
-    for freelancer in freelancers:
-        print(freelancer.freelancing_details)
     return render_template('jobs/freelancer_list.html',freelancers=freelancers )
 
 @jobs.route('/jobs/pet-owner/freelancers/<freelancer_tag>')
@@ -268,8 +266,14 @@ def FL_update_bio():
     new_bio = request.form['FL_bio']
     if not new_bio:
         new_bio = ' '
-    FreelancerDetails.update_bio(freelancer=current_user.tag, new_bio=new_bio)
-    mysql.connection.commit()
+    try:
+        FreelancerDetails.update_bio(freelancer=current_user.tag, new_bio=new_bio)
+        mysql.connection.commit()
+        flash('Successfully updated your details.', category='success')
+    except Exception as e:
+        flash('There was a problem. Try again.', category='success')
+        print(e)
+
     return redirect('/jobs')
 
 @jobs.route('jobs/freelancer/cancel-ongoing', methods=['POST'])

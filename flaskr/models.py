@@ -1470,7 +1470,7 @@ class HasConversations:
 
 
     def __repr__(self):
-        return f"{self.main_tag} + {self.partner_tag}"
+        return f"{self.id} + {self.conversation_id}"
 
     def add(self):
         cursor = mysql.connection.cursor()
@@ -1485,7 +1485,7 @@ class HasConversations:
     @classmethod
     def deactivate(cls, id):
         cursor = mysql.connection.cursor()
-        sql = f"UPDATE has_conversations SET last_opened=5 WHERE id= '{id}'"
+        sql = f"UPDATE has_conversations SET last_opened = 5 WHERE conversation_id='{id}'"
         cursor.execute(sql)
 
     @classmethod

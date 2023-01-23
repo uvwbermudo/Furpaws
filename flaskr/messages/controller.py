@@ -34,10 +34,15 @@ def start_convo():
     member1 = Users.query_get(members[0])
     member2 = Users.query_get(members[1])
     has_active = HasConversations.get_active(main_tag=current_user.tag, partner_tag=other_user.tag)
+    print(has_active)
     if has_active:
-        flash(f'You have an ongoing conversation with {other_user.tag}', category='error')
+        message = request.form['message']
+        new_message = Messages(message_content=message, conversation_id=has_active[0].conversation_id, sender=current_user.tag, date_sent=today)
+        new_message.add()
+        HasConversations.bump(convo_id=has_active[0].conversation_id, partner_tag=current_user.tag)
+        mysql.connection.commit()
+        flash(f'Message sent to your active conversation with {other_user.tag} instead.', category='success')
         return redirect('/messages')
-
 
     new_convo = Conversations(member1=member1.tag, member2=member2.tag)
     last_id=new_convo.add()
@@ -47,6 +52,7 @@ def start_convo():
     new_message = Messages(message_content=message, conversation_id=last_id, sender=current_user.tag, date_sent=today)
     new_message.add()
     mysql.connection.commit()
+    flash('Successfully created new conversation!', category='success')
     return redirect('/messages')
 
 @msgs.route('/messages/get-conversations/<tag>', methods=['GET'])
@@ -73,13 +79,14 @@ def delete_convo():
     new_message = Messages(message_content=message, conversation_id=convo_id, sender=current_user.tag, date_sent=today)
     remaining = HasConversations.query_filter(convo_id=convo_id)
     print(remaining)
-    HasConversations.deactivate(id=has_id)
+    HasConversations.deactivate(id=convo_id)
     HasConversations.delete(id=has_id)
     new_message.add()
     mysql.connection.commit()
     if len(remaining) == 1:
         Conversations.delete(convo_id)
     mysql.connection.commit()
+    flash('Conversation deleted!', category='success')
     return redirect('/messages')
 
 
@@ -88,7 +95,8 @@ def delete_convo():
 def get_chat_box(has_id,convo_id):
     convo = Conversations.query_get(convo_id)
     has_convo = HasConversations.query_get(id=has_id)
-    HasConversations.bump_open(convo_id=convo_id, main_tag=current_user.tag)
+    if has_convo.last_opened <= 1:
+        HasConversations.bump_open(convo_id=convo_id, main_tag=current_user.tag)
     mysql.connection.commit()
     other_user = has_convo.partner_details
     return render_template('messages/chat_box.html', other_user=other_user, convo_id=convo_id, convo=convo, has_id=has_id)

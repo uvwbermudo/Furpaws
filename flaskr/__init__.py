@@ -10,6 +10,7 @@ from flask_mysql_connector import MySQL
 db_url = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 mysql = MySQL()
 
+
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = SECRET_KEY
@@ -26,11 +27,14 @@ def create_app():
     from .home import home
     from .profile import profile
     from .jobs import jobs
+    from .friends import friends
 
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(home, url_prefix='/')
     app.register_blueprint(profile, url_prefix='/')
     app.register_blueprint(jobs, url_prefix='/')
+    app.register_blueprint(friends, url_prefix='/')
+
     from .models import Users
 
     login_manager = LoginManager()

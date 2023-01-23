@@ -2,7 +2,7 @@ from config import CLOUDINARY_API_CLOUD, CLOUDINARY_API_CLOUD_FOLDER, CLOUDINARY
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-from flaskr.models import Users, Posts, CreatePost, Photos, Videos, Comments, Likes, SharePost
+from flaskr.models import Users, Posts, CreatePost, Photos, Videos, Comments, Likes, SharePost, HasFriends
 from flaskr import mysql, get_error_items
 from .forms import AddPostForm, EditPostForm, EditCommentForm
 from flask import Blueprint, render_template, request, flash, redirect, url_for, Response, request, session, jsonify
@@ -32,6 +32,7 @@ def home_page():
     form = AddPostForm()
     edit_form = EditPostForm()
     edit_comment_form = EditCommentForm()
+    friends = HasFriends.query_filter(account_tag=current_user.tag)
     # Getting user info
     get_user_info = Users.query_get(current_user.tag)
     # Querying main feed posts
@@ -88,8 +89,9 @@ def home_page():
     user_sugg = Users.query_all()[:3]
     all_posts = main_feed + share_posts
     all_posts = list(set(all_posts))
-    all_posts = list(sorted(all_posts, key=lambda x: x.get_creation_date(), reverse=True))
-    return render_template('home/home.html', edit_comment_form=edit_comment_form, edit_form=edit_form, form=form, main_feed=main_feed, user_sugg=user_sugg, share_posts=share_posts, all_posts=all_posts)
+    all_posts = list(
+        sorted(all_posts, key=lambda x: x.get_creation_date(), reverse=True))
+    return render_template('home/home.html', friends=friends, edit_comment_form=edit_comment_form, edit_form=edit_form, form=form, main_feed=main_feed, user_sugg=user_sugg, share_posts=share_posts, all_posts=all_posts)
 
 
 @home.route('/home/<int:post_id>', methods=['GET', 'POST'])
@@ -196,14 +198,19 @@ def search(filter):
     query_user = []
     query_post = []
     if filter == 'pet_owners':
-        query_user.extend(Users.query_filter(account_type='pet_owner', name=query))
-        query_user.extend(Users.query_filter(account_type='pet_owner', tag=query))
-        query_user.extend(Users.query_filter(account_type='pet_owner', email=query))
+        query_user.extend(Users.query_filter(
+            account_type='pet_owner', name=query))
+        query_user.extend(Users.query_filter(
+            account_type='pet_owner', tag=query))
+        query_user.extend(Users.query_filter(
+            account_type='pet_owner', email=query))
 
     if filter == 'freelancers':
         query_user = Users.query_filter(account_type='freelancer', name=query)
-        query_user.extend(Users.query_filter(account_type='freelancer', tag=query))
-        query_user.extend(Users.query_filter(account_type='freelancer', email=query))
+        query_user.extend(Users.query_filter(
+            account_type='freelancer', tag=query))
+        query_user.extend(Users.query_filter(
+            account_type='freelancer', email=query))
 
     if filter == 'all':
         query_user.extend(Users.query_filter(name=query))
@@ -226,14 +233,15 @@ def search(filter):
         for user in by_name:
             query_post.extend(user.posts)
     query_post = list(set(query_post))
-    for idx,post in enumerate(query_post):
+    for idx, post in enumerate(query_post):
         if not post.post_content or post.post_content.isspace():
             print(post.date_posted)
             if not post.videos or not post.photos:
                 query_post.pop(idx)
 
-    query_post = sorted(query_post, key=lambda post: post.date_posted, reverse=True)
-    
+    query_post = sorted(
+        query_post, key=lambda post: post.date_posted, reverse=True)
+
     query_user = list(set(query_user))
 
     return render_template('home/search_results.html', query_post=query_post, query_user=query_user)
@@ -264,6 +272,7 @@ def add_comment(post_id):
 
     return jsonify({"id": comment_id, "commented": current_user.tag in map(lambda x: x.author_tag, post.comments),  "comments": len(post.comments), "comment": comment_text, "author_tag": current_user.tag, "commented_post": related_post.post_id, "date_commented": new_comment.date_commented.strftime("%d, %b %Y").lower()})
 
+
 @home.route('/posts/create-comment/<post_id>', methods=['POST'])
 @login_required
 def add_comment_on_visited_post(post_id):
@@ -289,6 +298,7 @@ def add_comment_on_visited_post(post_id):
 
     return jsonify({"id": comment_id, "commented": current_user.tag in map(lambda x: x.author_tag, post.comments),  "comments": len(post.comments), "comment": comment_text, "author_tag": current_user.tag, "commented_post": related_post.post_id, "date_commented": new_comment.date_commented.strftime("%d, %b %Y").lower()})
 
+
 @home.route('/home/delete-comment/<int:comment_id>/<post_id>', methods=['GET', 'DELETE'])
 @login_required
 def delete_comment(comment_id, post_id):
@@ -299,12 +309,14 @@ def delete_comment(comment_id, post_id):
     element_id = "main-feed-comments-" + post_id
     return jsonify({"id": comment_id, "commented_post": post_id, "element_id": element_id, "comments": len(post.comments), "commented": current_user.tag in map(lambda x: x.author_tag, post.comments)})
 
+
 @home.route('/home/delete-share/<int:share_id>', methods=['post'])
 @login_required
 def delete_share(share_id):
     SharePost.delete(share_id=share_id)
     mysql.connection.commit()
     return redirect(url_for('home.home_page'))
+
 
 @home.route('/home/update-comment/<comment_id>/<post_id>', methods=['PUT'])
 @login_required
@@ -387,6 +399,7 @@ def edit_comment_on_visited_post(comment_id, post_id):
     mysql.connection.commit()
 
     return jsonify({"id": comment_id, "newComment": new_comment_content, "author_tag": current_user.tag, "post_commented": post_id})
+
 
 @home.route('/posts/like-post/<post_id>', methods=['POST'])
 @login_required

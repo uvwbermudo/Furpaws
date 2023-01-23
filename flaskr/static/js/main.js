@@ -175,9 +175,9 @@ function register_user() {
                 }
 
             })
-        }).catch( err => {
-                $('.left-side').animate({
-                    scrollTop: $("#email").offset().top - 100   
+        }).catch(err => {
+            $('.left-side').animate({
+                scrollTop: $("#email").offset().top - 100
             })
         })
 }
@@ -863,16 +863,20 @@ function editBio(id) {
     $(`#edit-detail-form .edit-bio`).toggleClass("hide");
 }
 
-function toggleSiblings(elem){
+function toggleSiblings(elem) {
     $(elem).parents().siblings("form").toggleClass('hide')
     $(elem).toggleClass('hide')
     $(elem).siblings("button").toggleClass('hide');
     $(elem).siblings("span").toggleClass('hide');
 }
 
-function toggleButtonSiblings(elem){
+function toggleButtonSiblings(elem) {
     $(elem).toggleClass('hide')
     $(elem).siblings("button").toggleClass('hide');
     $(elem).siblings("span").toggleClass('hide');
 
 }
+
+// function add_friend(usertag) {
+//     document.getElementById(`add_friend_request${usertag}`).textContent = 'Request sent';
+// }

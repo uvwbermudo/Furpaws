@@ -199,6 +199,16 @@ class Users(UserMixin):
             return 'None'
         return False
 
+    @property
+    def friend_requests(self):
+        friend_requests = FriendRequests.query_filter(account_tag=self.tag)
+        return friend_requests
+
+    @property
+    def friends(self):
+        friends = HasFriends.query_filter(account_tag=self.tag)
+        return friends
+
 
 class Posts:
 
@@ -1375,3 +1385,151 @@ class JobRequests:
         sql= f"UPDATE job_requests SET request_status = '{new_status}' where id='{req_id}'"
         cursor.execute(sql)
     
+
+class HasFriends:
+    def __init__(self, id=None, account_tag=None, friend_tag=None, friendship_start=None):
+        self.id = id
+        self.account_tag = account_tag
+        self.friend_tag = friend_tag
+        if friendship_start is None:
+            self.friendship_start = datetime.datetime.now()
+        else:
+            self.friendship_start = friendship_start
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f'INSERT INTO has_friends(account_tag, friend_tag, friendship_start)\
+                VALUES("{self.account_tag}","{self.friend_tag}", "{self.friendship_start}")'
+        cursor.execute(sql)
+
+    @classmethod
+    def convert_to_object(cls, rows):
+        object_results = []
+        for row in rows:
+            new_obj = HasFriends(
+                id=row['id'],
+                account_tag=row['account_tag'],
+                friend_tag=row['friend_tag'],
+                friendship_start=row['friendship_start']
+            )
+            object_results.append(new_obj)
+        return object_results
+
+    @classmethod
+    def query_get(cls, id=None, friend_tag=None, account_tag=None):
+        cursor = mysql.connection.cursor()
+        sql = ''
+        if id:
+            sql = f"SELECT * FROM has_friends WHERE id = '{id}'"
+        if friend_tag:
+            sql = F"SELECT * FROM has_friends where friend_tag = '{friend_tag}'"
+        if account_tag:
+            sql = F"SELECT * FROM has_friends where account_tag = '{account_tag}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = HasFriends.convert_to_object(result)
+        if result:
+            return result[0]
+        return result
+
+    @classmethod
+    def delete(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"DELETE FROM has_friends WHERE id ='{id}';"
+        cursor.execute(sql)
+
+    @classmethod
+    def query_filter(cls, all=False, account_tag=None, friend_tag=None, order_by='friendship_start', order='DESC'):
+        cursor = mysql.connection.cursor()
+        sql = ''
+        if account_tag:
+            sql = f"SELECT * FROM has_friends where account_tag LIKE '%{account_tag}%'"
+        if friend_tag:
+            sql = f"SELECT * FROM has_friends where friend_tag LIKE '%{friend_tag}%'"
+        order = f" ORDER BY {order_by} {order};"
+        if all:
+            sql = f"SELECT * FROM has_friends"
+        sql = sql+order
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = HasFriends.convert_to_object(result)
+        return result
+
+    @property
+    def friend(self):
+        friend = Users.query_get(tag=self.friend_tag)
+        return friend
+
+class FriendRequests:
+    def __init__(self, id=None, account_tag=None, sender_tag=None, request_sent=None):
+        self.id = id
+        self.account_tag = account_tag
+        self.sender_tag = sender_tag
+        if request_sent is None:
+            self.request_sent = datetime.datetime.now()
+        else:
+            self.request_sent = request_sent
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f'INSERT INTO friend_requests(account_tag, sender_tag, request_sent)\
+                VALUES("{self.account_tag}","{self.sender_tag}", "{self.request_sent}")'
+        cursor.execute(sql)
+
+    @classmethod
+    def convert_to_object(cls, rows):
+        object_results = []
+        for row in rows:
+            new_obj = FriendRequests(
+                id=row['id'],
+                account_tag=row['account_tag'],
+                sender_tag=row['sender_tag'],
+                request_sent=row['request_sent']
+            )
+            object_results.append(new_obj)
+        return object_results
+
+    @classmethod
+    def query_get(cls, id=None, sender_tag=None, account_tag=None):
+        cursor = mysql.connection.cursor()
+        sql = ''
+        if id:
+            sql = f"SELECT * FROM friend_requests WHERE id = '{id}'"
+        if sender_tag:
+            sql = F"SELECT * FROM friend_requests where sender_tag = '{sender_tag}'"
+        if account_tag:
+            sql = F"SELECT * FROM friend_requests where account_tag = '{account_tag}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = FriendRequests.convert_to_object(result)
+        if result:
+            return result[0]
+        return result
+
+    @classmethod
+    def delete(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"DELETE FROM friend_requests WHERE id ='{id}';"
+        cursor.execute(sql)
+
+    @classmethod
+    def query_filter(cls, all=False, account_tag=None, sender_tag=None, order_by='request_sent', order='DESC'):
+        cursor = mysql.connection.cursor()
+        sql = ''
+        if account_tag:
+            sql = f"SELECT * FROM friend_requests where account_tag LIKE '%{account_tag}%'"
+        if sender_tag:
+            sql = f"SELECT * FROM friend_requests where sender_tag LIKE '%{sender_tag}%'"
+        order = f" ORDER BY {order_by} {order};"
+        if all:
+            sql = f"SELECT * FROM friend_requests"
+        sql = sql+order
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = FriendRequests.convert_to_object(result)
+        return result
+
+    @property
+    def requester(self):
+        requester = Users.query_get(tag=self.sender_tag)
+        return requester

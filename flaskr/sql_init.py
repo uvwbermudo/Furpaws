@@ -178,6 +178,39 @@ def create_db():
     CONSTRAINT requests_jobs FOREIGN KEY(reference_job) REFERENCES jobs(job_id) ON UPDATE CASCADE ON DELETE CASCADE
     );	
 
+    CREATE TABLE IF NOT EXISTS conversations (
+	id INT NOT NULL AUTO_INCREMENT,
+	member1 VARCHAR(25) NOT NULL,
+	member2 VARCHAR(25) NOT NULL,
+	CONSTRAINT conv_users1 FOREIGN KEY(member1) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT conv_users2 FOREIGN KEY(member2) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
+	PRIMARY KEY(id)
+    )AUTO_INCREMENT = 1;
+
+    CREATE TABLE IF NOT EXISTS has_conversations (
+        id INT NOT NULL AUTO_INCREMENT,
+        main_tag VARCHAR(25),
+        partner_tag VARCHAR(25),
+        partner_name VARCHAR(255),
+        conversation_id INT,
+        last_updated DATETIME NULL,
+        last_opened INT NULL,
+        PRIMARY KEY(id),
+        CONSTRAINT has_convo1 FOREIGN KEY(main_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
+        CONSTRAINT has_convo2 FOREIGN KEY(partner_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
+        CONSTRAINT has_convo3 FOREIGN KEY(conversation_id) REFERENCES conversations(id) ON UPDATE CASCADE ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS messages (
+        id INT NOT NULL AUTO_INCREMENT,
+        message_content TEXT,
+        sender VARCHAR(25),
+        date_sent DATETIME,
+        conversation_id INT NOT NULL,
+        PRIMARY KEY(id),
+        CONSTRAINT messages1 FOREIGN KEY (sender) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE SET NULL,
+        CONSTRAINT messages2 FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON UPDATE CASCADE ON DELETE CASCADE
+    );
     
 
     

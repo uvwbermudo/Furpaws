@@ -38,6 +38,7 @@ $('#add_photos').on('change', function () {
         new_elem_x.css("color", "white")
         $("#add-post-preview-container").append(new_html)
     }
+
 })
 
 function imgListPop(index) {
@@ -235,7 +236,6 @@ function login_user() {
                         "color": "red",
                     })
                     form_field.css({
-
                         'background-color': 'rgba(218, 49, 49, 0.13)',
                     })
                 } else {
@@ -349,10 +349,6 @@ function updateButton(post_id) {
         console.log(postId, 2)
         button.css('display', 'none')
     }
-
-
-
-
     button.text('+' + overflowCount)
 }
 
@@ -476,7 +472,7 @@ function commentVisitedPost(postId) {
                         let newCommentAuthorTag = $(`<div class="col-1 p-1 text-center"><a href="#">${html['author_tag']}</a> :</div>`)
                         let newCommentContent = $(`<div class="col p-1 text-start" id="comment-content-${html['id']}">${html['comment']}</div>`)
                         let newCommentDateTimeSettings = $(`<div class="col-2 p-1 text-end">
-                    ${html['date_commented']}
+                    
                     <div class="btn-group">
                       <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
@@ -490,11 +486,32 @@ function commentVisitedPost(postId) {
                       </ul>
                     </div>
                   </div>`)
-                        newCommentContainer.append(newCommentPfpPlaceholder);
-                        newCommentContainer.append(newCommentAuthorTag);
-                        newCommentContainer.append(newCommentContent);
-                        newCommentContainer.append(newCommentDateTimeSettings);
-                        document.getElementById(`comments-${postId}`).appendChild(newCommentContainer[0]);
+
+                        let new_html = `
+                        <div class="comment-container">
+                        <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp" style="height:32px; width:32px;">
+                        <a href="/profiles/${html['author_tag']}" class="text-dark text-decoration-none hover-underline fw-semibold ps-2">${html['author_tag']}</a>
+                        <div class="btn-group ms-auto d-flex align-items-center">
+                            <span class="text-muted fs-10 pe-2">${html['date_commented']}}</span>
+                            <button type="button" style="outline:none; border:none; background-color:transparent;" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentModal${html['id']}">Edit</a></li>
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal${html['id']}">Delete</a></li>
+                            <li><a class="dropdown-item">Report</a></li>
+                            </ul>
+                        </div>
+                        </div>
+                        <p class="user-comment fs-14" id="comment-content-${html['id']}">
+                        ${html['comment']}
+                        </p>  
+                         `
+                        // newCommentContainer.append(newCommentPfpPlaceholder);
+                        // newCommentContainer.append(newCommentAuthorTag);
+                        // newCommentContainer.append(newCommentContent);
+                        // newCommentContainer.append(newCommentDateTimeSettings);
+                        document.getElementById(`main-feed-comments-${postId}`).appendChild(new_html);
 
                         let newDeleteModal = $(`<div class="modal fade" id="deleteCommentModal${html['id']}" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -588,30 +605,50 @@ function commentMainFeedPost(postId) {
                         console.log(" ")
                     }
                     else {
-                        let newCommentContainer = $(`<div class="new-comment row p-3 bg-white border-bottom" id="main-feed-comment-${html['id']}"></div>`)
-                        let newCommentPfpPlaceholder = $(`<div class="col-1 p-1 text-end">profile picture</div>`)
-                        let newCommentAuthorTag = $(`<div class="col-1 p-1 text-center"><a href="#">${html['author_tag']}</a> :</div>`)
-                        let newCommentContent = $(`<div class="col p-1 text-start" id="comment-content-${html['id']}">${html['comment']}</div>`)
-                        let newCommentDateTimeSettings = $(`<div class="col-2 p-1 text-end">
-                    ${html['date_commented']}
-                    <div class="btn-group">
-                      <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                          <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                          </svg>
-                      </button>
-                      <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentsModal${html['id']}">Edit</a></li>
-                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal${html['id']}">Delete</a></li>
-                        <li><a class="dropdown-item">Report</a></li>
-                      </ul>
-                    </div>
-                  </div>`)
-                        newCommentContainer.append(newCommentPfpPlaceholder);
-                        newCommentContainer.append(newCommentAuthorTag);
-                        newCommentContainer.append(newCommentContent);
-                        newCommentContainer.append(newCommentDateTimeSettings);
-                        document.getElementById(`main-feed-comments-${postId}`).appendChild(newCommentContainer[0]);
+                //         let newCommentContainer = $(`<div class="new-comment row p-3 bg-white border-bottom" id="main-feed-comment-${html['id']}"></div>`)
+                //         let newCommentPfpPlaceholder = $(`<div class="col-1 p-1 text-end">profile picture</div>`)
+                //         let newCommentAuthorTag = $(`<div class="col-1 p-1 text-center"><a href="#">${html['author_tag']}</a> :</div>`)
+                //         let newCommentContent = $(`<div class="col p-1 text-start" id="comment-content-${html['id']}">${html['comment']}</div>`)
+                //         let newCommentDateTimeSettings = $(`<div class="col-2 p-1 text-end">
+                //     ${html['date_commented']}
+                //     <div class="btn-group">
+                //       <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
+                //         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                //           <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                //           </svg>
+                //       </button>
+                //       <ul class="dropdown-menu">
+                //         <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentsModal${html['id']}">Edit</a></li>
+                //         <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal${html['id']}">Delete</a></li>
+                //         <li><a class="dropdown-item">Report</a></li>
+                //       </ul>
+                //     </div>
+                //   </div>`)
+                    let new_html = `
+                        <div class="comment-container append-comment" id="main-feed-comment-${html['id']}">
+                        <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp" style="height:32px; width:32px;">
+                        <a href="/profiles/${html['author_tag']}" class="text-dark text-decoration-none hover-underline fw-semibold ps-2">${html['author_tag']}</a>
+                        <div class="btn-group ms-auto d-flex align-items-center">
+                            <span class="text-muted fs-10 pe-2">${html['date_commented']}</span>
+                            <button type="button" style="outline:none; border:none; background-color:transparent;" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentModal${html['id']}">Edit</a></li>
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal${html['id']}">Delete</a></li>
+                            <li><a class="dropdown-item">Report</a></li>
+                            </ul>
+                        </div>
+                        </div>
+                        <p class="user-comment append-comment fs-14" id="comment-content-${html['id']}">
+                        ${html['comment']}
+                        </p>  
+                         `
+                        // newCommentContainer.append(newCommentPfpPlaceholder);
+                        // newCommentContainer.append(newCommentAuthorTag);
+                        // newCommentContainer.append(newCommentContent);
+                        // newCommentContainer.append(newCommentDateTimeSettings);
+                        $(`#main-feed-comments-${postId}`).append(new_html);
 
                         let newDeleteModal = $(`<div class="modal fade" id="deleteCommentsModal${html['id']}" tabindex="-1" role="dialog" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -734,7 +771,9 @@ function deleteCommentMainFeedPost(postId, commentId) {
                 console.log(response);
                 if (response.ok) {
                     let commentElement = document.getElementById(`main-feed-comment-${commentId}`);
+                    let actualComment = document.getElementById(`comment-content-${commentId}`);
                     commentElement.parentNode.removeChild(commentElement);
+                    actualComment.parentNode.removeChild(actualComment);
                     let commentModalElement = document.getElementById(`deleteCommentsModal${commentId}`)
                     commentModalElement.parentNode.removeChild(commentModalElement)
                     return response.json()
@@ -875,4 +914,37 @@ function toggleButtonSiblings(elem){
     $(elem).siblings("button").toggleClass('hide');
     $(elem).siblings("span").toggleClass('hide');
 
+}
+
+function verifySearch(elem) {
+    var filter = $(elem).val()
+    var error = $('#fback-message')
+    var btn = $('#startBtn')
+
+    fetch(`/messages/search-recipients/${filter}`, {
+        method: 'GET'
+    })
+        .then(response => {
+            if (response.ok){
+                console.log('Valid User')
+                $(error).html('<span class="ms-auto float-end text-success fade-in "  style="font-size: 14px;">Looks good! <i class="bi-check-circle-fill"></i> </span>')
+                $(elem).css({
+                    'background-color': 'rgba(6, 196, 69, 0.13)',
+                })
+                $(btn).prop('disabled', false)
+                $(btn).removeClass('btn-secondary')
+                $(btn).addClass('btn-success')
+
+            } else {
+                console.log('Nonexistent User')
+                $(error).html('<span class="ms-auto float-end text-danger fade-in bounce"  style="font-size: 14px;">Tag does not exist! <i class="bi-exclamation-circle-fill"></i> </span>')
+                $(elem).css({
+                    'background-color': 'rgba(218, 49, 49, 0.13)',
+                })
+                $(btn).prop('disabled', true)
+                $(btn).removeClass('btn-success')
+                $(btn).addClass('btn-secondary')
+            }
+            
+        })
 }

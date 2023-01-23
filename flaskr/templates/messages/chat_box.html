@@ -1,0 +1,140 @@
+<!-- Modal -->
+<div class="modal fade" id="delete-conversation{{has_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete this conversation?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+				<form action="/messages/delete-convo" method="POST">
+					<input type="hidden" value="{{has_id}}" name="has_id">
+					<input type="hidden" value="{{convo_id}}" name="convo_id">
+					<input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-danger">Yes</button>
+				</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="w-100 d-flex justify-content-start align-items-center top">
+    <input type="hidden" value="{{convo_id}}" id="convo_id">
+    <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp" style="height: 50px; width:50px; margin-right:10px;">
+    <a href="/profiles/id" class="text-decoration-none text-dark hover-underline">
+        <span class="fw-bold fs-14 mb-1">{{other_user.tag}}</span>
+        <span class="fw-normal fs-14 mb-1 text-muted">&middot; {{other_user.first_name.split(' ')[0]}} {{other_user.last_name}}</span>
+    </a>
+    <div class="" style="margin-left: auto;">
+        <div class="dropdown" style="z-index:1;">
+            <a data-bs-toggle="dropdown" aria-expanded="false" class="text-dark text-decoration-none" style="cursor: pointer;"><i class="fa-solid fa-bars"></i></a>
+            <ul class="dropdown-menu">
+                <li class="cursor-pointer"><a class="dropdown-item fs-14" data-bs-toggle="modal" data-bs-target="#start-conversation"><i class="fa-solid fa-pen fs-16 text-primary"  ></i> New Conversation</a></li>
+                <li class="cursor-pointer"><a class="dropdown-item fs-14" data-bs-toggle="modal" data-bs-target="#delete-conversation{{has_id}}" ><i class="fa-solid fa-trash fs-16 text-danger"></i> Delete Conversation</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="w-100 mid" id="chatBox">
+	{% if convo.get_messages%}
+    {% for message in convo.get_messages%}
+        {%if message.sender == current_user.tag%}
+					<div class="send chat">
+						<p class="message">{{message.message_content}}<span class="text-muted fs-10"> {{message.date_sent.strftime("%d, %b %Y").lower()}}</span></p>
+						<img src="../../static/img/freelancer_sample.jpg" class="circle-pfp" alt="">
+					</div>
+				{%else%}
+					<div class="receive chat">
+						<img src="../../static/img/postprofile.jpg" class="circle-pfp" alt="">
+						<p class="message">{{message.message_content}}<span class="text-muted fs-10"> {{message.date_sent.strftime("%d, %b %Y").lower()}}</span></p>
+					</div>
+				{%endif%}
+    {%endfor%}
+    {%endif%}							
+    <br>
+</div>
+<div class="bottom w-100 d-flex justify-content-end align-items-center" style="padding:0px 15px 0px 15px; column-gap:10px;">
+    <textarea name="message_sent" id="message_sent" class="fs-16" 1 placeholder="Type a message..." ></textarea>
+    <button class="btn btn-primary text-white fs-12 rounded-5" id="sendBtn">
+        Send <i class="fa-solid fa-paper-plane"></i>
+    </button>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+		const current_user = $('#current_user').val()
+		const convo_id = $('#convo_id').val()
+		const socket_add = $('#socket_add').val()
+		const flask_port= $('#flask_port').val()
+        console.log(flask_port,socket_add)
+				socket.on('connect', function() {
+					socket.emit('User Connected');
+				});
+        if (current_room){
+            socket.emit('leave room', {'room':current_room});
+            socket.disconnect()
+            socket = io();
+        }
+        current_room = convo_id
+        socket.emit('join room', {'room':convo_id, 'user':current_user});
+
+
+		$('#message_sent').keypress(function(event){
+			var keycode = (event.keyCode ? event.keyCode : event.which);
+			if(keycode == '13'){
+				$('#sendBtn').trigger('click')
+				event.preventDefault();
+			}
+
+		});
+
+        socket.on('message', function(data) {
+            var sender = data.sender
+            var msg = data.content
+            if (sender != current_user){
+							let date = new Date();
+							let options = { hour: 'numeric', minute: 'numeric'};
+							let formattedTime = date.toLocaleTimeString('en-US', options);
+                let chat_cont = $('<div class="receive chat"></div>')
+                chat_cont.append($('<img src="../../static/img/freelancer_sample.jpg" class="circle-pfp" alt="">'))
+                let actual_message = $('<p class="message"></p>').text(msg)
+                actual_message.append($(`<span class="text-muted fs-10"> ${formattedTime}</span>`))
+                chat_cont.append($(actual_message))
+                $('#chatBox').prepend(chat_cont)
+            }
+			
+		})
+
+		$('#sendBtn').on('click', function(){
+			msg = str = $('#message_sent').val()
+			if(!msg.trim()) {
+				return
+			}
+			let date = new Date();
+			let options = { hour: 'numeric', minute: 'numeric'};
+			let formattedTime = date.toLocaleTimeString('en-US', options);
+			msg = $('#message_sent').val()
+			msg = msg.trim()
+			let chat_cont = $('<div class="send chat"></div>')
+			let actual_message = $('<p class="message"></p>').text(msg)
+			actual_message.append($(`<span class="text-muted fs-10"> ${formattedTime}</span>`))
+			chat_cont.append($(actual_message))
+			chat_cont.append($('<img src="../../static/img/freelancer_sample.jpg" class="circle-pfp" alt="">'))
+			$('#chatBox').prepend($(chat_cont))
+            data = {
+                'content': msg,
+                'room':convo_id,
+                'sender':current_user
+            }
+			socket.emit('message', JSON.stringify(data))
+			$('#message_sent').val('')
+			$('#message_sent').focus()
+		})
+
+	})
+	
+</script>

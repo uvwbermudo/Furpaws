@@ -104,9 +104,11 @@ def PE_cancel_job():
     job_id=request.form['job_id']
     job = Jobs.query_get(job_id)
     worker = job.worker_details
+    print(request.form)
     try:
         Jobs.update_status(job_id=job_id, new_status='Cancelled')
-        ApplyJobs.update_application_status(job_id=job_id, status='Cancelled', freelancer_tag=worker.tag)
+        if worker:
+            ApplyJobs.update_application_status(job_id=job_id, status='Cancelled', freelancer_tag=worker.tag)
         mysql.connection.commit()
         flash("Job cancelled successfully", category='success')
     except Exception as e:
@@ -196,7 +198,7 @@ def PE_request_job(freelancer_tag):
 @jobs.route('/jobs/pet-owner/history')
 @login_required
 def PE_history():
-    jobs_created = CreateJobs.query_filter(pet_owner=current_user.tag, order_by='date_posted', order='DESC')
+    jobs_created = CreateJobs.query_filter(pet_owner=current_user.tag, order_by='date_posted', order='ASC')
     return render_template('jobs/PE_history.html', jobs_created=jobs_created)
 
 

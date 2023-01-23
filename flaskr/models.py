@@ -1469,7 +1469,7 @@ class HasConversations:
         self.partner_name = partner_name
 
 
-    def __repr__(self):
+    def __repr__(self): 
         return f"{self.id} + {self.conversation_id}"
 
     def add(self):
@@ -1534,6 +1534,9 @@ class HasConversations:
             sql= f"SELECT * FROM has_conversations where partner_tag LIKE '%{partner}%' OR partner_name LIKE '%{partner}%' ORDER BY last_updated DESC;"
         if convo_id:
             sql= f"SELECT * FROM has_conversations where conversation_id='{convo_id}'"
+        if main_tag and partner:
+            sql= f"SELECT * FROM has_conversations WHERE main_tag='{main_tag}' AND (partner_tag LIKE '%{partner}%' OR partner_name LIKE '%{partner}%') ORDER BY last_updated DESC;"
+
         cursor.execute(sql)
         result = result_zip(cursor)
         result = HasConversations.convert_to_object(result)

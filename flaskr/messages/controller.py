@@ -63,7 +63,7 @@ def get_convos(tag):
         if not filter:
             convos = HasConversations.query_filter(main_tag=tag)
         else:
-            convos = HasConversations.query_filter(partner=filter)
+            convos = HasConversations.query_filter(partner=filter, main_tag=current_user.tag)
     else:
         convos = HasConversations.query_filter(main_tag=tag)
     return render_template('/messages/macros/conv_list.html', convos=convos)

@@ -33,7 +33,7 @@
             <div class="col-md-4 mt-2">
               <div class="friend card">
                 <div class="card-body text-center">
-                  <a class="text-decoration none text-dark hover-underline" href="/profile"><img src="../../static/img/postprofile.jpg" width="90" height="90" style="border-radius: 50%;">
+                  <a class="text-decoration none text-dark hover-underline" href="/profiles/{{friend_request.sender_tag}}"><img src="{{friend_request.requester.profile_picture}}" width="90" height="90" style="border-radius: 50%;">
                   <h5 class="card-title">{{request_names[loop.index0]}}</h5>
                   <p class="card-text">@{{friend_request.sender_tag}}</p></a>
                   <div class="row">

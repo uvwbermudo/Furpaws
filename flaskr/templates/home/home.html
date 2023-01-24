@@ -337,6 +337,7 @@
       </div>
      {%endif%}
       <!-- post containers -->
+    {% if author.tag in friends|map(attribute="friend_tag")|list or author.tag == current_user.tag %}
     <div class="search-result-post search-result" style="width: 100%;">
       <div class="search-result-post-upper">
         {% set first_name = author.first_name.split(' ') %}
@@ -570,6 +571,7 @@
       </div>
       {% endif %}
     </div>
+    {% endif %}
         {% endfor %}
   </div>
 
@@ -586,9 +588,28 @@
           <span class="text-dark fw-semibold fs-12">{{first_name}} {{user.last_name}}</span>
           <span class="text-muted fs-12">@{{user.tag}}</span>
         </a>
-        <span class="fs-12 w-100" style="text-align:left ;">{{user.city}}, {{user.state}}</span>
+        <span class="fs-12 w-100" style="text-align:left ;">{{user.city}}, {{user.state}} </span>
+        {% if user.tag in current_user.friend_requests|map(attribute="sender_tag")|list %}
+        <span class="fs-12 w-100"><a href="/friend-requests/{{current_user.tag}}">Sent you a friend request</a></span>
+        {% endif %}
       </div>
-
+      {% if current_user.tag != user.tag %}
+        
+          {% if current_user.tag not in user.friends|map(attribute="friend_tag")|list %}
+            {% if current_user.tag in user.friend_requests|map(attribute="sender_tag")|list %}
+              <form action="/send-friend-request/{{user.tag}}/{{current_user.tag}}">
+                <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+                <button style="font-size:12px;" class="btn btn-sm btn-secondary rounded-5 fs-12" id="add_friend_request{{user.tag}}-{{current_user.tag}}" name="add_friend_request{{user.tag}}-{{current_user.tag}}" type="submit" hx-delete="/send-friend-request/{{user.tag}}/{{current_user.tag}}" hx-trigger="click" hx-swap="outerHTML">Cancel</button>
+              </form>
+            {% elif user.tag in current_user.friend_requests|map(attribute="sender_tag")|list %}
+            {% else %}
+              <form action="/send-friend-request/{{user.tag}}/{{current_user.tag}}">
+                <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+                <button class="btn btn-sm btn-primary rounded-5 fs-12" id="add_friend_request{{user.tag}}-{{current_user.tag}}" name="add_friend_request{{user.tag}}-{{current_user.tag}}" type="submit" hx-post="/send-friend-request/{{user.tag}}/{{current_user.tag}}" hx-trigger="click" hx-swap="outerHTML">+ Add</button>
+              </form>
+            {% endif %}
+          {% endif %}
+      {% endif %}
     </div>
     {% endfor %}
   </div>

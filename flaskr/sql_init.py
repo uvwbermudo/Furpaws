@@ -177,8 +177,18 @@ def create_db():
     CONSTRAINT requests_user1 FOREIGN KEY(freelancer_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT requests_user2 FOREIGN KEY(pet_owner_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT requests_jobs FOREIGN KEY(reference_job) REFERENCES jobs(job_id) ON UPDATE CASCADE ON DELETE CASCADE
-    );	
+    );
 
+    CREATE TABLE IF NOT EXISTS has_friends (
+        id INT NOT NULL AUTO_INCREMENT,
+        account_tag VARCHAR(255),
+        friend_tag VARCHAR(255),
+        friendship_start DATETIME NOT NULL,
+        PRIMARY KEY(id),
+        CONSTRAINT has_friends_ibfk_1 FOREIGN KEY(account_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
+        CONSTRAINT has_friends_ibfk_2 FOREIGN KEY(friend_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE
+    );
+    
     CREATE TABLE IF NOT EXISTS conversations (
 	id INT NOT NULL AUTO_INCREMENT,
 	member1 VARCHAR(25) NOT NULL,
@@ -212,7 +222,14 @@ def create_db():
         CONSTRAINT messages1 FOREIGN KEY (sender) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE SET NULL,
         CONSTRAINT messages2 FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON UPDATE CASCADE ON DELETE CASCADE
     );
-    
-
+    CREATE TABLE IF NOT EXISTS friend_requests (
+        id INT NOT NULL AUTO_INCREMENT,
+        account_tag VARCHAR(255),
+        sender_tag VARCHAR(255),
+        request_sent DATETIME NOT NULL,
+        PRIMARY KEY(id),
+        CONSTRAINT friend_requests_ibfk_1 FOREIGN KEY(account_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE,
+        CONSTRAINT friend_requests_ibfk_2 FOREIGN KEY(sender_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE
+    );
     
     """)

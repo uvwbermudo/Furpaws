@@ -1,0 +1,66 @@
+              
+{% extends 'base.html' %}
+{% block title %} FurPaws - Profile {% endblock %}
+
+
+{% block body_content %}
+<div class="container">
+  <div class="card" style="margin-top:2%">
+    <div class="card-header bg-white">
+      <div class="row text-center">
+        <div class="col-6">
+          <a class="friend-list-link nav-link rounded p-2" aria-current="page" href="/friends/{{current_user.tag}}">Friends</a>
+        </div>
+        <div class="col-6">
+          <a class="nav-link rounded p-2" style="background-color:#1da1f2; color:white"href="#" href="#">Friend Requests
+            {% if user.friend_requests|length != 0 %} <span class="position-relative rounded-pill badge bg-danger translate-middle-y">{{user.friend_requests|length}}</span>{% endif %}</a> 
+          </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container">
+    {% if user.friend_requests|length == 0 %}
+      <div class="row">
+        <div class="col-12">
+          <h5 style="margin-top: 10px; margin-left:25px;" class="text-muted d-block">You currently have no friend requests.</h5>
+        </div>
+      </div>
+    {% else %}
+      <h1 align="left">Friend Requests</h1>
+        <div class="row">
+        {% for friend_request in user.friend_requests %}
+            <div class="col-md-4 mt-2">
+              <div class="friend card">
+                <div class="card-body text-center">
+                  <a class="text-decoration none text-dark hover-underline" href="/profiles/{{friend_request.sender_tag}}"><img src="{{friend_request.requester.profile_picture}}" width="90" height="90" style="border-radius: 50%;">
+                  <h5 class="card-title">{{request_names[loop.index0]}}</h5>
+                  <p class="card-text">@{{friend_request.sender_tag}}</p></a>
+                  <div class="row">
+                    <div class="col mt-2">
+                    <form action="/accept-friend-request/{{friend_request.id}}" method="POST">
+                      <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+                      <button class="btn btn-success rounded-5">Accept</button>
+                    </form>
+
+                    </div>
+                    <div class="col mt-2">
+                      <form action="/decline-friend-request/{{friend_request.id}}" method="POST">
+                        <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+                        <button class="btn btn-danger rounded-5">Decline</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        {% if loop.index % 4 == 0 %}
+          </div>
+          <div class="row mt-3">
+        {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

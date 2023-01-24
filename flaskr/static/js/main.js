@@ -107,7 +107,7 @@ function register_user() {
     password = $('#register #password').val();
     password2 = $('#register #password2').val();
     last_name = $('#register #last_name').val();
-    first_name = $('#register #first_name').val();
+    first_name = $('#register #first_name').val();  
     city = $('#register #city').val();
     state = $('#register #state').val();
     zipcode = $('#register #zipcode').val();
@@ -141,6 +141,7 @@ function register_user() {
                 return response.json()
             }
         }).then(function (response) {
+            console.log(response)
             var scrolled = false;
             response[1].forEach(function (field) {
                 form_field = $('#' + field);
@@ -177,8 +178,9 @@ function register_user() {
 
             })
         }).catch( err => {
-                $('.left-side').animate({
-                    scrollTop: $("#email").offset().top - 100   
+            console.log(err)
+            $('.left-side').animate({
+                scrollTop: $("#email").offset().top - 100
             })
         })
 }
@@ -256,6 +258,91 @@ function edit_profile(current_tag) {
                 }
 
             })
+        }).catch(err => {
+            $('.left-side').animate({
+                scrollTop: $("#email").offset().top - 100
+            })
+        })
+}
+
+function change_profile(input){
+    var img = $('#preview');
+    img_url= URL.createObjectURL(input.files[0]);
+    img.attr('src',img_url)
+}
+
+function edit_profile(current_tag) {
+    email = $('#editProfile #email').val();
+    tag = $('#editProfile #tag').val();
+    old_pwd = $('#editProfile #old_pwd').val();
+    pwd = $('#editProfile #pwd').val();
+    pwd2 = $('#editProfile #pwd2').val();
+    last_name = $('#editProfile #last_name').val();
+    first_name = $('#editProfile #first_name').val();
+    city = $('#editProfile #city').val();
+    state = $('#editProfile #state').val();
+    zipcode = $('#editProfile #zipcode').val();
+    country = $('#editProfile #country').val();
+    var profile_pic = $('#profile_pic').get(0).files[0];
+    console.log(profile_pic)
+    var csrf = $('#editProfile #csrf_token').val()
+    formData = new FormData();
+    formData.append('email', email)
+    formData.append('tag', tag)
+    formData.append('old_pwd', old_pwd)
+    formData.append('pwd', pwd)
+    formData.append('pwd2', pwd2)
+    formData.append('last_name', last_name)
+    formData.append('first_name', first_name)
+    formData.append('city', city)
+    formData.append('state', state)
+    formData.append('zipcode', zipcode)
+    formData.append('country', country)
+    formData.append('profile_pic', profile_pic)
+    formData.append('csrf', csrf)
+    console.log(formData)
+    fetch(`/edit_profile/${current_tag}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrf,
+        },
+        body: formData
+    })
+        .then(response => {
+            if (response.status == 200) {
+                console.log('Success')
+                window.location.href = `/profiles/${current_tag}`
+            } else {
+                return response.json()
+            }
+        }).then(function (response) {
+            console.log(response)
+            var scrolled = false;
+            response[1].forEach(function (field) {
+                form_field = $(`#editProfile #${field}`);
+                form_span = form_field.next()
+                form_span.html('');
+                if (field in response[0]) {
+                    if (!scrolled) {
+                        $('#editProfile .modal-body').animate({
+                            scrollTop: $(`#editProfile #${field}`).offset().top - 100
+                        });
+                        scrolled = true;
+                    }
+                    form_span.html(`<span class="ms-auto float-end text-danger fade-in bounce"  style="font-size: 14px;">${response[0][field][0]} <i class="bi-exclamation-circle-fill"></i> </span>
+                    `);
+                    form_field.css({
+                        'background-color': 'rgba(218, 49, 49, 0.13)',
+                    })
+                } else {
+                    form_span.html(`<span class="ms-auto float-end text-success fade-in"  style="font-size: 14px;">Looks good! <i class="bi-check-circle-fill"></i> </span>
+                    `);
+                    form_field.css({
+                        'background-color': 'rgba(6, 196, 69, 0.13)',
+                    })
+                }
+
+            })
         }).catch( err => {
                 $('.left-side').animate({
                     scrollTop: $("#email").offset().top - 100   
@@ -269,8 +356,6 @@ function change_profile(input){
     img.attr('src',img_url)
 }
 
-
-
 function login_user() {
     username = $('#login #username').val();
     password = $('#login #user_password').val();
@@ -278,7 +363,7 @@ function login_user() {
     formdata.append('password', password.trim());
     if (username.includes('@')) {
         formdata.append('email', username.trim());
-    } else {
+    } else {    
         formdata.append('tag', username.trim());
     }
 
@@ -466,7 +551,6 @@ function likeVisitedPost(postId) {
             } else {
                 likeButton.className.baseVal = "post-wto-hearts";
             }
-
         }
         );
 }
@@ -988,19 +1072,23 @@ function editBio(id) {
     $(`#edit-detail-form .edit-bio`).toggleClass("hide");
 }
 
-function toggleSiblings(elem){
+function toggleSiblings(elem) {
     $(elem).parents().siblings("form").toggleClass('hide')
     $(elem).toggleClass('hide')
     $(elem).siblings("button").toggleClass('hide');
     $(elem).siblings("span").toggleClass('hide');
 }
 
-function toggleButtonSiblings(elem){
+function toggleButtonSiblings(elem) {
     $(elem).toggleClass('hide')
     $(elem).siblings("button").toggleClass('hide');
     $(elem).siblings("span").toggleClass('hide');
 
 }
+
+// function add_friend(usertag) {
+//     document.getElementById(`add_friend_request${usertag}`).textContent = 'Request sent';
+// }
 
 function verifySearch(elem) {
     var filter = $(elem).val()
@@ -1033,4 +1121,14 @@ function verifySearch(elem) {
             }
             
         })
+}
+
+
+function profilePost() {
+    fetch('/home', {
+    method: 'POST',
+    body: JSON.stringify({data: "some data"}),
+    headers: { 'Content-Type': 'application/json' }
+    });
+    location.reload();
 }

@@ -952,7 +952,7 @@ class CreateJobs:
         cursor.execute(sql)
         result = result_zip(cursor)
         result = CreateJobs.convert_to_object(result)
-        if job_id:
+        if job_id and result:
             return result[0]
         return result
 

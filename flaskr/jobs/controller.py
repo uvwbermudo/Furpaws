@@ -317,6 +317,8 @@ def FL_job_search():
     applied_jobs = ApplyJobs.query_filter(freelancer=current_user.tag, application_status='Sent')
     applied_jobs = [job.job_id for job in applied_jobs]
     filtered_available_jobs = list(filter(lambda job: job.job_id not in applied_jobs, available_jobs))
+    for job in filtered_available_jobs:
+        print(job.poster_details)
     return render_template('jobs/jobs_FR_job_search.html', available_jobs=filtered_available_jobs)
 
 @jobs.route('/jobs/freelancer/apply-job', methods=['POST'])

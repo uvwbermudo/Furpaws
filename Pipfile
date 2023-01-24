@@ -20,6 +20,7 @@ cloudinary = "*"
 flask-uploads = "*"
 sqlalchemy = "*"
 flask-mysql-connector = "*"
+flask-socketio = "*"
 
 [dev-packages]
 

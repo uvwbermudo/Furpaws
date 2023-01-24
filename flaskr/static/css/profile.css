@@ -1,0 +1,78 @@
+.profile-cont {
+    width: calc(100% - 40px);
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.profile-info {
+    padding: 20px 0px 20px 0px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(167, 144, 144, 0.664);
+    background-color: #74EBD5;
+    background-image: linear-gradient(180deg, #74EBD5 0%, #9FACE6 50%, white 50%);
+}
+
+.user-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top:15px;
+}
+
+.top-profile {
+    display: flex;
+    width: 100%;
+}
+
+.user-controls {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#editProfile .form-group, 
+#editProfile h6 {
+    width: 100%;
+}
+
+#profile_input {
+    position: relative;
+}
+
+#profile_input .overlay {
+    background-color: rgba(128, 128, 128, 0.475);
+    top:0px;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border-radius: 50%;
+    opacity: 0;
+    transition: all .3s ease-in-out;
+}
+
+#profile_input .overlay span,
+#profile_input .overlay i {
+    transform: translateY(+10px);
+    transition: all .3s ease-in-out;
+}
+
+
+#profile_input:hover .overlay {
+    opacity: 1;
+}
+
+#profile_input:hover .overlay span,
+#profile_input:hover .overlay i {
+    transform: translateY(0px);
+}

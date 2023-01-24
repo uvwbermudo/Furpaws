@@ -14,7 +14,7 @@
             {% for job in available_jobs %}
                 <div class="PE-jobs-posted" style="margin-top: 10px;" >
                     <div>
-                        <img src="../../static/img/test_profilepic.png" alt=""  style="border-radius: 50%; overflow:hidden;">
+                        <img src="{{job.poster_details.profile_picture}}" alt=""  style="border-radius: 50%; overflow:hidden;">
                     </div>
                     <div>
                         {% set pet_owner = job.poster_details %}
@@ -67,7 +67,7 @@
         </div>
         <div class="w-100 container ps-4 pe-4 d-flex flex-column justify-content-center align-items-center" style="margin-left: 20px;">
     
-            <img src="../../static/img/test_profilepicwdiffsize.png" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
+            <img src="{{poster.profile_picture}}" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
             <a href="/profiles/{{poster.tag}}" class="d-flex flex-column pt-2 text-decoration-none hover-underline text-dark" style="text-align: center;">
               <span class="fs-16 fw-semibold">{{poster.first_name.split(' ')[0]}} {{poster.last_name}}</span>
               <span class="fs-14 fw-normal">Pet Owner</span>

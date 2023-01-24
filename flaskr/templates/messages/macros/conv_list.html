@@ -1,0 +1,41 @@
+
+    {% for convo in convos %}
+    {% set other_user = convo.partner_details %}
+
+    {% if loop.index0 == 0 %}
+    <div class="conv-card" style="height: 75px;" hx-get="/messages/get-chat-box/{{convo.id}}/{{convo.conversation_id}}" hx-swap="innerHTML" hx-trigger="click" hx-target="#chat-box">
+        <img src="{{other_user.profile_picture}}" alt="" class="circle-pfp" >
+        <div class="d-flex flex-column cursor-pointer; text-align:left;">
+						{%if convo.last_opened == 0 %}
+						<span class="badge text-bg-success fs-10 rounded-5 notif" style="width: 30px; font-size:8px;">New</span>
+						{%endif%}
+            <span class="fw-bold fs-12 username">{{other_user.tag}}</span>
+						<span class="fw-normal fs-12 one-line-ellips" style="max-width:150px;max-height:18px;">
+							{{other_user.first_name.split(' ')[0]}} {{other_user.last_name}}
+						</span>
+        </div>
+    </div>
+    {%else%}
+    <div class="conv-card" style="height: 75px;" hx-get="/messages/get-chat-box/{{convo.id}}/{{convo.conversation_id}}" hx-swap="innerHTML" hx-trigger="click" hx-target="#chat-box">
+        <img src="{{other_user.profile_picture}}" alt="" class="circle-pfp" >
+        <div class="d-flex flex-column cursor-pointer; text-align:left;">
+						{%if convo.last_opened == 0 %}
+						<span class="badge text-bg-success fs-10 rounded-5 notif" style="width: 30px; font-size:8px;">New</span>
+						{%endif%}
+            <span class="fw-bold fs-12 username">{{other_user.tag}}</span>
+						<span class="fw-normal fs-12 one-line-ellips" style="max-width:150px;max-height:18px;">
+							{{other_user.first_name.split(' ')[0]}} {{other_user.last_name}}
+						</span>
+        </div>
+    </div>
+    {%endif%}
+    {%endfor%}
+<a href="" class="text-decoration-none text-dark new-convo" data-bs-toggle="modal" data-bs-target="#start-conversation">
+	<div class="conv-card" style="height: 75px;">
+			<img src="../../static/img/plus.png" alt="" class="circle-pfp" >
+			<div class="d-flex flex-column cursor-pointer; text-align:left;">
+					<span class="fw-bold fs-12 username" style="margin-top:10px;">New Conversation</span>
+			</div>
+	</div>
+	</a>
+

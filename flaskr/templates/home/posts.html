@@ -12,9 +12,16 @@
         flex-direction: column;
         margin: 5px 0px 0px 0px;
       }
+
+      .main-feed-posts {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
     </style>
     {% for post in respective_post %}
-          <!-- MODALS -->
+      <!-- MODALS -->
       <!-- SHARE POST MODAL -->
       <div class="modal fade" id="sharePostModal{{post.post_id}}" tabindex="-1" aria-labelledby="sharePostModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -40,150 +47,50 @@
 
       <!-- COMMENT MODALS  -->
       <div class="modal fade" id="viewCommentsModal{{post.post_id}}" tabindex="-1" role="dialog" aria-labelledby="viewCommentsModalLabel{{post.post_id}}" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <p class="modal-title fs-5" id="viewCommentsModalLabel{{post.post_id}}">
-                @{{post.author_tag}}'s post
+              <p class="modal-title fs-14 fw-bold" id="viewCommentsModalLabel{{post.post_id}}">
+                Comments
               </p>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
               </button>
             </div>
-            <div class="modal-body bg-info bg-opacity-10" >
-              <div class="container-fluid">
-                <div class="comments" id="main-feed-comments-{{post.post_id}}">
-                  Comments:
-                  {% if post.author_tag == current_user.tag %}
-                    {% for comments in post.comments %}
+            <div class="modal-body" >
+              <div class="comments" id="main-feed-comments-{{post.post_id}}">
+              {% for comments in post.comments %}
+                <div class="comment-container" id="main-feed-comment-{{comments.comment_id}}">
+                  <img src="{{comments.author.profile_picture}}" alt="" class="circle-pfp" style="height:32px; width:32px;">
+                  <a href="/profiles/{{comments.author_tag}}" class="text-dark text-decoration-none hover-underline fw-semibold ps-2">{{comments.author_tag}}</a>
+                  <div class="btn-group ms-auto d-flex align-items-center">
+                    <span class="text-muted fs-10 pe-2">{{comments.date_commented.strftime("%d, %b %Y").lower()}}</span>
+                    <button type="button" style="outline:none; border:none; background-color:transparent;" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu">
                       {% if comments.author_tag == current_user.tag %}
-                        <div class="row p-3 bg-white border-bottom" id="main-feed-comment-{{comments.comment_id}}">
-                          <div class="col-1 p-1 text-end">
-                            profile picture
-                          </div>
-                          <div class="col-1 p-1 text-center">
-                            <a href="#">{{comments.author_tag}}</a> :
-                          </div>
-                          <div class="col p-1 text-start" id="comment-content-{{comments.comment_id}}">
-                            {{comments.comment_content}}
-                          </div>
-                          <div class="col-2 p-1 text-end">
-                            {{comments.date_commented.strftime("%d, %b %Y").lower()}}
-                            <div class="btn-group">
-                              <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                                  <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                                  </svg>
-                              </button>
-                              <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentModal{{comments.comment_id}}">Edit</a></li>
-                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal{{comments.comment_id}}">Delete</a></li>
-                                <li><a class="dropdown-item">Report</a></li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
+                      <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentModal{{comments.comment_id}}">Edit</a></li>
+                      <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal{{comments.comment_id}}">Delete</a></li>
+                      <li><a class="dropdown-item">Report</a></li>
                       {% else %}
-                        <div class="row p-3 bg-white border-bottom" id="main-feed-comment-{{comments.comment_id}}">
-                          <div class="col-1 p-1 text-end">
-                            profile picture
-                          </div>
-                          <div class="col-1 p-1 text-center">
-                            <a href="#">{{comments.author_tag}}</a> :
-                          </div>
-                          <div class="col p-1 text-start" id="comment-content-{{comments.comment_id}}">
-                            {{comments.comment_content}}
-                          </div>
-                          <div class="col-2 p-1 text-end">
-                            {{comments.date_commented.strftime("%d, %b %Y").lower()}}
-                            <div class="btn-group">
-                              <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                                  <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                                  </svg>
-                              </button>
-                              <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal{{comments.comment_id}}">Delete</a></li>
-                                <li><a class="dropdown-item">Report</a></li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      {% endif %}
-                    {% endfor %}
-                  {% else %}
-                    {% for comments in post.comments %}
-                        {% if comments.author_tag == current_user.tag %}
-                          <div class="row p-3 bg-white border-bottom" id="main-feed-comment-{{comments.comment_id}}">
-                            <div class="col-1 p-1 text-end">
-                              profile picture
-                            </div>
-                            <div class="col-1 p-1 text-center">
-                              <a href="#">{{comments.author_tag}}</a> :
-                            </div>
-                            <div class="col p-1 text-start" id="comment-content-{{comments.comment_id}}">
-                              {{comments.comment_content}}
-                            </div>
-                            <div class="col-2 p-1 text-end">
-                              {{comments.date_commented.strftime("%d, %b %Y").lower()}}
-                              <div class="btn-group">
-                                <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu">
-                                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editCommentModal{{comments.comment_id}}">Edit</a></li>
-                                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal{{comments.comment_id}}">Delete</a></li>
-                                  <li><a class="dropdown-item">Report</a></li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        {% else %}
-                        <div class="row p-3 bg-white border-bottom" id="main-feed-comment-{{comments.comment_id}}">
-                          <div class="col-1 p-1 text-end">
-                            profile picture
-                          </div>
-                          <div class="col-1 p-1 text-center">
-                            <a href="#">{{comments.author_tag}}</a> :
-                          </div>
-                          <div class="col p-1 text-start" id="comment-content-{{comments.comment_id}}">
-                            {{comments.comment_content}}
-                          </div>
-                          <div class="col-2 p-1 text-end">
-                            {{comments.date_commented.strftime("%d, %b %Y").lower()}}
-                            <div class="btn-group">
-                              <button type="button" style="outline:none; border:none; background-color:white;"data-bs-toggle="dropdown" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                                  <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                                  </svg>
-                              </button>
-                              <ul class="dropdown-menu">
-                                <li><a class="dropdown-item">Report</a></li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        {% endif%}
-                    {% endfor %}
-                  {% endif %}
+                      <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteCommentsModal{{comments.comment_id}}">Delete</a></li>
+                      <li><a class="dropdown-item">Report</a></li>
+                      {%endif%}
+                    </ul>
+                  </div>
                 </div>
-              </div>
+                <p class="user-comment fs-14" id="comment-content-{{comments.comment_id}}">
+                  {{comments.comment_content}} 
+                </p>   
+                    {% endfor %}
+                </div>
             </div>
             <div class="modal-footer">
               <form class="input-group mb-3" id="create-main-feed-comment-{{post.post_id}}" method="POST" action="/home/create-comment/{{post.post_id}}">
-              <textarea class="form-control" style="width: 115px;" id="comment_textbox{{post.post_id}}" name="comment_textbox" placeholder="Say something about this post..." required></textarea>
+              <textarea class="form-control comment-input" style="width: 115px; resize:none; height:30px; " id="comment_textbox{{post.post_id}}" name="comment_textbox" placeholder="Say something about this post..." required></textarea>
               {{form.csrf_token}}
               <br><pre> </pre>
-              <button onclick="commentMainFeedPost({{post.post_id}});" type="submit" 
-              style=
-              "border-radius: 10px;
-              width:170px;
-              padding: 3px;
-              border:none;
-              outline:none;
-              background-color: rgb(109, 216, 235);
-              color: white;">
+              <button onclick="commentMainFeedPost({{post.post_id}});" type="submit" class="btn btn-primary rounded-5">
                 Comment
               </button>
               </form>
@@ -327,7 +234,7 @@
       <div class="search-result-post-upper">
         {% set first_name = post.author.first_name.split(' ') %}
           <a href="/profiles/{{post.author_tag}}"> 
-            <img src="../../static/img/postprofile.jpg" alt="" style="height: 58px; width:58px; overflow:hidden; border-radius:50%">
+            <img src="{{post.author.profile_picture}}" alt="" style="height: 58px; width:58px; overflow:hidden; border-radius:50%" class="circle-pfp">
           </a>
           <div style="padding-bottom:0px; padding-left: 10px;">
               <a href="/profiles/{{post.author_tag}}" class="post-upper text-dark pb-1 fs-5 fw-bold">
@@ -357,17 +264,17 @@
             </div>
       </div>
 
-      {% if post.post_content%}
       <div class="search-result-post-desc">
+        {% if post.post_content%}
           {{post.post_content}}
+          {% endif %}
       </div>
-      {% endif %}
 
       {% if post.photos or post.videos %}
       <div class="search-result-post-media">
-        {% if post.photos|length == 1 %}
+        {% if post.photos|length == 1 and not post.videos %}
           <img src="{{post.photos[0].photo_url}}" alt="">
-        {% elif post.videos|length == 1 %}
+        {% elif post.videos|length == 1 and not post.photos%}
         <video class="" src="{{post.videos[0].video_url}}" controls></video> 
         {% else %}
         <div id="search-result-post-carousel{{post.post_id}}" class="carousel slide">
@@ -439,15 +346,8 @@
           <script>
             // Get all of the images in the container
             $('.search-result-inner-carousel').ready(function() {
-
               let maxHeight = 0;
-              $('#search-result-inner-carousel{{post.post_id}} img').each(function(){
-                if ($(this).height() > maxHeight) {
-                  maxHeight = $(this).height();
-                }
-              })
-
-              $('#search-result-inner-carousel{{post.post_id}} video').each(function(){
+              $('#search-result-inner-carousel{{post.post_id}} div.carousel-item').each(function(){
                 if ($(this).height() > maxHeight) {
                   maxHeight = $(this).height();
                 }

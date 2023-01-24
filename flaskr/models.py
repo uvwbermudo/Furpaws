@@ -22,7 +22,7 @@ def result_zip(cursor):
 
 class Users(UserMixin):
     def __init__(self, tag=None, email=None, password=None, account_type=None, first_name=None,
-                 last_name=None, city=None, state=None, zipcode=None, country=None):
+                 last_name=None, city=None, state=None, zipcode=None, country=None, profile_picture=None):
         self.tag = tag
         self.email = email
         self.password = password
@@ -33,6 +33,8 @@ class Users(UserMixin):
         self.state = state
         self.zipcode = zipcode
         self.country = country
+        self.profile_picture = profile_picture
+
 
     def __repr__(self):
         return f'User: {self.tag}, {self.email}'
@@ -62,17 +64,18 @@ class Users(UserMixin):
                 state=row['state'],
                 zipcode=row['zipcode'],
                 country=row['country'],
+                profile_picture=row['profile_picture'],
             )
             object_results.append(new_obj)
         return object_results
 
     def add(self):  # must first create a user object then use add
+        if not self.profile_picture:
+            self.profile_picture = '../../static/img/placeholder.png'
         cursor = mysql.connection.cursor()
-        sql = f"INSERT INTO users(email, tag, user_password, account_type, first_name,\
-                last_name, city, state, zipcode, country) VALUES('{self.email}', '{self.tag}',\
-                '{self.password}', '{self.account_type}','{ self.first_name}', '{self.last_name}', '{self.city}',\
-                '{self.state}', '{self.zipcode}', '{self.country}')"
-        cursor.execute(sql)
+        sql = f"INSERT INTO users(email, tag, user_password, account_type, first_name,last_name, city, state, zipcode, country,profile_picture) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        values=(self.email,self.tag,self.password,self.account_type,self.first_name, self.last_name,self.city,self.state,self.zipcode,self.country,self.profile_picture)
+        cursor.execute(sql,values)
 
     @classmethod
     def query_get(cls, tag):  # takes a tag, returns a user object
@@ -131,7 +134,7 @@ class Users(UserMixin):
     @classmethod
     def update_user(cls, target_tag, new_tag=None, new_email=None, new_password=None, new_account_type=None,
                     new_first_name=None, new_last_name=None, new_city=None, new_state=None, new_zipcode=None,
-                    new_country=None):
+                    new_country=None,new_profile_picture=None):
         cursor = mysql.connection.cursor()
         if new_tag:
             sql = f"UPDATE users SET tag = '{new_tag}' WHERE tag ='{target_tag}'"
@@ -162,6 +165,9 @@ class Users(UserMixin):
             cursor.execute(sql)
         if new_country:
             sql = f"UPDATE users SET country = '{new_country}' WHERE tag ='{target_tag}'"
+            cursor.execute(sql)
+        if new_profile_picture!=None:
+            sql=f"UPDATE users set profile_picture = '{new_profile_picture}' WHERE tag='{target_tag}'"
             cursor.execute(sql)
 
     # pass only the target_tag
@@ -675,6 +681,11 @@ class Comments:
         post = Posts.query_get(self.post_commented)
         return post
 
+    @property
+    def author(self):
+        author = Users.query_get(self.author_tag)
+        return author
+
 
 class Likes:
     def __init__(self, id=None, post_liked=None, author_tag=None, date_liked=None):
@@ -941,7 +952,7 @@ class CreateJobs:
         cursor.execute(sql)
         result = result_zip(cursor)
         result = CreateJobs.convert_to_object(result)
-        if job_id:
+        if job_id and result:
             return result[0]
         return result
 
@@ -1374,4 +1385,260 @@ class JobRequests:
         cursor = mysql.connection.cursor()
         sql= f"UPDATE job_requests SET request_status = '{new_status}' where id='{req_id}'"
         cursor.execute(sql)
+
+class Conversations:
+
+    def __init__(self, id=None,member1=None, member2=None):
+        self.id=id
+        self.member1 = member1
+        self.member2 = member2
+
+
+    def __repr__(self):
+        return f"{self.member1} + {self.member2}"
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        cursor.execute("START TRANSACTION")
+
+        sql = f"""
+                INSERT INTO conversations(id, member1, member2) 
+                VALUES(%s,%s,%s)
+               """
+        values = (self.id,self.member1, self.member2)
+        cursor.execute(sql, values)
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        last_insert = cursor.fetchone()[0]
+        return last_insert
+
+    @classmethod
+    def delete(cls,id):
+        cursor = mysql.connection.cursor()
+        sql= f"DELETE FROM conversations where id='{id}'"
+        cursor.execute(sql)
+
+    @classmethod
+    def query_get(cls, id):
+        cursor = mysql.connection.cursor()
+        sql= f"SELECT * FROM conversations where id='{id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Conversations.convert_to_object(result)
+        if result:
+            return result[0]
+        return result
+
+    @classmethod
+    def query_filter(cls, member1 = None, member2=None):
+        cursor = mysql.connection.cursor()
+        sql=''
+        if member1 and not member2:
+            sql= f"SELECT * FROM conversations WHERE member1='{member1}' or member2 = '{member1}'"
+        if member1 and  member2:
+            sql= f"SELECT * FROM conversations WHERE member1='{member1}' AND member2 = '{member2}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Conversations.convert_to_object(result)
+        return result
+
+    @classmethod 
+    def convert_to_object(cls,rows):
+        object_results = []
+        for row in rows:
+            new_obj = Conversations(
+                id=row['id'],
+                member1=row['member1'],
+                member2=row['member2'],
+                )
+            object_results.append(new_obj)
+        return object_results
+
+    @property 
+    def member1_details(self):
+        member1 = Users.query_get(tag=self.member1)
+        return member1
+
+    @property 
+    def member2_details(self):
+        member2 = Users.query_get(tag=self.member2)
+        return member2
     
+    @property
+    def get_messages(self):
+        messages = Messages.query_filter(convo_id = self.id)
+        return messages
+
+class HasConversations:
+
+    def __init__(self, id=None,main_tag=None, partner_tag=None, conversation_id=None, last_opened=0, last_updated=None, partner_name=None):
+        self.id=id
+        self.main_tag = main_tag
+        self.partner_tag = partner_tag
+        self.conversation_id = conversation_id
+        self.last_opened = last_opened
+        self.last_updated = last_updated
+        self.partner_name = partner_name
+
+
+    def __repr__(self):
+        return f"{self.id} + {self.conversation_id}"
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f"""
+                INSERT INTO has_conversations(id,main_tag, partner_tag, conversation_id, last_opened, last_updated, partner_name) 
+                VALUES(%s,%s,%s,%s,%s,%s,%s)
+               """
+        values = (self.id,self.main_tag, self.partner_tag, self.conversation_id, self.last_opened, self.last_updated, self.partner_name)
+        cursor.execute(sql, values)
+
+    
+    @classmethod
+    def deactivate(cls, id):
+        cursor = mysql.connection.cursor()
+        sql = f"UPDATE has_conversations SET last_opened = 5 WHERE conversation_id='{id}'"
+        cursor.execute(sql)
+
+    @classmethod
+    def get_active(cls, main_tag=None, partner_tag=None):
+        cursor = mysql.connection.cursor()
+        sql= f"SELECT * FROM has_conversations WHERE main_tag= '{main_tag}' AND partner_tag= '{partner_tag}' AND last_opened <= 1"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = HasConversations.convert_to_object(result)
+        return result
+
+    @classmethod
+    def bump(cls, convo_id=None, partner_tag=None):
+        today = datetime.datetime.now()
+        cursor = mysql.connection.cursor()
+        sql = f"""
+                UPDATE has_conversations SET last_updated ='{today}', last_opened=0 WHERE conversation_id= '{convo_id}' and partner_tag='{partner_tag}'
+               """
+        cursor.execute(sql)
+
+    @classmethod
+    def bump_open(cls, convo_id=None, main_tag=None):
+        cursor = mysql.connection.cursor()
+        sql = f"UPDATE has_conversations SET last_opened=1 WHERE conversation_id= '{convo_id}' AND main_tag='{main_tag}'"
+        cursor.execute(sql)
+
+
+    @classmethod
+    def query_get(cls, id):
+        cursor = mysql.connection.cursor()
+        sql= f"SELECT * FROM has_conversations where id='{id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = HasConversations.convert_to_object(result)
+        if result:
+            return result[0]
+        return result
+
+    @classmethod
+    def query_filter(cls, main_tag=None, partner=None, convo_id=None):
+        cursor = mysql.connection.cursor()
+        sql=''
+        if main_tag:
+            sql= f"SELECT * FROM has_conversations where main_tag='{main_tag}' ORDER BY last_updated DESC;"
+        if partner:
+            sql= f"SELECT * FROM has_conversations where partner_tag LIKE '%{partner}%' OR partner_name LIKE '%{partner}%' ORDER BY last_updated DESC;"
+        if convo_id:
+            sql= f"SELECT * FROM has_conversations where conversation_id='{convo_id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = HasConversations.convert_to_object(result)
+        return result
+
+    @classmethod 
+    def convert_to_object(cls,rows):
+        object_results = []
+        for row in rows:
+            new_obj = HasConversations(
+                id=row['id'],
+                main_tag=row['main_tag'],
+                partner_tag=row['partner_tag'],
+                partner_name=row['partner_name'],
+                conversation_id=row['conversation_id'],
+                last_updated=row['last_updated'],
+                last_opened=row['last_opened']
+                )
+            object_results.append(new_obj)
+        return object_results
+
+    @property
+    def partner_details(self):
+        partner = Users.query_get(self.partner_tag)
+        return partner
+
+    @classmethod
+    def delete(cls, id):
+        cursor = mysql.connection.cursor()
+        sql= f"DELETE FROM has_conversations WHERE id={id}"
+        cursor.execute(sql)
+
+
+class Messages:
+
+    def __init__(self, id=None,message_content=None, sender=None, date_sent=None, conversation_id=None, last_updated=None, partner_name=None):
+        self.id=id
+        self.message_content = message_content
+        self.sender = sender
+        self.conversation_id = conversation_id
+        self.date_sent = date_sent
+
+
+    def __repr__(self):
+        return f"{self.id} + {self.sender}"
+
+    def add(self):
+        cursor = mysql.connection.cursor()
+        sql = f"""
+                INSERT INTO messages(id,message_content, sender, conversation_id, date_sent) 
+                VALUES(%s,%s,%s,%s,%s)
+               """
+        values = (self.id,self.message_content, self.sender, self.conversation_id, self.date_sent)
+        cursor.execute(sql, values)
+
+    @classmethod
+    def query_get(cls, id):
+        cursor = mysql.connection.cursor()
+        sql= f"SELECT * FROM messages where id='{id}'"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Messages.convert_to_object(result)
+        if result:
+            return result[0]
+        return result
+
+    @classmethod
+    def query_filter(cls, sender=None, convo_id=None):
+        cursor = mysql.connection.cursor()
+        sql=''
+        if sender:
+            sql= f"SELECT * FROM messages where sender='{sender}' ORDER BY date_sent DESC;"
+        if convo_id:
+            sql= f"SELECT * FROM messages where conversation_id='{convo_id}' ORDER BY date_sent DESC;"
+        cursor.execute(sql)
+        result = result_zip(cursor)
+        result = Messages.convert_to_object(result)
+        return result
+
+    @classmethod 
+    def convert_to_object(cls,rows):
+        object_results = []
+        for row in rows:
+            new_obj = Messages(
+                id=row['id'],
+                message_content=row['message_content'],
+                sender=row['sender'],
+                date_sent=row['date_sent'],
+                conversation_id=row['conversation_id'],
+                )
+            object_results.append(new_obj)
+        return object_results
+
+    @property
+    def sender_details(self):
+        sender = Users.query_get(self.sender)
+        return sender

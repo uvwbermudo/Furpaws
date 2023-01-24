@@ -229,10 +229,12 @@ def search(filter):
     for idx,post in enumerate(query_post):
         if not post.post_content or post.post_content.isspace():
             print(post.date_posted)
-            if not post.videos or not post.photos:
+            temp = post.videos + post.photos
+            if len(temp) == 0:
                 query_post.pop(idx)
 
     query_post = sorted(query_post, key=lambda post: post.date_posted, reverse=True)
+    print(query_post)
     
     query_user = list(set(query_user))
 
@@ -262,7 +264,7 @@ def add_comment(post_id):
         else:
             flash(f'Post does not exist!', category='error')
 
-    return jsonify({"id": comment_id, "commented": current_user.tag in map(lambda x: x.author_tag, post.comments),  "comments": len(post.comments), "comment": comment_text, "author_tag": current_user.tag, "commented_post": related_post.post_id, "date_commented": new_comment.date_commented.strftime("%d, %b %Y").lower()})
+    return jsonify({"id": comment_id, "commented": current_user.tag in map(lambda x: x.author_tag, post.comments),  "comments": len(post.comments), "comment": comment_text, "author_tag": current_user.tag, "commented_post": related_post.post_id,"src":current_user.profile_picture, "date_commented": new_comment.date_commented.strftime("%d, %b %Y").lower()})
 
 @home.route('/posts/create-comment/<post_id>', methods=['POST'])
 @login_required

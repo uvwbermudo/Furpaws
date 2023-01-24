@@ -80,8 +80,10 @@ def edit_profile_page(tag):
             new_profile_pic = upload_result["secure_url"]
         else:
             new_profile_pic = None
-
-        password=generate_password_hash(pwd, method='sha256')
+        if pwd:
+            password=generate_password_hash(pwd, method='sha256')
+        else:
+            password=None
         Users.update_user(
             target_tag=tag, 
             new_first_name=new_first_name, 

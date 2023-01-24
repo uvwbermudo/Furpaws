@@ -1,3 +1,4 @@
+
 <div id="job_home_cont" class="">
     <div id="job_home_controls" >
 		{% if current_user.account_type == 'pet_owner' %}
@@ -22,7 +23,7 @@
 			{% set job = application.job_details %}
 			<div class="FL-job-apply" style="margin-top: 10px;" >
                     <div>
-                        <img src="../../static/img/test_profilepic.png" class="circle-pfp">
+                        <img src="{{job.poster_details.profile_picture}}" class="circle-pfp">
                     </div>
                     <div>
                         <span  class="text-muted fs-10">Pet Owner</span>
@@ -64,7 +65,7 @@
 			{% for job in working_on %}
 			<div class="PE-jobs-posted" style="margin-top: 10px;" >
 				<div>
-					<img src="../../static/img/test_profilepic.png" alt=""  style="border-radius: 50%; overflow:hidden;">
+					<img src="{{job.job_details.poster_details.profile_picture}}" alt=""  style="border-radius: 50%; overflow:hidden;">
 				</div>
 				<div>
 					<span  class="text-muted fs-10">Pet Owner</span>
@@ -114,7 +115,7 @@
 				{% set pet_owner = request.poster_details%}
 						<div class="FL-request">
 							<div>
-								<img src="../../static/img/postprofile.jpg" alt="">
+								<img src="{{request.job_details.poster_details.profile_picture}}" alt="">
 							</div>
 							<div>
 								{% set first_name = pet_owner.first_name.split(' ')[0] %}
@@ -162,7 +163,7 @@
                 <div class="PE-jobs-posted" style="margin-top: 10px;" >
                     <div>
 												{% if job.job_details.job_status == 'Requested' %}
-												<img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp">
+												<img src="{{ job.job_details.freelancer_requested.profile_picture}}" alt="" class="circle-pfp">
 												{% else %}
                         <img src="../../static/img/FurpawsImgLogo.png" alt=""  style="border-radius: 50%; overflow:hidden;">
 												{% endif %}
@@ -228,7 +229,7 @@
             {% for job in ongoing_jobs %}
                 <div class="PE-jobs-posted" style="margin-top: 10px;" >
                     <div>
-                        <img src="../../static/img/freelancer_sample.jpg" alt=""  style="border-radius: 50%; overflow:hidden;">
+                        <img src="{{job.job_details.worker_details.profile_picture}}" alt=""  style="border-radius: 50%; overflow:hidden;">
                     </div>
                     <div>
                         <span  class="text-muted fs-10">Freelancer</span>
@@ -287,9 +288,8 @@
 				{% for job in jobs_posted %}
 					{% for applicant in job.job_details.applicants %}
 						<div class="PE-applicant">
-
 							<div>
-								<img src="../../static/img/freelancer_sample.jpg" alt="">
+								<img src="{{applicant.profile_picture}}" alt="">
 							</div>
 							<div>
 								{% set first_name = applicant.first_name.split(' ')[0] %}
@@ -394,7 +394,7 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body d-flex flex-column justify-content-center align-items-center">
-					<img src="../../static/img/freelancer_sample.jpg" alt="" style="height: 200px; width:200px;" class="circle-pfp myshadow">
+					<img src="{{applicant.profile_picture}}" alt="" style="height: 200px; width:200px;" class="circle-pfp myshadow">
           <a href="/profiles/{{applicant.tag}}" class="text-decoration-none hover-underline text-dark pt-3 d-flex flex-column justify-content-center align-items-center">
             <span class="fw-semibold d-block" style="font-size: 18px;">{{applicant.first_name.split(' ')[0]}} {{applicant.last_name}}</span>
             <span class="text-muted fs-12">{{applicant.tag}}</span>
@@ -443,7 +443,7 @@
           {% if job.job_status != 'Waiting'%}
           <div class="w-100 container ps-4 pe-4 d-flex flex-column justify-content-start align-items-start">
             <div class="d-flex justify-content-start align-items-center">
-              <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
+              <img src="{{worker.profile_picture}}" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
               <div class="d-flex flex-column ps-3" style="text-align: left;">
                 <span class="fs-16 fw-semibold">{{worker.first_name.split(' ')[0]}} {{worker.last_name}}</span>
                 <span class="fs-14 fst-italic fw-normal">Freelancer
@@ -528,7 +528,7 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body d-flex flex-column align-items-center w-100">
-					<img src="../../static/img/freelancer_sample.jpg" alt="" style="height: 200px; width:200px;" class="circle-pfp myshadow">
+					<img src="{{worker.profile_picture}}" alt="" style="height: 200px; width:200px;" class="circle-pfp myshadow">
 					<span class="pt-2 fw-bold">{{worker.first_name}} {{worker.last_name}}</span>
 					<span class="pt-3 fw-semibold">Rate your freelancer</span>
 					<div class="rating" id="rating{{job.job_details.job_id}}" hx-get="/jobs/rating/{{job.job_details.job_id}}" hx-target="#rating{{job.job_details.job_id}}" hx-swap="outerHTML" hx-trigger="load">
@@ -570,7 +570,7 @@
         </div>
           <div class="w-100 container ps-4 pe-4 d-flex flex-column justify-content-center align-items-center" style="margin-left: 20px;">
     
-            <img src="../../static/img/test_profilepicwdiffsize.png" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
+            <img src="{{poster.profile_picture}}" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
             <a href="/profiles/{{poster.tag}}" class="d-flex flex-column pt-2 text-decoration-none hover-underline text-dark" style="text-align: center;">
               <span class="fs-16 fw-semibold">{{poster.first_name.split(' ')[0]}} {{poster.last_name}}</span>
               <span class="fs-14 fw-normal">Pet Owner</span>
@@ -645,7 +645,7 @@
         </div>
         <div class="w-100 container ps-4 pe-4 d-flex flex-column justify-content-center align-items-center" style="margin-left: 20px;">
     
-            <img src="../../static/img/test_profilepicwdiffsize.png" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
+            <img src="{{poster.profile_picture}}" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
             <a href="/profiles/{{poster.tag}}" class="d-flex flex-column pt-2 text-decoration-none hover-underline text-dark" style="text-align: center;">
               <span class="fs-16 fw-semibold">{{poster.first_name.split(' ')[0]}} {{poster.last_name}}</span>
               <span class="fs-14 fw-normal">Pet Owner</span>
@@ -713,7 +713,7 @@
 			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		</div>
 		<div class="modal-body d-flex flex-column justify-content-start align-items-center w-100">
-			<img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp myshadow" style="height:120px;width:120px;">
+			<img src="{{current_user.profile_picture}}" alt="" class="circle-pfp myshadow" style="height:120px;width:120px;">
 			<span class="pt-3 fw-semibold">{{current_user.first_name.split(' ')[0]}} {{current_user.last_name}}</span>
 			<span class="fw-normal">@{{current_user.tag}}</span>
 		<div class="mb-3 w-100 d-flex justify-content-center pt-3 align-items-center">
@@ -759,7 +759,7 @@
         </div>
         <div class="w-100 container ps-4 pe-4 d-flex flex-column justify-content-center align-items-center" style="margin-left: 20px;">
     
-            <img src="../../static/img/postprofile.jpg" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
+            <img src="{{poster.profile_picture}}" alt="" class="circle-pfp myshadow" style="height: 100px; width:100px;">
             <a href="/profiles/{{poster.tag}}" class="d-flex flex-column pt-2 text-decoration-none hover-underline text-dark" style="text-align: center;">
               <span class="fs-16 fw-semibold">{{poster.first_name.split(' ')[0]}} {{poster.last_name}}</span>
               <span class="fs-14 fw-normal">Pet Owner</span>

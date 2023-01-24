@@ -4,6 +4,10 @@
 html {
     height: 100%;
     scrollbar-width: thin;
+}
+
+* {
+    scrollbar-width: thin;
 
 }
 
@@ -14,15 +18,14 @@ body {
     font-family: 'Poppins', sans-serif;
     margin-right: auto;
     margin-left: auto;
-    overflow-y: scroll;
+    overflow-y: visible;
     background: rgba(234, 231, 231, 0.234);
     scrollbar-width: thin;
-    scrollbar-color: #1da1f2 rgba(171, 166, 166, 0.559);
-
 }
 
 ::-webkit-scrollbar {
     width: 5px;
+    height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -39,6 +42,15 @@ body {
 
 .shadow2 {
     box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+}
+
+.shadow3{
+    box-shadow: 0px 8px 12px 1px rgba(66,66,66,0.75);
+}
+
+
+input::placeholder {
+    font-size: 14px;
 }
 
 .readonly {
@@ -494,7 +506,7 @@ input[data-autocompleted] {
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     height: 60px;
     padding-left: 30px;
-    width: 100vw;
+    width: 100%;
     display: flex;
     justify-content: center;
 }
@@ -532,7 +544,6 @@ input[data-autocompleted] {
     width: 458px;
     height: 35px;
     font-size: 16px;
-    font-weight: 200;
     letter-spacing: 0;
     line-height: 18px;
     min-height: 27px;
@@ -644,8 +655,7 @@ main.content {
     margin-left: 235px;
     position: relative;
     width: calc(100% - 235px);
-    padding-bottom: 50px;
-    height: 100vh;
+    height: 100%;
 }
 
 
@@ -715,6 +725,7 @@ main.content {
     position: relative;
     align-items: center;
     height: 100%;
+    width: calc(100% - 100px);
 }
 
 #main-feed .search-result {
@@ -794,6 +805,14 @@ main.content {
         padding: 0px;
     }
 
+
+    .main-feed-posts{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
     #main-feed .search-result {
         width: 100% !important;
         min-width: 300px;
@@ -830,6 +849,7 @@ main.content {
     .main-feed-right {
         display: none;
     }
+
 }
 
 .main-feed-posts {
@@ -1310,6 +1330,7 @@ h5 {
 .dropdown {
     display: inline-block;
     position: relative;
+    z-index: 1000;
 }
 
 
@@ -1946,7 +1967,6 @@ h5 {
     margin-left: 35px;
     width: 1120px;
     height: 1580px;
-    border: 2px dashed blue
 }
 
 .rectangle-profile {
@@ -2200,10 +2220,11 @@ h5 {
 }
 
 .search-results-filter button {
+    flex-shrink: 1;
     border-style: solid;
     border-width: 1px;
     border-color: rgba(167, 144, 144, 0.664);
-    font-size: 14px;
+    font-size: 12px;
     color: #2e2d2def;
     text-overflow: ellipsis;
 }
@@ -2402,7 +2423,6 @@ h5 {
 }
 
 .search-result-post .search-result-post-media {
-    padding-top: 5px;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -2413,7 +2433,8 @@ h5 {
     width: 100%;
     max-width: 540px;
     max-height: 600px;
-    overflow-y: hidden;
+    object-fit: contain;
+    overflow-y:hidden;
     display: flex;
     align-items: center;
     background-color: black;
@@ -2422,13 +2443,13 @@ h5 {
 
 .search-result-post-media img {
     max-width: 100%;
-    object-fit: cover;
+    object-fit: contain;
     max-height: 100%;
 }
 
 .search-result-post-media video {
     max-width: 100%;
-    object-fit: cover;
+    object-fit: contain;
     max-height: 100%;
 }
 
@@ -2575,7 +2596,8 @@ h5 {
 .jobs-main-container {
     display: grid;
     width: 100%;
-    grid-template-columns: 3fr minmax(200px, 1fr);
+    grid-template-columns: 3fr minmax(200px,1fr);
+    height: 100%;
 }
 
 
@@ -2661,7 +2683,7 @@ h5 {
     grid-column: 1 / 2;
     padding-left: 20px;
     padding-top: 10px;
-    padding-bottom: 130px;
+    height: 100%;
 }
 
 #job_home_cont {
@@ -3159,6 +3181,13 @@ h5 {
         display: none !important;
     }
 
+    .main-feed {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+    }
+
     .base-sidebar {
         position: fixed;
         margin: 0px;
@@ -3428,4 +3457,56 @@ h5 {
     background-color: #1DA1F2;
     transition: 0.15s;
     color: white;
+}
+
+.comment-container {
+    display: flex;
+    justify-content: start;
+    margin: 10px 10px 0px 10px;
+    align-items: center;
+    width: 100%;
+}
+
+
+.user-comment {
+    padding: 10px 10px 10px 10px;
+    background-color: rgba(255, 255, 255, 0.597);
+    border-radius: 10px;
+    margin-left: 45px;
+    background-color:#c2c5c754;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    text-align: left;
+}
+
+.comment-input {
+    font-size: 16px;
+    letter-spacing: 0;
+    min-height: 27px;
+    background-color:#c2c5c7b7;
+    border-style: none;
+    border-radius: 20px !important;
+    outline: none;
+    overflow-y: visible;
+}
+
+.comment-input:focus {
+    background-color:#c2c5c754 ;
+    box-shadow: none;
+}
+
+.append-comment {
+    animation: append-comment .4s ease-in
+}
+
+@keyframes append-comment {
+    from {
+        transform: translateY(+3px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+
 }

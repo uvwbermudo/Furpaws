@@ -39,7 +39,7 @@ crossorigin="anonymous"></script>
 			<div class="search-result-container search-result" id="">
 					<div class="left-pfp">
 						<a href="/profiles/{{result.tag}}">
-							<img src="../../static/img/postprofile.jpg" alt="">
+							<img src="{{result.profile_picture}}" alt="" class="circle-pfp">
 						</a> 
 					</div>
 					<div class="result-profile-info">
@@ -73,7 +73,7 @@ crossorigin="anonymous"></script>
 					<div class="search-result-post-upper">
 						{% set first_name = result.author.first_name.split(' ') %}
 							<a href="/profiles/{{result.author_tag}}"> 
-								<img src="../../static/img/postprofile.jpg" alt="" style="height: 58px; width:58px; overflow:hidden; border-radius:50%">
+								<img src="{{result.author.profile_picture}}" alt="" class="circle-pfp" style="height: 58px; width:58px; overflow:hidden; border-radius:50%">
 							</a>
 							<div style="padding-bottom:0px; padding-left: 10px;">
 									<a href="/profiles/{{result.author_tag}}" class="post-upper text-dark pb-1 fs-5 fw-bold">
@@ -89,17 +89,17 @@ crossorigin="anonymous"></script>
 							<a class="text-decoration-none ms-auto text-muted" href="/posts/{{result.post_id}}" style="font-size:14px;">View Post</a>
 					</div>
 
-					{% if result.post_content%}
 					<div class="search-result-post-desc">
+						{% if result.post_content%}
 							{{result.post_content}}
+							{% endif %}
 					</div>
-					{% endif %}
 
 					{% if result.photos or result.videos %}
 					<div class="search-result-post-media">
-						{% if result.photos|length == 1 %}
+						{% if result.photos|length == 1 and not result.videos%}
 							<img src="{{result.photos[0].photo_url}}" alt="">
-						{% elif result.videos|length == 1 %}
+						{% elif result.videos|length == 1 and not result.photos %}
 						<video class="" src="{{result.videos[0].video_url}}" controls></video> 
 						{% else %}
 						<div id="search-result-post-carousel{{result.post_id}}" class="carousel slide">
@@ -171,24 +171,15 @@ crossorigin="anonymous"></script>
 							<script>
 								// Get all of the images in the container
 								$('.search-result-inner-carousel').ready(function() {
-
 									let maxHeight = 0;
-									$('#search-result-inner-carousel{{result.post_id}} img').each(function(){
+									$('#search-result-inner-carousel{{result.post_id}} div.carousel-item').each(function(){
 										if ($(this).height() > maxHeight) {
 											maxHeight = $(this).height();
 										}
 									})
-
-									$('#search-result-inner-carousel{{result.post_id}} video').each(function(){
-										if ($(this).height() > maxHeight) {
-											maxHeight = $(this).height();
-										}
-									})
-			
+		
 									$('#search-result-inner-carousel{{result.post_id}}').height(maxHeight);
-									
 								})
-								
 							</script>
 
 

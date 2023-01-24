@@ -32,6 +32,7 @@ def friend_requests(tag):
 @login_required
 def send_friend_request(tag, current_user):
     if request.method == 'POST':
+        print(tag, current_user)
         new_friend_request = FriendRequests(account_tag=tag, sender_tag=current_user)
         new_friend_request.add()
         mysql.connection.commit()

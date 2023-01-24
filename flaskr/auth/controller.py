@@ -2,18 +2,25 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import exc
 from flaskr import get_error_items, get_form_fields, mysql
 from flaskr.models import Users, FreelancerDetails
-from flask import Blueprint, render_template, request, flash, redirect, url_for, Response
+from flask import Blueprint, render_template, request, flash, redirect, url_for, Response, session
 from flask_login import current_user, login_user, login_required, logout_user
 from . import auth
 import wtforms_json
 from .forms import RegisterForm, EmailLogin, TagLogin
 import json
 wtforms_json.init()
+from flask_socketio import emit, leave_room
+
 
 
 @auth.route('/')
 def index():
     return render_template('auth/landing.html')
+
+@auth.route('/index')
+def index_redirect():
+    return redirect('/')
+
 
 
 @auth.route('/login')
@@ -37,7 +44,7 @@ def verify_register():
     email = request.json['email']
     tag = request.json['tag']
     password = request.json['password']
-    account_type = request.json['account_type']
+    account_type = request.json['account_type'] 
     last_name = request.json['last_name']
     first_name = request.json['first_name']
     city = request.json['city']
@@ -139,7 +146,13 @@ def verify_login():
 
 
 @auth.route('/logout')
-@login_required
 def logout():
-    logout_user()
+    try:
+        leave_room(session['current_room'])
+    except Exception as e:
+        print(e)
+    if current_user:
+        logout_user()
+    else:
+        return redirect('/')
     return redirect('/')

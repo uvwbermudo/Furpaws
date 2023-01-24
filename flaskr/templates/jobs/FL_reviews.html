@@ -8,7 +8,7 @@
 	{% set reviewer = review.reviewer%}
 	{% set reviewee = review.reviewee%}
     <div class="review-card myshadow float-hover">
-			<img src="../../static/img/postprofile.jpg" alt="" class="circle-pfp myshadow" style="height: 80px;width:80px; margin-bottom:15px;">
+			<img src="{{reviewer.profile_picture}}" alt="" class="circle-pfp myshadow" style="height: 80px;width:80px; margin-bottom:15px;">
 			<a href="/profiles/{{reviewer.tag}}" class="fw-bold fs-14 text-decoration-none hover-underline text-dark">{{reviewer.first_name.split(' ')[0]}} {{reviewer.last_name}}</a>
 			<a href="/profiles/{{reviewer.tag}}" class="text-muted fs-12 text-decoration-none hover-underline ">@{{reviewer.tag}}</a>
 			{% if review.stars != 'None' %}

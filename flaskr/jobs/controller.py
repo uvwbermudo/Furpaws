@@ -104,9 +104,11 @@ def PE_cancel_job():
     job_id=request.form['job_id']
     job = Jobs.query_get(job_id)
     worker = job.worker_details
+    print(request.form)
     try:
         Jobs.update_status(job_id=job_id, new_status='Cancelled')
-        ApplyJobs.update_application_status(job_id=job_id, status='Cancelled', freelancer_tag=worker.tag)
+        if worker:
+            ApplyJobs.update_application_status(job_id=job_id, status='Cancelled', freelancer_tag=worker.tag)
         mysql.connection.commit()
         flash("Job cancelled successfully", category='success')
     except Exception as e:
@@ -196,7 +198,7 @@ def PE_request_job(freelancer_tag):
 @jobs.route('/jobs/pet-owner/history')
 @login_required
 def PE_history():
-    jobs_created = CreateJobs.query_filter(pet_owner=current_user.tag, order_by='date_posted', order='DESC')
+    jobs_created = CreateJobs.query_filter(pet_owner=current_user.tag, order_by='date_posted', order='ASC')
     return render_template('jobs/PE_history.html', jobs_created=jobs_created)
 
 
@@ -315,6 +317,8 @@ def FL_job_search():
     applied_jobs = ApplyJobs.query_filter(freelancer=current_user.tag, application_status='Sent')
     applied_jobs = [job.job_id for job in applied_jobs]
     filtered_available_jobs = list(filter(lambda job: job.job_id not in applied_jobs, available_jobs))
+    for job in filtered_available_jobs:
+        print(job.poster_details)
     return render_template('jobs/jobs_FR_job_search.html', available_jobs=filtered_available_jobs)
 
 @jobs.route('/jobs/freelancer/apply-job', methods=['POST'])

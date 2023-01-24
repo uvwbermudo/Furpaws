@@ -1,4 +1,4 @@
-<img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp myshadow" style="height:120px;width:120px; margin-bottom:12px;">
+<img src="{{freelancer.profile_picture}}" alt="" class="circle-pfp myshadow" style="height:120px;width:120px; margin-bottom:12px;">
 <a href="/profiles/{{freelancer.tag}}" class="fw-bold fs-14 text-decoration-none hover-underline text-dark">{{freelancer.first_name.split(' ')[0]}} {{freelancer.last_name}}</a>
 <a href="/profiles/{{freelancer.tag}}" class="text-muted fs-12 text-decoration-none hover-underline ">@{{freelancer.tag}}</a>
 {% set FL_deets = freelancer.freelancing_details %}

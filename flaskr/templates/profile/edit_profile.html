@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block title %}FurPaws - Pawfile{% endblock %}
+<a href="/logout">PRESS TO LOGOUT</a>
+
+
+{% block body_content %}
+
+<div class="modal" id="change-profpic-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="profile-picture-modal-title">Change Profile Photo</h5>
+        </div>
+        <div class="modal-body" id="change-profpic-middle-part">
+          <form action="/change_profile_photo/{{current_user.tag}}" method="POST" enctype="multipart/form-data">
+            <label class="upload-photo-modal" for="edit_profile_picture"><span>Upload Photo</span></label>
+            <img src="{{user.profile_picture}}" id="preview_image" width="90" height="90" style="border-radius:50%;"/>
+            <input class="file_input" name="edit_profile_picture" id="edit_profile_picture" type="file" hidden onchange="change_profile_picture(this)"/>
+            <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+            <button class="btn btn-primary" type="submit" id="submit-button">Save Changes</button>
+          </form>
+          <form action="/remove_profile_photo/{{current_user.tag}}" method="POST">
+            <button type="submit" class="remove-current-photo" name="profile_picture"><span>Remove Current Photo</span></button>
+            <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+          </form>
+          <button id="modal-cancel" class="btn btn-secondary" data-bs-dismiss="modal"><span>Cancel</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="ep-top-part">
+    <div class="ep-top-part-container">
+      <div class="ep-edit-profpic">
+        <button class="ep-profpic" data-bs-toggle="modal" data-bs-target="#change-profpic-modal">
+            <img class="ep-profpic" src="{{user.profile_picture}}"/> 
+        </button>
+        <h5 class="ep-usertag">
+            {{current_user.tag}}
+        </h5>
+      </div>
+    </div>
+    <div>
+      <span class="ep-acct-type">{{current_user.account_type}}</span>
+    </div> 
+    <div>
+      <button class="change-prof-pic" data-bs-toggle="modal" data-bs-target="#change-profpic-modal"><span>Change profile photo</span></button>
+    </div>
+    <script>
+      function capitalizeText() {
+        let ep_acct_type = document.querySelector('.ep-acct-type');
+        ep_acct_type.innerHTML = ep_acct_type.innerHTML.replace(/_/g, " ").replace(/\b[a-z]/g, function(f){return f.toUpperCase();});
+      }
+      window.onload = capitalizeText;
+    </script>
+  </div>
+
+<div class="ep-container">
+  <div class="ep-white-background1">
+    <div class="ep-inputs">
+      <form id="edit_profile" action="/edit_profile/{{ current_user.tag }}" method="POST" >
+        <h4 id="list-item-2"><span>Account Info</span></h4>
+        <div>
+          <label for="first_name">First Name</label>
+          <input type="text" class="form-control"  name="edit_first_name" id="edit_first_name" value="{{current_user.first_name}}">
+        </div>
+        <div>
+          <label for="last_name">Last Name</label>
+          <input type="text" class="form-control" name="edit_last_name" id="edit_last_name" value="{{current_user.last_name}}">
+        </div>
+        <div>
+          <label for="tag">Tag</label>
+          <input class="form-control" name="edit_tag" id="edit_tag" type="text" value="{{current_user.tag}}">
+        </div>
+        <div>
+          <label for="email">E-mail</label>
+          <input type="email" class="form-control" name="edit_email" id="edit_email" value="{{current_user.email}}" aria-describedby="emailHelp" >
+        </div>  
+
+      <h4><span>Address</span></h4>
+      <p>
+        <div class="form-group" id="Address">
+          <div>
+            <label for="city">City</label>
+            <input type="text" class="form-control" name="edit_city" id="edit_city" value="{{current_user.city}}">
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+          </div>
+          <div>
+            <label for="state">State</label>
+            <input type="text" class="form-control" value="{{current_user.state}}" name="edit_state" id="edit_state">
+          </div>
+          <div>
+            <label for="zipcode">ZIP</label>
+            <input type="text" class="form-control" value="{{current_user.zipcode}}" name="edit_zipcode" id="edit_zipcode">
+          </div>
+          <div>
+            <label for="country">Country</label>
+            <input type="text" class="form-control" value="{{current_user.country}}" name="edit_country" id="edit_country">
+          </div>
+        </div></p>
+        <div>
+          {{ form.csrf_token }}
+          <button class="ep-submit-btn" onclick="" name="edit_profile_button" id="edit_profile_button">Update</button> 
+      </div>
+      </form> 
+    </div>
+    </div>
+
+  <div class="ep-white-background2">
+    <div class="ep-inputs">
+      <form id="change_password" action="/change_password/{{ current_user.tag }}" method="POST" >
+        <h4><span>Change Password</span></h4>
+        <div>
+          <div class="change-password">
+          <div>
+            <label for="old_pwd">Old Password</label>
+            <input type="password" class="form-control" name="old_pwd" id="old_pwd" placeholder="Old Password">
+          </div>
+          <div>
+            <label for="pwd1">New Password</label>
+            <input type="password" class="form-control" name="pwd1" id="pwd1" placeholder="New Password">
+          </div>
+          <div>
+            <label for="pwd2">Retype New Password</label>
+            <input type="password" class="form-control" name="pwd2" id="pwd2" placeholder="Retype New Password">
+          </div>
+          </div>
+          </div>
+          <div>
+          <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+          <button class="ep-changepass-btn" onclick="change_password()" name="changepass_button" id="changepass_button">Update</button> 
+          </div>
+        </form> 
+      </div>
+  </div>
+</div>
+
+  
+
+
+
+
+
+{% endblock %}

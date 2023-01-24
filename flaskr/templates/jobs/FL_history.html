@@ -27,7 +27,7 @@
   
                   <div class="d-flex ps-3" style="column-gap: 15px;">
                     {% if poster %}
-                      <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp " style="height: 40px; width:40px; min-height: 40px; min-width:40px">
+                      <img src="{{poster.profile_picture}}" alt="" class="circle-pfp " style="height: 40px; width:40px; min-height: 40px; min-width:40px">
                       <a href="/profiles/{{poster.tag}}" class="d-flex flex-column text-decoration-none hover-underline text-dark" style="text-align:left;">
                           <span class="fw-semibold">{{poster.first_name.split(' ')[0]}} {{poster.last_name}}</span>
                           <span class="text-muted fw-normal">{{poster.tag}}</span>

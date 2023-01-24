@@ -22,7 +22,7 @@
           <h4 class="mt-3">{{user.first_name.title()}} {{user.last_name.title()}} 
           </h4>
           <span class="fs-14 text-muted">@{{user.tag}}</span>
-          <span class="fs-14 text-muted">&middot; {{acc_type}} {%if acc_type =='Freelancer'%} <span class="fs-12">{{user.freelancing_details.average_rating}}<i class="fa-solid fa-star text-warning"></i>
+          <span class="fs-14 text-muted">&middot; {{acc_type}} {%if acc_type =='Freelancer'%} &middot; <span class="fs-12">{{user.freelancing_details.average_rating}}<i class="fa-solid fa-star text-warning"></i>
 				<span class="fst-italic">({{user.freelancing_details.review_count}})</span>
 			  </span>{%endif%} &middot; {{user.city}}, {{user.state}}</span>
           <span class="fs-14 text-muted">{{user.friends|length}} Furiends</span>
@@ -52,7 +52,7 @@
         {% else %}
           <form action="/send-friend-request/{{user.tag}}/{{current_user.tag}}">
             <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
-            <button class="btn btn-sm btn-primary rounded-5 fs-12" id="add_friend_request{{user.tag}}-{{current_user.tag}}" name="add_friend_request{{user.tag}}-{{current_user.tag}}" type="submit" hx-post="/send-friend-request/{{user.tag}}/{{current_user.tag}}" hx-trigger="click" hx-swap="outerHTML">+ Add Friend</button>
+            <button class="btn btn-sm btn-primary rounded-5 fs-12" id="add_friend_request{{user.tag}}-{{current_user.tag}}" name="add_friend_request{{user.tag}}-{{current_user.tag}}" type="submit" hx-post="/send-friend-request/{{user.tag}}/{{current_user.tag}}" hx-trigger="click" hx-swap="outerHTML">+ Add</button>
           </form>
         {% endif %}
       </div>
@@ -286,10 +286,17 @@
 </form>
     
 
-
-  <div class="main-feed-posts">
+    {%if current_user.tag != user.tag%}
+    <div class="main-feed-posts" style="margin-top: -128px;">
+    {%else%}
+    <div class="main-feed-posts">
+    {%endif%}
     {%if all_posts|length == 0%}
     <h4 class="text-muted" style="margin-top: -90px;">No available posts</h4>
+    {%endif%}
+    {%if user.tag != current_user.tag and user.tag not in friends|map(attribute="friend_tag")|list %}
+    <h4 class="text-muted" style="margin-top: -90px;">Only the user's friend can see their posts.</h4>
+
     {%endif%}
     {% for item in all_posts %}
      {% if item.__class__.__name__ == 'Posts'%}
@@ -297,7 +304,7 @@
      {% set post = item %}
      {% set is_post = true%}
      {% set is_shared = false %}
-     {% else%}
+     {% else %}
      {% set post = item.post %}
      {% set author = item.sharer %}
      {% set is_shared = true %}
@@ -305,7 +312,7 @@
      {% endif %}
       <!-- MODALS -->
       <!-- SHARE POST MODAL -->
-
+    
       {%if is_post%}
       <div class="modal fade" id="sharePostModal{{post.post_id}}" tabindex="-1" aria-labelledby="sharePostModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -386,9 +393,10 @@
       </div>
 
       {% for comments in post.comments %}
-        <div class="modal fade" id="editCommentModal{{comments.comment_id}}" tabindex="-1" role="dialog" aria-labelledby="editCommentModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
+      <div class="modal fade" id="editCommentModal{{comments.comment_id}}" tabindex="-1" role="dialog" aria-labelledby="editCommentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <form id="edit-comments-{{comments.comment_id}}" action="/home/update-comment/{{comments.comment_id}}/{{post.post_id}}" method="PUT">
               <div class="modal-header">
                 <h1 class="modal-title fs-5" id="editCommentModalLabel">
                   Edit Comment
@@ -396,16 +404,16 @@
                 <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}"></button>
               </div>
               <div class="modal-body">
-                <form id="edit-comments-{{comments.comment_id}}" action="/home/update-comment/{{comments.comment_id}}/{{post.post_id}}" method="PUT">
                   <textarea class="form-control" name="edit_comment_textbox" id="editCommentTextbox-{{comments.comment_id}}" placeholder="{{comments.comment_content}}" required>{{comments.comment_content}}</textarea>
               </div>
               <div class="modal-footer">
                 {{edit_comment_form.csrf_token}}
-                <button class="submit-post" type="submit" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" id="edit_comment_button{{comments.comment_id}}" name="edit_comment_button" onclick="editCommentMainFeedPost({{post.post_id}}, {{comments.comment_id}});">Save changes</button></form>
+                <button class="submit-post" type="submit" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" id="edit_comment_button{{comments.comment_id}}" name="edit_comment_button" onclick="editCommentMainFeedPost({{post.post_id}}, {{comments.comment_id}});">Save changes</button>
                 <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewCommentsModal{{post.post_id}}" style="width:100%">
                   Cancel
                 </button>
               </div>
+            </form>
             </div>
           </div>
         </div>
@@ -504,8 +512,6 @@
                   <video src="{{video.video_url}}"></video>
                   <button id="deletevid{{video.video_id}}" type="button" class="btn text-white" hx-post="/videos/delete/confirm/{{video.video_id}}" hx-trigger="click" hx-target="#deletevid{{video.video_id}}" hx-swap="outerHTML"><i class="bi-trash-fill text-white"></i><span class="ps-1">Remove</span></button>
                 </div>
-
-                
                 {% endfor %}
               </div>
             {% endif %}
@@ -712,7 +718,7 @@
             {% endif %}
           {% endfor %}
         {% else %}
-          <svg xmlns="http://www.w3.org/2000/svg" id="like-button-{{post.post_id}}" width="24" height="24" fill="currentColor" class="post-hearts" onclick='likeMainFeedPostNorm({{post.post_id}})' viewBox="0 0 16 16">
+          <svg xmlns="http://www.w3.org/2000/svg" id="like-button-{{post.post_id}}" width="24" height="24" fill="currentColor" class="post-hearts" onclick="likeMainFeedPostNorm({{post.post_id}})" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
           </svg>
         {% endif %}
@@ -757,6 +763,7 @@
       {% endif %}
     </div>
     {% endif %}
+
         {% endfor %}
   </div>
 

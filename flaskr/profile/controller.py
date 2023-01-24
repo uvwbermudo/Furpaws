@@ -31,14 +31,17 @@ def profile_page(tag):
     user = Users.query_get(tag=tag)
     share_posts = SharePost.query_filter(
         sharer_tag=tag, order_by='date_created', order='DESC')
-    posts = Posts.query_filter(author_tag=tag, order_by='date_posted', order='DESC')
+    posts = Posts.query_filter(author_tag=tag)
     all_posts = posts + share_posts
     all_posts = list(sorted(all_posts, key=lambda x: x.get_creation_date(), reverse=True))
+    print(all_posts)
     user_sugg = HasFriends.query_filter(account_tag=tag)[:3]
     form = AddPostForm()
     edit_form = EditPostForm()
     edit_comment_form = EditCommentForm()
-    return render_template('profile/profile.html', user=user, user_sugg = user_sugg, all_posts=all_posts,edit_comment_form=edit_comment_form, edit_form=edit_form, form=form,)
+    friends = HasFriends.query_get(account_tag=current_user.tag)
+    print(friends)
+    return render_template('profile/profile.html', user=user, user_sugg = user_sugg, all_posts=all_posts,edit_comment_form=edit_comment_form, edit_form=edit_form, form=form,friends=friends)
 
 
 

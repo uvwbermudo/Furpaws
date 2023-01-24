@@ -232,6 +232,4 @@ def create_db():
         CONSTRAINT friend_requests_ibfk_2 FOREIGN KEY(sender_tag) REFERENCES users(tag) ON UPDATE CASCADE ON DELETE CASCADE
     );
     
-
-    
     """)

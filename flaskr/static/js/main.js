@@ -107,7 +107,7 @@ function register_user() {
     password = $('#register #password').val();
     password2 = $('#register #password2').val();
     last_name = $('#register #last_name').val();
-    first_name = $('#register #first_name').val();
+    first_name = $('#register #first_name').val();  
     city = $('#register #city').val();
     state = $('#register #state').val();
     zipcode = $('#register #zipcode').val();
@@ -141,6 +141,7 @@ function register_user() {
                 return response.json()
             }
         }).then(function (response) {
+            console.log(response)
             var scrolled = false;
             response[1].forEach(function (field) {
                 form_field = $('#' + field);
@@ -176,7 +177,8 @@ function register_user() {
                 }
 
             })
-        }).catch(err => {
+        }).catch( err => {
+            console.log(err)
             $('.left-side').animate({
                 scrollTop: $("#email").offset().top - 100
             })
@@ -324,7 +326,6 @@ function edit_profile(current_tag) {
                     if (!scrolled) {
                         $('#editProfile .modal-body').animate({
                             scrollTop: $(`#editProfile #${field}`).offset().top - 100
-                            
                         });
                         scrolled = true;
                     }
@@ -355,8 +356,6 @@ function change_profile(input){
     img.attr('src',img_url)
 }
 
-
-
 function login_user() {
     username = $('#login #username').val();
     password = $('#login #user_password').val();
@@ -364,7 +363,7 @@ function login_user() {
     formdata.append('password', password.trim());
     if (username.includes('@')) {
         formdata.append('email', username.trim());
-    } else {
+    } else {    
         formdata.append('tag', username.trim());
     }
 
@@ -552,7 +551,6 @@ function likeVisitedPost(postId) {
             } else {
                 likeButton.className.baseVal = "post-wto-hearts";
             }
-
         }
         );
 }

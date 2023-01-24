@@ -1440,8 +1440,6 @@ class HasFriends:
         cursor.execute(sql)
         result = result_zip(cursor)
         result = HasFriends.convert_to_object(result)
-        if result:
-            return result[0]
         return result
 
     @classmethod

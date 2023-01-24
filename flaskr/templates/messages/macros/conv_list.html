@@ -4,7 +4,7 @@
 
     {% if loop.index0 == 0 %}
     <div class="conv-card" style="height: 75px;" hx-get="/messages/get-chat-box/{{convo.id}}/{{convo.conversation_id}}" hx-swap="innerHTML" hx-trigger="click" hx-target="#chat-box">
-        <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp" >
+        <img src="{{other_user.profile_picture}}" alt="" class="circle-pfp" >
         <div class="d-flex flex-column cursor-pointer; text-align:left;">
 						{%if convo.last_opened == 0 %}
 						<span class="badge text-bg-success fs-10 rounded-5 notif" style="width: 30px; font-size:8px;">New</span>
@@ -17,7 +17,7 @@
     </div>
     {%else%}
     <div class="conv-card" style="height: 75px;" hx-get="/messages/get-chat-box/{{convo.id}}/{{convo.conversation_id}}" hx-swap="innerHTML" hx-trigger="click" hx-target="#chat-box">
-        <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp" >
+        <img src="{{other_user.profile_picture}}" alt="" class="circle-pfp" >
         <div class="d-flex flex-column cursor-pointer; text-align:left;">
 						{%if convo.last_opened == 0 %}
 						<span class="badge text-bg-success fs-10 rounded-5 notif" style="width: 30px; font-size:8px;">New</span>

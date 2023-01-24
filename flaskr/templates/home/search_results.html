@@ -39,7 +39,7 @@ crossorigin="anonymous"></script>
 			<div class="search-result-container search-result" id="">
 					<div class="left-pfp">
 						<a href="/profiles/{{result.tag}}">
-							<img src="../../static/img/postprofile.jpg" alt="">
+							<img src="{{result.profile_picture}}" alt="" class="circle-pfp">
 						</a> 
 					</div>
 					<div class="result-profile-info">
@@ -73,7 +73,7 @@ crossorigin="anonymous"></script>
 					<div class="search-result-post-upper">
 						{% set first_name = result.author.first_name.split(' ') %}
 							<a href="/profiles/{{result.author_tag}}"> 
-								<img src="../../static/img/postprofile.jpg" alt="" style="height: 58px; width:58px; overflow:hidden; border-radius:50%">
+								<img src="{{result.author.profile_picture}}" alt="" class="circle-pfp" style="height: 58px; width:58px; overflow:hidden; border-radius:50%">
 							</a>
 							<div style="padding-bottom:0px; padding-left: 10px;">
 									<a href="/profiles/{{result.author_tag}}" class="post-upper text-dark pb-1 fs-5 fw-bold">

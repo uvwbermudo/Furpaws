@@ -1,5 +1,5 @@
 {%set reviewer=review.reviewer%}
-<img src="../../static/img/postprofile.jpg" alt="" class="circle-pfp myshadow" style="height: 120px;width:120px; margin-bottom:12px;">
+<img src="{{reviewer.profile_picture}}" alt="" class="circle-pfp myshadow" style="height: 120px;width:120px; margin-bottom:12px;">
 <a href="/profiles/{{reviewer.tag}}" class="fw-bold fs-14 text-decoration-none hover-underline text-dark">{{reviewer.first_name.split(' ')[0]}} {{reviewer.last_name}}</a>
 <a href="/profiles/{{reviewer.tag}}" class="text-muted fs-12 text-decoration-none hover-underline ">@{{reviewer.tag}}</a>
 {% if review.stars != 'None' %}

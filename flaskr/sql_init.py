@@ -26,6 +26,7 @@ def create_db():
 	state VARCHAR(50) NOT NULL,
 	zipcode VARCHAR(50) NOT NULL,
 	country VARCHAR(50) NOT NULL,
+    profile_picture VARCHAR(1000),
 	PRIMARY KEY (tag),
 	UNIQUE(email),
 	FULLTEXT(first_name,last_name,tag,email)

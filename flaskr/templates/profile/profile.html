@@ -1,43 +1,213 @@
 {% extends 'base.html' %}
 {% block title %} FurPaws - Profile {% endblock %}
-
-
 {% block body_content %}
-<div class="profile-feed">
 
-    <div class="modal" id="change-profpic-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="profile-picture-modal-title">Change Profile Photo</h5>
-              <button type="button" id="change-profpic-close" class="close" data-bs-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+<link rel="stylesheet" href="../../static/css/profile.css">
+{%if user.tag == current_user.tag%}
+{%set is_current= true %}
+{%else%}
+{%set is_current= false %}
+{%endif%}
+{%if user.account_type == 'freelancer' %}
+{%set acc_type='Freelancer'%}
+{%else%}
+{%set acc_type='Pet Owner'%}
+{%endif%}
+<div class="profile-cont">
+  <div class="profile-info myshadow">
+      <div class="user-info">
+          <a class="text-decoration-none">
+            <img src="{{user.profile_picture}}" alt="" class="circle-pfp myshadow" style="height: 152px; width:152px;min-height: 152px; min-width:152px">
+          </a>
+          <h4 class="mt-3">{{user.first_name.title()}} {{user.last_name.title()}} 
+          </h4>
+          <span class="fs-14 text-muted">@{{user.tag}}</span>
+          <span class="fs-14 text-muted">&middot; {{acc_type}} &middot; {{user.city}}, {{user.state}}</span>
+          <span class="fs-14 text-muted">8293 Furiends</span>
+      </div>
+    <div class="user-controls mt-2">
+      {%if is_current%}
+      <a class="text-decoration-none text-dark fs-16" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editProfile"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</a>
+      {%else%}
+      <div class="d-flex flex-wrap justify-content-center" style="column-gap:5px;row-gap:5px;">
+        <button class="btn btn-outline-primary fs-12 rounded-5">Message</button>
+        <button class="btn btn-primary fs-12 rounded-5">Add Friend</button>
+      </div>
+      {%endif%}
+    </div>
+  </div>
+
+  
+{%if is_current%}
+<form id="edit_profile" action="/edit_profile/{{current_user.tag}}" method="POST" class="" enctype="multipart/form-data" accept="image/*">
+<div class="modal fade" id="editProfile" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Profile Info</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body w-100" style="text-align: left;">
+        <div class="w-100 d-flex flex-column align-items-center" style="padding:0px;margin:0px;">
+          <label for="profile_pic" style="cursor: pointer;" id="profile_input">
+            <img src="{{user.profile_picture}}" id="preview" alt="" class="circle-pfp myshadow" style="height:180px; width:180px;">
+            <div class="overlay">
+              <i class="fa-solid fa-camera text-white" style="font-size: 42px;"></i>
+              <span class="fs-16 fw-bold text-white">Edit Profile</span>
             </div>
-            <div class="modal-body" id="change-profpic-middle-part">
-                <button class="upload-photo-modal"> <span> Upload Photo</span> </button>
-                <button class="remove-current-photo"><span> Remove Current Photo</span></button>
-                <button type="button" id="modal-cancel" class="btn btn-secondary" data-bs-dismiss="modal"><span>Cancel</span></button>
-                
+          </label>
+          <input type="file" name="profile_pic" id="profile_pic" class="d-none" onchange="change_profile(this)">
+          <span class="d-none"></span>
+
+            <h6 class="fw-bold mt-4">Account Info</h6>
+            <div class="form-group mb-2">
+              <label class="mb-1 fs-14" for="first_name">First Name</label>
+              <input type="text" class="form-control"  name="first_name" id="first_name" value="{{current_user.first_name}}">
+                <span></span>
             </div>
+            <div class="form-group mb-2">
+              <label class="mb-1 fs-14" for="last_name">Last Name</label>
+              <input type="text" class="form-control" name="last_name" id="last_name" value="{{current_user.last_name}}">
+                <span></span>
+            </div>
+            <div class="form-group mb-2">
+              <label class="mb-1 fs-14" for="tag">Tag</label>
+              <input class="form-control" name="tag" id="tag" type="text" value="{{current_user.tag}}">
+                <span></span>
+            </div>
+            <div class="form-group mb-2">
+              <label class="mb-1 fs-14" for="email">Email</label>
+              <input type="email" class="form-control" name="email" id="email" value="{{current_user.email}}" aria-describedby="emailHelp" >
+                <span></span>
+            </div>  
+    
+          <h6 class="fw-bold mt-4">Address</h6>
+            <div class="form-group mb-2">
+              <label class="mb-1 fs-14" for="city">City</label>
+              <input type="text" class="form-control" name="city" id="city" value="{{current_user.city}}">
+                <span></span>
+            </div>
+            <div class="form-group mb-2">
+              <label class="mb-1 fs-14" for="state">State</label>
+              <input type="text" class="form-control" value="{{current_user.state}}" name="state" id="state">
+                <span></span>
+            </div>
+            <div class="form-group mb-2">
+              <label class="mb-1 fs-14" for="zipcode">ZIP</label>
+              <input type="text" class="form-control" value="{{current_user.zipcode}}" name="zipcode" id="zipcode">
+                <span></span>
+            </div>
+            <div class="form-group mb-2">
+              <label class="mb-1 fs-14" for="country">Country</label>
+              <input type="text" class="form-control" value="{{current_user.country}}" name="country" id="country">
+                <span></span>
+            </div>
+
+          <h6 class="fw-bold mt-4">Change Password</h6>
+          <div class="form-group mb-2">
+            <label class="mb-1 fs-14" for="old_pwd">Current Password</label>
+            <input type="password" class="form-control" name="old_pwd" id="old_pwd" placeholder="Required" required>
+              <span></span>
+          </div>
+          <div class="form-group mb-2">
+            <label class="mb-1 fs-14" for="pwd1">New Password</label>
+            <input type="password" class="form-control" name="pwd" id="pwd" placeholder="New Password">
+              <span></span>
+          </div>
+          <div class="form-group mb-2">
+            <label class="mb-1 fs-14" for="pwd2">Retype New Password</label>
+            <input type="password" class="form-control" name="pwd2" id="pwd2" placeholder="Retype New Password">
+              <span></span>
+          </div>
+          <input type="hidden" value="{{csrf_token()}}" name="csrf_token" id="csrf_token">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary"  onclick="edit_profile('{{current_user.tag}}')">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+{%endif%}
+
+  
+  <!-- <div class="modal fade" id="change-profpic-modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="profile-picture-modal-title">Change Profile Photo</h5>
+          </div>
+          <div class="modal-body" id="change-profpic-middle-part">
+            <form action="/change_profile_photo/{{current_user.tag}}" method="POST" enctype="multipart/form-data">
+              <label class="upload-photo-modal" for="edit_profile_picture"><span>Upload Photo</span></label>
+              <img src="{{user.profile_picture}}" id="preview_image" width="90" height="90" style="border-radius:50%;"/>
+              <input class="file_input" name="edit_profile_picture" id="edit_profile_picture" type="file" hidden onchange="change_profile_picture(this)"/>
+              <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+              <button type="submit" id="submit-button">Save Changes</button>
+            </form>
+            <form action="/remove_profile_photo/{{current_user.tag}}" method="POST">
+              <button type="submit" class="remove-current-photo" name="profile_picture"><span>Remove Current Photo</span></button>
+              <input type="hidden" value="{{csrf_token()}}" name="csrf_token">
+            </form>
+            <button id="modal-cancel" class="btn btn-secondary" data-bs-dismiss="modal"><span>Cancel</span></button>
           </div>
         </div>
       </div>
-      
-    <div class="rectangle-profile" ></div>
-    <button class="profile-info-pic" data-bs-toggle="modal" data-bs-target="#change-profpic-modal"><img clas="profile-info-pic" src="../../static/img/postprofile.jpg"/> </button>
-    <div class="profile-right-side">
-        <h1 class="profile-username" align="left">{{current_user.tag}}</h1>
-        
-        <button class="edit-profile" href=""><span>Edit Profile </span></button>
-          
-
-        <h6 class="no-of-posts"><span>10</span> posts </h6>
-        <h6 class="no-of-furiends"><span>103</span>  furiends</h6>
-        <h6 class="profile-name" align="left">{{current_user.first_name}} {{current_user.last_name}}</h6>
     </div>
+
+
+    <div class="modal" id="dots-modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body" id="profile-modal">
+              <button class="modal-block"><span>Block</span></button>
+              <button type="button" id="modal-cancel" class="btn btn-secondary" data-bs-dismiss="modal"><span>Cancel</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal" id="furiend-button-modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body" id="block-modal-part">
+              <button class="modal-block"><span>Remove Friend</span></button>
+              <button type="button" id="modal-cancel" class="btn btn-secondary" data-bs-dismiss="modal"><span>Cancel</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  <div class="profile-info">
+    <button class="profile-info-pic" data-bs-toggle="modal" data-bs-target="#change-profpic-modal"><img src="{{user.profile_picture}}"/> </button>
+  </div> 
+      <div class="prs-1st-line">
+        <h2 class="profile-username" align="left"><h5>{{current_user.tag}}</h2>
+        </div>
+        <span class="profile-acct-type">Pet Owner</span>  
+      <div class="prs-2nd-line">
+        <div class="no-of-posts"><h6><span>10</span> posts</h6></div>
+        <span class="middle-line">|</span>
+        <a href="/edit_profile/{{ current_user.tag }}" style="width: 150px;"> 
+          <button class="no-of-furiends"><h6><span>103</span> furiends</h6>
+          </button> </a>  
+      </div>
+      <div class="prs-3rd-line">
+        <h6 class="profile-name" align="left">{{current_user.first_name}} {{current_user.last_name}}</h6>
+        <a href="/edit_profile/{{ current_user.tag }}" style="width: 150px;">
+          {% if user.tag == current_user.tag %}
+          <button class="edit-profile"><span>Edit Profile</span></button>
+          {% else %}
+          <button class="add-furiend" id="add-furiend"><span>+ Add Furiend</span></button> 
+          <button>Message</button>
+          {% endif %}
+        </a> -->
+
 </div>
-
-
+      
 
 {% endblock %}

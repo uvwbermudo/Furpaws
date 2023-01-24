@@ -44,7 +44,7 @@ def verify_register():
     email = request.json['email']
     tag = request.json['tag']
     password = request.json['password']
-    account_type = request.json['account_type']
+    account_type = request.json['account_type'] 
     last_name = request.json['last_name']
     first_name = request.json['first_name']
     city = request.json['city']

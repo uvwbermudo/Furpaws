@@ -22,7 +22,7 @@ def result_zip(cursor):
 
 class Users(UserMixin):
     def __init__(self, tag=None, email=None, password=None, account_type=None, first_name=None,
-                 last_name=None, city=None, state=None, zipcode=None, country=None):
+                 last_name=None, city=None, state=None, zipcode=None, country=None, profile_picture=None):
         self.tag = tag
         self.email = email
         self.password = password
@@ -33,6 +33,8 @@ class Users(UserMixin):
         self.state = state
         self.zipcode = zipcode
         self.country = country
+        self.profile_picture = profile_picture
+
 
     def __repr__(self):
         return f'User: {self.tag}, {self.email}'
@@ -62,17 +64,18 @@ class Users(UserMixin):
                 state=row['state'],
                 zipcode=row['zipcode'],
                 country=row['country'],
+                profile_picture=row['profile_picture'],
             )
             object_results.append(new_obj)
         return object_results
 
     def add(self):  # must first create a user object then use add
+        if not self.profile_picture:
+            self.profile_picture = '../../static/img/placeholder.png'
         cursor = mysql.connection.cursor()
-        sql = f"INSERT INTO users(email, tag, user_password, account_type, first_name,\
-                last_name, city, state, zipcode, country) VALUES('{self.email}', '{self.tag}',\
-                '{self.password}', '{self.account_type}','{ self.first_name}', '{self.last_name}', '{self.city}',\
-                '{self.state}', '{self.zipcode}', '{self.country}')"
-        cursor.execute(sql)
+        sql = f"INSERT INTO users(email, tag, user_password, account_type, first_name,last_name, city, state, zipcode, country,profile_picture) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        values=(self.email,self.tag,self.password,self.account_type,self.first_name, self.last_name,self.city,self.state,self.zipcode,self.country,self.profile_picture)
+        cursor.execute(sql,values)
 
     @classmethod
     def query_get(cls, tag):  # takes a tag, returns a user object
@@ -131,7 +134,7 @@ class Users(UserMixin):
     @classmethod
     def update_user(cls, target_tag, new_tag=None, new_email=None, new_password=None, new_account_type=None,
                     new_first_name=None, new_last_name=None, new_city=None, new_state=None, new_zipcode=None,
-                    new_country=None):
+                    new_country=None,new_profile_picture=None):
         cursor = mysql.connection.cursor()
         if new_tag:
             sql = f"UPDATE users SET tag = '{new_tag}' WHERE tag ='{target_tag}'"
@@ -162,6 +165,9 @@ class Users(UserMixin):
             cursor.execute(sql)
         if new_country:
             sql = f"UPDATE users SET country = '{new_country}' WHERE tag ='{target_tag}'"
+            cursor.execute(sql)
+        if new_profile_picture!=None:
+            sql=f"UPDATE users set profile_picture = '{new_profile_picture}' WHERE tag='{target_tag}'"
             cursor.execute(sql)
 
     # pass only the target_tag
@@ -674,6 +680,11 @@ class Comments:
     def post(self):
         post = Posts.query_get(self.post_commented)
         return post
+
+    @property
+    def author(self):
+        author = Users.query_get(self.author_tag)
+        return author
 
 
 class Likes:

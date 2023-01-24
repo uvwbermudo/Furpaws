@@ -11,7 +11,7 @@
     <div id="create-post-layout">
       <div class="w-100">
         <div class="d-flex  justfy-content-start align-items-center" style="column-gap: 10px;">
-          <img src="../../static/img/test_profilepic.png" style="border-radius:50%; height:50px; width:50px;" alt="">
+          <img src="{{current_user.profile_picture}}" style="min-height:50px; min-width:50px;" alt="" class="circle-pfp">
           <button class="share-something w-100" data-bs-toggle="modal" data-bs-target="#addPostModal" data-bs-whatever="@getbootstrap" type="button" style="font-size: 16px;">
             Share something...
           </button>
@@ -46,7 +46,7 @@
             <div class="form-group">
               <label for="message-text" class="col-form-label float-start">
                 <div class="cpost-upper">
-                  <img class="cpost-profile-pic" img src="../../static/img/postprofile.jpg"/>
+                  <img class="circle-pfp" img src="{{current_user.profile_picture}}"/>
                   <h5 class="post-username">{{current_user.tag}}</h5>
                 </div>
               </label>
@@ -156,11 +156,11 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
               </button>
             </div>
-            <div class="modal-body" >
+            <div class="modal-body" style="z-index: 100;" >
               <div class="comments" id="main-feed-comments-{{post.post_id}}">
               {% for comments in post.comments %}
                 <div class="comment-container" id="main-feed-comment-{{comments.comment_id}}">
-                  <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp" style="height:32px; width:32px;">
+                  <img src="{{comments.author.profile_picture}}" alt="" class="circle-pfp" style="height:32px; width:32px;">
                   <a href="/profiles/{{comments.author_tag}}" class="text-dark text-decoration-none hover-underline fw-semibold ps-2">{{comments.author_tag}}</a>
                   <div class="btn-group ms-auto d-flex align-items-center">
                     <span class="text-muted fs-10 pe-2">{{comments.date_commented.strftime("%d, %b %Y").lower()}}</span>
@@ -341,7 +341,7 @@
       <div class="search-result-post-upper">
         {% set first_name = author.first_name.split(' ') %}
           <a href="/profiles/{{author.tag}}"> 
-            <img src="../../static/img/postprofile.jpg" alt="" style="height: 58px; width:58px; overflow:hidden; border-radius:50%">
+            <img src="{{author.profile_picture}}" alt="" style="height: 58px; width:58px; overflow:hidden; border-radius:50%" class="circle-pfp">
           </a>
           <div style="padding-bottom:0px; padding-left: 10px;">
               <a href="/profiles/{{author.tag}}" class="post-upper text-dark pb-1 fs-5">
@@ -502,7 +502,7 @@
         {% set first_name = author.first_name.split(' ')%}
         <div class="d-flex justify-content-start align-items-center h-100 w-100" style="column-gap:10px;">
           <a href="/profiles/{{author.tag}}" class="text-decoration-none">
-            <img src="../../static/img/freelancer_sample.jpg" class="circle-pfp" alt="" style="height: 50px; width:50px;">
+            <img src="{{author.profile_picture}}" class="circle-pfp" alt="" style="height: 50px; width:50px;">
           </a>
           <a href="/profiles/{{author.tag}}" class="text-decoration-none hover-underline text-dark">
             <p class="d-inline fw-medium" style="font-size:14px;">
@@ -579,7 +579,7 @@
     <h6 class="fw-medium" style="padding-top: 10px; padding-left:10px; text-align:left;">Meet new people</h6>
     {% for user in user_sugg%}
     <div class="user_sugg">
-      <img src="../../static/img/test_profilepic.png" alt="">
+      <img src="{{user.profile_picture}}" alt="">
       <div class="d-flex flex-column" style="row-gap: 0px;">
         {% set first_name = user.first_name.split(' ')[0] %}
         <a href="/profiles/{{user.tag}}" class="d-flex flex-column" style="row-gap:3px; text-align:left;">

@@ -27,14 +27,14 @@
 
                 <div class="d-flex ps-3" style="column-gap: 15px;">
                   {% if worker %}
-                    <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp " style="height: 40px; width:40px; min-height: 40px; min-width:40px">
+                    <img src="{{worker.profile_picture}}" alt="" class="circle-pfp " style="height: 40px; width:40px; min-height: 40px; min-width:40px">
                     <a href="/profiles/{{worker.tag}}" class="d-flex flex-column text-decoration-none hover-underline text-dark" style="text-align:left;">
                         <span class="fw-semibold">{{worker.first_name.split(' ')[0]}} {{worker.last_name}}</span>
                         <span class="text-muted fw-normal">{{worker.tag}}</span>
                     </a>
                   {% elif job.job_details.freelancer_requested %}
                   {%set worker = job.job_details.freelancer_requested%}
-                    <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp " style="height: 40px; width:40px; min-height: 40px; min-width:40px">
+                    <img src="{{worker.profile_picture}}" alt="" class="circle-pfp " style="height: 40px; width:40px; min-height: 40px; min-width:40px">
                     <a href="/profiles/{{worker.tag}}" class="d-flex flex-column text-decoration-none hover-underline text-dark" style="text-align:left;">
                         <span class="fw-semibold">{{worker.first_name.split(' ')[0]}} {{worker.last_name}}</span>
                         <span class="text-muted fw-normal">{{worker.tag}}</span>

@@ -1328,7 +1328,7 @@ h5 {
 .dropdown {
     display: inline-block;
     position: relative;
-    z-index: 10000;
+    z-index: 1000;
 }
 
 
@@ -1964,7 +1964,6 @@ h5 {
     margin-left: 35px;
     width: 1120px;
     height: 1580px;
-    border: 2px dashed blue
 }
 
 .rectangle-profile {

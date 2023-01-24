@@ -21,8 +21,10 @@
 
 
 <div class="w-100 d-flex justify-content-start align-items-center top">
+    <input type="hidden" value="{{current_user.profile_picture}}" id="current_src">
+    <input type="hidden" value="{{other_user.profile_picture}}" id="other_src">
     <input type="hidden" value="{{convo_id}}" id="convo_id">
-    <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp" style="height: 50px; width:50px; margin-right:10px;">
+    <img src="{{other_user.profile_picture}}" alt="" class="circle-pfp" style="height: 50px; width:50px; margin-right:10px;">
     <a href="/profiles/id" class="text-decoration-none text-dark hover-underline">
         <span class="fw-bold fs-14 mb-1">{{other_user.tag}}</span>
         <span class="fw-normal fs-14 mb-1 text-muted">&middot; {{other_user.first_name.split(' ')[0]}} {{other_user.last_name}}</span>
@@ -43,11 +45,11 @@
         {%if message.sender == current_user.tag%}
 					<div class="send chat">
 						<p class="message">{{message.message_content}}<span class="text-muted fs-10"> {{message.date_sent.strftime("%d, %b %Y").lower()}}</span></p>
-						<img src="../../static/img/freelancer_sample.jpg" class="circle-pfp" alt="">
+						<img src="{{current_user.profile_picture}}" class="circle-pfp" alt="">
 					</div>
 				{%else%}
 					<div class="receive chat">
-						<img src="../../static/img/postprofile.jpg" class="circle-pfp" alt="">
+						<img src="{{other_user.profile_picture}}" class="circle-pfp" alt="">
 						<p class="message">{{message.message_content}}<span class="text-muted fs-10"> {{message.date_sent.strftime("%d, %b %Y").lower()}}</span></p>
 					</div>
 				{%endif%}
@@ -70,6 +72,9 @@
 		const convo_id = $('#convo_id').val()
 		const socket_add = $('#socket_add').val()
 		const flask_port= $('#flask_port').val()
+        const current_src = $('#current_src').val()
+        const other_src = $('#other_src').val()
+        console.log(current_src,other_src)
         console.log(flask_port,socket_add)
 				socket.on('connect', function() {
 					socket.emit('User Connected');
@@ -100,7 +105,9 @@
 							let options = { hour: 'numeric', minute: 'numeric'};
 							let formattedTime = date.toLocaleTimeString('en-US', options);
                 let chat_cont = $('<div class="receive chat"></div>')
-                chat_cont.append($('<img src="../../static/img/freelancer_sample.jpg" class="circle-pfp" alt="">'))
+                let img = $(`<img src="${other_src}" class="circle-pfp" alt="">`)
+                img.attr("src",other_src)
+                chat_cont.append(img)
                 let actual_message = $('<p class="message"></p>').text(msg)
                 actual_message.append($(`<span class="text-muted fs-10"> ${formattedTime}</span>`))
                 chat_cont.append($(actual_message))
@@ -123,7 +130,9 @@
 			let actual_message = $('<p class="message"></p>').text(msg)
 			actual_message.append($(`<span class="text-muted fs-10"> ${formattedTime}</span>`))
 			chat_cont.append($(actual_message))
-			chat_cont.append($('<img src="../../static/img/freelancer_sample.jpg" class="circle-pfp" alt="">'))
+            let img = $('<img src="${current_src}" class="circle-pfp" alt="">')
+            img.attr("src", current_src)
+			chat_cont.append(img)
 			$('#chatBox').prepend($(chat_cont))
             data = {
                 'content': msg,

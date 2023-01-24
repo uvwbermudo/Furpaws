@@ -43,7 +43,7 @@
               aria-haspopup="true"
               aria-expanded="false"
             >
-            <img src="../../static/img/test_profilepic.png" alt="test_profilepic" style="height:40px; ">
+            <img src="{{current_user.profile_picture}}" class="circle-pfp" alt="Profile Pic" style="height:40px;width:40px; ">
             </a>
       
             <div class="dropdown-menu dropdown-menu-start" aria-labelledby="navbarDropdown">
@@ -62,7 +62,7 @@
   <nav class="base-sidebar">
     <ul class="base-sidebar-nav">
       <li class="base-sidebar-pfp">
-        <img src="../../static/img/test_profilepicwdiffsize.png" alt="test_profilepicwdiffsize" style="width: 160px;" >
+        <img src="{{current_user.profile_picture}}" class="circle-pfp" alt="Profile Pic" style="width: 160px;height:160px;" >
       </li>
       <li>
         <a href="/home" id="sidebar-home">
@@ -77,7 +77,7 @@
         </a>
       </li>
       <li>
-        <a href="/profile">       
+        <a href="/profiles/{{current_user.tag}}">       
           <img src="../../static/img/pawfile_logo.png" alt="pawfile_logo" class="base-sidebar-icon">
           <span>Pawfile</span>
         </a>

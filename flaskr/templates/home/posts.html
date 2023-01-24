@@ -60,7 +60,7 @@
               <div class="comments" id="main-feed-comments-{{post.post_id}}">
               {% for comments in post.comments %}
                 <div class="comment-container" id="main-feed-comment-{{comments.comment_id}}">
-                  <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp" style="height:32px; width:32px;">
+                  <img src="{{comments.author.profile_picture}}" alt="" class="circle-pfp" style="height:32px; width:32px;">
                   <a href="/profiles/{{comments.author_tag}}" class="text-dark text-decoration-none hover-underline fw-semibold ps-2">{{comments.author_tag}}</a>
                   <div class="btn-group ms-auto d-flex align-items-center">
                     <span class="text-muted fs-10 pe-2">{{comments.date_commented.strftime("%d, %b %Y").lower()}}</span>
@@ -234,7 +234,7 @@
       <div class="search-result-post-upper">
         {% set first_name = post.author.first_name.split(' ') %}
           <a href="/profiles/{{post.author_tag}}"> 
-            <img src="../../static/img/postprofile.jpg" alt="" style="height: 58px; width:58px; overflow:hidden; border-radius:50%">
+            <img src="{{post.author.profile_picture}}" alt="" style="height: 58px; width:58px; overflow:hidden; border-radius:50%" class="circle-pfp">
           </a>
           <div style="padding-bottom:0px; padding-left: 10px;">
               <a href="/profiles/{{post.author_tag}}" class="post-upper text-dark pb-1 fs-5 fw-bold">

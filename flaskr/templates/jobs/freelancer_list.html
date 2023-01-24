@@ -5,7 +5,7 @@
 <div id="PE-freelancer-list">
     {%for freelancer in freelancers %}
         <div class="freelancer-card float-hover">
-            <img src="../../static/img/freelancer_sample.jpg" alt="" class="circle-pfp myshadow" style="height: 80px;width:80px; margin-bottom:15px;">
+            <img src="{{freelancer.profile_picture}}" alt="" class="circle-pfp myshadow" style="height: 80px;width:80px; margin-bottom:15px;">
 			<a href="/profiles/{{freelancer.tag}}" class="fw-bold fs-14 text-decoration-none hover-underline text-dark">{{freelancer.first_name.split(' ')[0]}} {{freelancer.last_name}}</a>
 			<a href="/profiles/{{freelancer.tag}}" class="text-muted fs-12 text-decoration-none hover-underline ">@{{freelancer.tag}}</a>
 			{% if freelancer.freelancing_details and freelancer.freelancing_details.average_rating %}

@@ -32,10 +32,11 @@ def create_app():
     from .profile import profile
     from .jobs import jobs
     from .messages import msgs
+    from .profile import profile
 
+    app.register_blueprint(profile, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(home, url_prefix='/')
-    app.register_blueprint(profile, url_prefix='/')
     app.register_blueprint(jobs, url_prefix='/')
     app.register_blueprint(msgs, url_prefix='/')
     from .models import Users

@@ -25,7 +25,7 @@
     <input type="hidden" value="{{other_user.profile_picture}}" id="other_src">
     <input type="hidden" value="{{convo_id}}" id="convo_id">
     <img src="{{other_user.profile_picture}}" alt="" class="circle-pfp" style="height: 50px; width:50px; margin-right:10px;">
-    <a href="/profiles/id" class="text-decoration-none text-dark hover-underline">
+    <a href="/profiles/{{other_user.tag}}" class="text-decoration-none text-dark hover-underline">
         <span class="fw-bold fs-14 mb-1">{{other_user.tag}}</span>
         <span class="fw-normal fs-14 mb-1 text-muted">&middot; {{other_user.first_name.split(' ')[0]}} {{other_user.last_name}}</span>
     </a>

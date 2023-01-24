@@ -1124,3 +1124,13 @@ function verifySearch(elem) {
             
         })
 }
+
+
+function profilePost() {
+    fetch('/home', {
+    method: 'POST',
+    body: JSON.stringify({data: "some data"}),
+    headers: { 'Content-Type': 'application/json' }
+    });
+    location.reload();
+}

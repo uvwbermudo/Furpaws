@@ -1,9 +1,9 @@
 # Furpaws
 - A social media for pet lovers and a freelancing platform for pet care services.
-## This is the very First Website that we have made
+## This is the very first website that we have made
 - It is made out of spaghetti.
 - It was made in a very short amount of time.
-- Made with Flask, Bootstrap 5, HTMX, JavaScript FetchAPI, CSS, HTML
+- Made with Flask, Bootstrap 5, HTMX, JavaScript FetchAPI, CSS, HTML, Flask Socket-IO
 
  ### You can
  - Create a Post with photos/videos that gets put into a carousel.

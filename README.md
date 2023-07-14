@@ -1,7 +1,7 @@
 # Furpaws
 - A social media for pet lovers and a freelancing platform for pet care services.
   
-## This one of the first websites that I have ever made (School Project)
+## This is one of the first websites that I have ever made (School Project)
 - It is made out of spaghetti.
 - It was made in a very short amount of time.
 - Made with Flask, Bootstrap 5, HTMX, JavaScript FetchAPI, CSS, HTML, Flask Socket-IO
